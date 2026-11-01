@@ -1,0 +1,125 @@
+{
+  "version": 8,
+  "name": "NISAR Surface Change Monitor",
+  "glyphs": "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+  "sources": {
+    "esri-world-imagery": {
+      "type": "raster",
+      "tiles": [
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+      ],
+      "tileSize": 256,
+      "attribution": "Esri, Maxar, Earthstar Geographics"
+    },
+    "esri-boundaries": {
+      "type": "raster",
+      "tiles": [
+        "https://services.arcgisonline.com/arcgis/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
+      ],
+      "tileSize": 256,
+      "attribution": "Esri"
+    },
+    "reference-labels": {
+      "type": "geojson",
+      "data": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "geometry": { "type": "Point", "coordinates": [115.8, 15.5] },
+            "properties": { "name": "South China Sea", "kind": "sea" }
+          },
+          {
+            "type": "Feature",
+            "geometry": { "type": "Point", "coordinates": [126.6, 16.5] },
+            "properties": { "name": "Philippine Sea", "kind": "sea" }
+          },
+          {
+            "type": "Feature",
+            "geometry": { "type": "Point", "coordinates": [120.6, 8.6] },
+            "properties": { "name": "Sulu Sea", "kind": "sea" }
+          },
+          {
+            "type": "Feature",
+            "geometry": { "type": "Point", "coordinates": [121.1, 16.6] },
+            "properties": { "name": "Luzon", "kind": "place" }
+          },
+          {
+            "type": "Feature",
+            "geometry": { "type": "Point", "coordinates": [120.9842, 14.5995] },
+            "properties": { "name": "Manila", "kind": "place" }
+          },
+          {
+            "type": "Feature",
+            "geometry": { "type": "Point", "coordinates": [121.1, 13.0] },
+            "properties": { "name": "Mindoro", "kind": "place" }
+          },
+          {
+            "type": "Feature",
+            "geometry": { "type": "Point", "coordinates": [122.5, 11.1] },
+            "properties": { "name": "Panay", "kind": "place" }
+          },
+          {
+            "type": "Feature",
+            "geometry": { "type": "Point", "coordinates": [123.9, 10.3] },
+            "properties": { "name": "Cebu", "kind": "place" }
+          },
+          {
+            "type": "Feature",
+            "geometry": { "type": "Point", "coordinates": [123.0, 10.2] },
+            "properties": { "name": "Negros", "kind": "place" }
+          },
+          {
+            "type": "Feature",
+            "geometry": { "type": "Point", "coordinates": [124.7, 7.7] },
+            "properties": { "name": "Mindanao", "kind": "place" }
+          },
+          {
+            "type": "Feature",
+            "geometry": { "type": "Point", "coordinates": [125.6, 7.07] },
+            "properties": { "name": "Davao", "kind": "place" }
+          }
+        ]
+      }
+    }
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": { "background-color": "#061325" }
+    },
+    {
+      "id": "basemap",
+      "type": "raster",
+      "source": "esri-world-imagery",
+      "paint": { "raster-opacity": 1 }
+    },
+    {
+      "id": "admin-boundaries",
+      "type": "raster",
+      "source": "esri-boundaries",
+      "layout": { "visibility": "none" },
+      "paint": { "raster-opacity": 1 }
+    },
+    {
+      "id": "cities-labels",
+      "type": "symbol",
+      "source": "reference-labels",
+      "layout": {
+        "visibility": "visible",
+        "text-field": ["get", "name"],
+        "text-font": ["Noto Sans Regular"],
+        "text-size": ["interpolate", ["linear"], ["zoom"], 4, 11, 8, 14],
+        "text-anchor": "center",
+        "text-allow-overlap": true,
+        "text-ignore-placement": true
+      },
+      "paint": {
+        "text-color": ["match", ["get", "kind"], "sea", "#bfe3ff", "#ffffff"],
+        "text-halo-color": "#061325",
+        "text-halo-width": 1.2
+      }
+    }
+  ]
+}
