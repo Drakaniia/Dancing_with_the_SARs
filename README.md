@@ -1,0 +1,38 @@
+# NISAR Surface Change Monitor
+
+**Team:** The Cartographers — [NASA Space Apps Challenge 2026](https://www.spaceappschallenge.org/2026/find-a-team/the-cartographers/)
+
+## About the Challenge
+
+<div style="display: flex; align-items: center; gap: 24px;">
+  <img src="public/images/team-image.jpg" alt="The Cartographers" style="width: 300px; height: 250px; object-fit: cover; flex-shrink: 0;" />
+  <div style="flex: 1;">
+    <h3>Dancing with the SARs</h3>
+    <p>Earth's surface is an endless dance of natural processes and human activities, but these changes are often difficult to visualize, understand, and communicate. From wetland loss to forest wildfires, earthquakes, farming activities, glacier movement, and more, Earth is in a constant waltz of surface changes. Your challenge is to build an interactive application that uses radar remote sensing data from the NASA-ISRO Synthetic Aperture Radar (NISAR) mission to track and visualize one or more types of surface change at locations around the world.</p>
+  </div>
+</div>
+
+## Getting Started
+
+```bash
+pnpm install
+pnpm run tauri dev
+```
+
+## Build
+
+```bash
+pnpm run tauri build
+```
+
+## Project Structure
+
+See `docs/superpowers/specs/2026-10-10-project-structure-design.md` for the full architecture spec.
+
+The "Dancing with the SARs" challenge is one of the official global tracks featured in the 2026 NASA Space Apps Challenge. [1] (https://www.spaceappschallenge.org/2026/challenges/dancing-with-the-sars/), [2] (https://www.therecursive.com/nasa-space-apps-challenge-2026-where-to-join-it-in-cee/)
+
+What the Challenge Is About
+
+• Goal: Build an interactive application or tool that tracks and visualizes Earth surface changes using radar remote sensing data. [1] (https://www.spaceappschallenge.org/2026/challenges/dancing-with-the-sars/)
+• Core Dataset: Uses data from the NASA-ISRO Synthetic Aperture Radar (NISAR) mission. [1] (https://www.spaceappschallenge.org/2026/challenges/dancing-with-the-sars/)
+• Focus Areas: Translating complex radar data to monitor natural processes and human activities—such as earthquakes, glacier movement, wetland loss, forest wildfires, riverbank erosion, and farming activities. [1] (https://www.youtube.com/watch?v=NlmBUn8bIwk), [2] (https://www.spaceappschallenge.org/2026/challenges/dancing-with-the-sars/)

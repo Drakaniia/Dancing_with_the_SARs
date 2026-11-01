@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ground movement map guide</title>
+    <style>
+      :root {
+        --green: #1a6b3a;
+        --red: #8b2020;
+        --blue: #1a3a6b;
+        --text: #1a1a1a;
+        --muted: #555;
+        --rule: #ddd;
+        --bg: #f9f9f6;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Georgia", serif;
+        font-size: 16px;
+        line-height: 1.7;
+        color: var(--text);
+        background: var(--bg);
+        padding: 0 16px 60px;
+      }
+      .page {
+        max-width: 720px;
+        margin: 0 auto;
+      }
+
+      header {
+        border-top: 5px solid var(--green);
+        padding: 40px 0 24px;
+        margin-bottom: 36px;
+      }
+      header .label {
+        font-family: system-ui, sans-serif;
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+      h1 {
+        font-size: 28px;
+        font-weight: normal;
+        line-height: 1.3;
+        color: var(--green);
+        margin-bottom: 10px;
+      }
+      header .subtitle {
+        font-size: 15px;
+        color: var(--muted);
+        font-style: italic;
+      }
+
+      h2 {
+        font-family: system-ui, sans-serif;
+        font-size: 13px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin: 40px 0 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--rule);
+      }
+      p {
+        margin-bottom: 14px;
+      }
+      strong {
+        color: var(--text);
+      }
+
+      /* Colorbar */
+      .colorbar-wrap {
+        margin: 20px 0 28px;
+      }
+      .colorbar {
+        height: 20px;
+        border-radius: 4px;
+        background: linear-gradient(
+          to right,
+          rgb(165, 0, 38),
+          rgb(239, 138, 98),
+          rgb(254, 224, 144),
+          white,
+          rgb(199, 233, 180),
+          rgb(65, 182, 196),
+          rgb(8, 29, 88)
+        );
+        border: 1px solid #ccc;
+      }
+      .colorbar-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        font-family: system-ui;
+        color: var(--muted);
+        margin-top: 5px;
+      }
+      .colorbar-legend {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        font-family: system-ui;
+        margin-top: 8px;
+      }
+      .colorbar-legend span {
+        max-width: 180px;
+      }
+      .colorbar-legend .left {
+        color: var(--red);
+        text-align: left;
+      }
+      .colorbar-legend .mid {
+        color: var(--muted);
+        text-align: center;
+      }
+      .colorbar-legend .right {
+        color: var(--blue);
+        text-align: right;
+      }
+
+      /* Layer comparison */
+      .layer-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin: 20px 0 28px;
+      }
+      .layer-card {
+        border-radius: 6px;
+        padding: 16px 18px;
+        font-size: 14px;
+        font-family: system-ui;
+      }
+      .layer-card.sbas {
+        background: #eef6f1;
+        border-left: 4px solid var(--green);
+      }
+      .layer-card.single {
+        background: #fdf0f0;
+        border-left: 4px solid var(--red);
+      }
+      .layer-card .card-title {
+        font-weight: 700;
+        font-size: 13px;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .layer-card.sbas .card-title {
+        color: var(--green);
+      }
+      .layer-card.single .card-title {
+        color: var(--red);
+      }
+      .layer-card ul {
+        padding-left: 16px;
+        color: var(--muted);
+      }
+      .layer-card ul li {
+        margin-bottom: 4px;
+      }
+
+      /* Area table */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: system-ui;
+        font-size: 14px;
+        margin: 16px 0 28px;
+      }
+      th {
+        text-align: left;
+        padding: 8px 10px;
+        background: var(--green);
+        color: white;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      td {
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--rule);
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      tr:nth-child(even) td {
+        background: #f0f4f0;
+      }
+
+      /* Controls guide */
+      .control-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 14px;
+      }
+      .control-tag {
+        flex-shrink: 0;
+        width: 130px;
+        font-family: system-ui;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 5px 10px;
+        border-radius: 4px;
+        text-align: center;
+      }
+      .control-tag.green {
+        background: var(--green);
+        color: white;
+      }
+      .control-tag.red {
+        background: var(--red);
+        color: white;
+      }
+      .control-tag.slider {
+        background: #e8e8e8;
+        color: #333;
+      }
+      .control-desc {
+        font-size: 14px;
+        font-family: system-ui;
+        color: var(--muted);
+        padding-top: 4px;
+      }
+
+      /* Pipeline callout */
+      .callout {
+        background: white;
+        border: 1px solid var(--rule);
+        border-left: 4px solid var(--blue);
+        border-radius: 6px;
+        padding: 18px 20px;
+        font-family: system-ui;
+        font-size: 14px;
+        color: var(--muted);
+        margin: 20px 0 28px;
+      }
+      .callout strong {
+        color: var(--blue);
+      }
+      .callout .step {
+        margin-bottom: 6px;
+        padding-left: 10px;
+        border-left: 2px solid #c8d8e8;
+      }
+
+      footer {
+        margin-top: 60px;
+        padding-top: 20px;
+        border-top: 1px solid var(--rule);
+        font-family: system-ui;
+        font-size: 12px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <div class="label">Sentinel-1 InSAR · Northern Luzon</div>
+        <h1>Ground movement map<br />Companion guide</h1>
+        <div class="subtitle">
+          What the interactive map shows and how to read it.
+        </div>
+      </header>
+
+      <h2>What the map shows</h2>
+
+      <p>
+        The interactive map (<code>index_SBASvsnoSBAS_standalone.html</code>)
+        shows
+        <strong>ground velocity</strong> across five areas of northern Luzon:
+        how fast the land surface is moving toward or away from a Sentinel-1
+        satellite orbiting about 700 km overhead, in
+        <strong>millimetres per year</strong>.
+      </p>
+      <p>
+        The method is Interferometric Synthetic Aperture Radar (InSAR). It
+        detects movement too small to see or feel, such as a district settling
+        by a few millimetres a year as groundwater is pumped out.
+      </p>
+
+      <h2>How to read the colours</h2>
+
+      <div class="colorbar-wrap">
+        <div class="colorbar"></div>
+        <div class="colorbar-labels">
+          <span>−30 mm/yr</span>
+          <span>0</span>
+          <span>+30 mm/yr</span>
+        </div>
+        <div class="colorbar-legend">
+          <span class="left"
+            >Red<br />ground moving away from satellite<br /><em
+              >(subsidence / slope movement)</em
+            ></span
+          >
+          <span class="mid">White<br />stable ground</span>
+          <span class="right"
+            >Blue<br />ground moving toward satellite<br /><em
+              >(rebound / lateral shift)</em
+            ></span
+          >
+        </div>
+      </div>
+
+      <p>
+        Sustained negative velocity (red) can mean land subsidence from
+        groundwater extraction or movement of unstable slope material. Blue
+        areas may indicate post-seismic rebound or uplift from pressurised
+        groundwater.
+      </p>
+      <p>
+        Transparent pixels are water bodies or areas where the radar signal was
+        too noisy for a reliable measurement (dense forest canopy, steep terrain
+        shadow).
+      </p>
+
+      <h2>Two layer types: what makes them different</h2>
+
+      <div class="layer-grid">
+        <div class="layer-card sbas">
+          <div class="card-title">SBAS Time-Series</div>
+          <ul>
+            <li>17 satellite passes, Aug 2024 – Feb 2025</li>
+            <li>16 image pairs stacked and averaged</li>
+            <li>Atmospheric noise largely cancelled out</li>
+            <li>DEM error and quadratic ramp corrected</li>
+            <li><strong>A six-month average velocity</strong></li>
+          </ul>
+        </div>
+        <div class="layer-card single">
+          <div class="card-title">Single-Pair Reference</div>
+          <ul>
+            <li>Two satellite passes, 12 days apart</li>
+            <li>Aug 15 and Aug 27, 2024 only</li>
+            <li>Heavily contaminated by atmospheric delay</li>
+            <li>No corrections applied</li>
+            <li><strong>Shown for comparison only</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <p>
+        The difference is <strong>atmospheric noise</strong>. Water vapour
+        differs between the two dates of a pair, and that difference creates a
+        spurious signal that can mimic or mask ground movement. A single pair
+        can't separate ground movement from atmospheric delay. Ground movement
+        keeps the same direction and rate from date to date and the atmosphere
+        doesn't, so stacking 16 pairs over six months lets the ground movement
+        come through.
+      </p>
+      <p>
+        Toggle the two groups on and off in the map panel to see this. Areas
+        with large colour differences between the layers are dominated by
+        atmospheric noise in the single-pair image.
+      </p>
+
+      <h2>The five areas covered</h2>
+
+      <table>
+        <tr>
+          <th>Burst ID</th>
+          <th>Area</th>
+          <th>Province</th>
+          <th>Setting</th>
+        </tr>
+        <tr>
+          <td>067557</td>
+          <td>Balbalan / Tinglayan</td>
+          <td>Kalinga</td>
+          <td>Upper Chico River watershed</td>
+        </tr>
+        <tr>
+          <td>067558</td>
+          <td>Lubuagan / Pasil</td>
+          <td>Kalinga</td>
+          <td>Mountain municipalities</td>
+        </tr>
+        <tr>
+          <td>067559</td>
+          <td>Tabuk City</td>
+          <td>Kalinga</td>
+          <td>Provincial capital</td>
+        </tr>
+        <tr>
+          <td>067560</td>
+          <td>Rizal / Tanudan</td>
+          <td>Kalinga</td>
+          <td>Southern Kalinga, Chico River floodplain</td>
+        </tr>
+        <tr>
+          <td>067561</td>
+          <td>Cauayan City</td>
+          <td>Isabela</td>
+          <td>Cagayan Valley agricultural lowland</td>
+        </tr>
+      </table>
+
+      <p>
+        The five areas are on one Sentinel-1 track (Track 032, descending) and
+        run north to south from upper Kalinga to the Isabela lowlands, roughly
+        100 km of continuous coverage.
+      </p>
+
+      <h2>How to use the map</h2>
+
+      <div class="control-row">
+        <div class="control-tag green">SBAS Time-Series</div>
+        <div class="control-desc">
+          Toggle the six-month averaged velocity layers on or off. Start here.
+        </div>
+      </div>
+      <div class="control-row">
+        <div class="control-tag red">Single-Pair Reference</div>
+        <div class="control-desc">
+          Toggle the raw single-pair layers. Use these to see how much noise the
+          time-series processing removed.
+        </div>
+      </div>
+      <div class="control-row">
+        <div class="control-tag slider">Opacity slider</div>
+        <div class="control-desc">
+          Adjust transparency of all overlays to see the OpenStreetMap basemap
+          underneath, and compare velocity patterns with roads, rivers and
+          settlements.
+        </div>
+      </div>
+      <div class="control-row">
+        <div class="control-tag slider">Individual checkboxes</div>
+        <div class="control-desc">
+          Each of the ten overlays can be toggled on its own. Use this to
+          compare one area in both versions (SBAS on, single-pair off, then the
+          reverse).
+        </div>
+      </div>
+
+      <p style="margin-top: 12px">
+        The basemap needs an internet connection. Opened straight from disk, the
+        basemap tiles show "403 Access blocked"; serve the folder over HTTP (for
+        example
+        <code>python -m http.server</code>) and they load. The velocity overlay
+        images are embedded in the file and display even when offline.
+      </p>
+
+      <h2>How this was produced</h2>
+
+      <div class="callout">
+        <strong>The pipeline:</strong>
+        <div class="step" style="margin-top: 10px">
+          1. The Sentinel-1 radar satellite (ESA, free public access) passes
+          over northern Luzon every 12 days.
+        </div>
+        <div class="step">
+          2. NASA/ASF's HyP3 cloud service downloads the raw data, runs
+          interferometry and delivers processed image pairs. It's free within a
+          monthly allowance of 8,000 credits; this stack cost 16 credits per
+          burst, one per image pair.
+        </div>
+        <div class="step">
+          3. MintPy stacks the 16 image pairs with the SBAS method (Small
+          Baseline Subset), corrects DEM error and a quadratic ramp, and fits a
+          velocity trend to each pixel.
+        </div>
+        <div class="step">
+          4. The velocity map is rendered as colour PNGs and placed on the
+          Leaflet map.
+        </div>
+      </div>
+
+      <footer>
+        Sentinel-1 data: Contains modified Copernicus Sentinel data
+        2024–2025.<br />
+        Processing: ASF HyP3 (NASA/JPL) + MintPy 1.6.2 (University of Miami).<br />
+        Track 032 descending · 5 bursts · 17 acquisitions · Aug 2024 – Feb 2025.
+      </footer>
+    </div>
+  </body>
+</html>
