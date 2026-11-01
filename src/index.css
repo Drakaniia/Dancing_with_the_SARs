@@ -1,0 +1,117 @@
+@import "tailwindcss";
+@import "./styles/tokens.css";
+
+/**
+ * Tailwind v4 theme wiring.
+ *
+ * `@theme inline` keeps each theme value as a `var(--token)` reference instead of freezing it, so
+ * utilities resolve against the semantic tokens in `src/styles/tokens.css` — which is what makes
+ * the reduced-transparency/contrast media queries restyle the chrome.
+ *
+ * No raw values here: every alias points at a semantic token.
+ */
+@theme inline {
+  /* Surface & content colors */
+  --color-background: var(--color-bg);
+  --color-foreground: var(--color-text);
+  --color-elevated: var(--color-bg-elevated);
+  --color-panel: var(--color-panel);
+  /* Aliased as `surface-header`, not `panel-header`: `text-<name>` is shared by the typography and
+     color namespaces, and `text-panel-header` must resolve to the panel-header *type* scale. */
+  --color-surface-header: var(--color-panel-header);
+  --color-panel-border: var(--color-panel-border);
+  --color-border: var(--color-panel-border);
+  --color-chrome: var(--color-chrome);
+  --color-chrome-border: var(--color-chrome-border);
+  --color-text: var(--color-text);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
+  --color-accent: var(--color-accent);
+  --color-accent-cyan: var(--color-accent-cyan);
+  --color-success: var(--color-success);
+  --color-danger: var(--color-danger);
+  --color-warning: var(--color-warning);
+  --color-focus: var(--color-focus);
+
+  /* Typography */
+  --font-ui: var(--font-ui);
+  --font-display: var(--font-display);
+  --text-title: var(--text-title);
+  --text-title--line-height: var(--text-title-line-height);
+  --text-title--letter-spacing: var(--text-title-tracking);
+  --text-title--font-weight: var(--text-title-weight);
+  --text-subtitle: var(--text-subtitle);
+  --text-subtitle--line-height: var(--text-subtitle-line-height);
+  --text-subtitle--letter-spacing: var(--text-subtitle-tracking);
+  --text-subtitle--font-weight: var(--text-subtitle-weight);
+  --text-panel-header: var(--text-panel-header);
+  --text-panel-header--line-height: var(--text-panel-header-line-height);
+  --text-panel-header--letter-spacing: var(--text-panel-header-tracking);
+  --text-panel-header--font-weight: var(--text-panel-header-weight);
+  --text-body: var(--text-body);
+  --text-body--line-height: var(--text-body-line-height);
+  --text-body--letter-spacing: var(--text-body-tracking);
+  --text-body--font-weight: var(--text-body-weight);
+  --text-label: var(--text-label);
+  --text-label--line-height: var(--text-label-line-height);
+  --text-label--letter-spacing: var(--text-label-tracking);
+  --text-label--font-weight: var(--text-label-weight);
+  --text-caption: var(--text-caption);
+  --text-caption--line-height: var(--text-caption-line-height);
+  --text-caption--letter-spacing: var(--text-caption-tracking);
+  --text-caption--font-weight: var(--text-caption-weight);
+  --text-readout: var(--text-readout);
+  --text-readout--line-height: var(--text-readout-line-height);
+  --text-readout--letter-spacing: var(--text-readout-tracking);
+  --text-readout--font-weight: var(--text-readout-weight);
+
+  /* Radius (Tailwind's `sm`/`md`/`lg` scale is re-pointed at the token values) */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-pill: var(--radius-pill);
+
+  /* Spacing helpers that are not on Tailwind's numeric scale */
+  --spacing-rail: var(--rail-pad);
+  --spacing-panel: var(--panel-pad);
+  --spacing-stack: var(--panel-gap);
+
+  /* Elevation */
+  --shadow-1: var(--shadow-1);
+  --shadow-2: var(--shadow-2);
+  --shadow-pop: var(--shadow-pop);
+}
+
+/* Breakpoints stay literal: media queries cannot reference custom properties. */
+@theme {
+  --breakpoint-default: 1024px;
+  --breakpoint-wide: 1440px;
+}
+
+@layer base {
+  /* The app ships one warm light palette; native controls and scrollbars must match it. */
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-ui);
+  }
+}
+
+/* ── Material utilities ─────────────────────────────────────────────────── */
+
+/* Opaque structural chrome (side rails). */
+@utility rail {
+  background-color: var(--material-rail-bg);
+  box-shadow: var(--material-rail-edge);
+}
+
+/* Translucent floating chrome (map controls, animation bar, popups).
+   Reduced transparency sets `--material-glass-blur` to `none`. */
+@utility glass {
+  background-color: var(--material-glass-bg);
+  backdrop-filter: var(--material-glass-blur);
+}
