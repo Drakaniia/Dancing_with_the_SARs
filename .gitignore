@@ -7,6 +7,8 @@ src-tauri/target
 # pinned upstream data release (scripts/tiles/fetch_data.py) and pipeline cache
 /data/
 __pycache__/
+# generated map tiles (~480 MB): rebuild with scripts/tiles/pipeline.py, see docs/SETUP.md
+/public/tiles/
 
 .codegraph/
 
