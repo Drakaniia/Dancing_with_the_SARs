@@ -1,17 +1,17 @@
 # Tile pipeline (build time only)
 
-Turns the upstream GeoTIFF release into committed PNG tiles plus
-`public/data/manifest.json`. See `docs/real-data-integration-spec.md` §5.
+Turns the upstream GeoTIFF release into PNG tiles (`public/tiles/`, gitignored, regenerate
+locally) plus the committed `public/data/manifest.json`. See `docs/real-data-integration-spec.md` §5.
 
-Nothing here runs at app build or runtime: the output is committed, so `cargo build` and
-CI never need GDAL, rasterio or Python.
+Nothing here runs at app build or runtime, so `cargo build` and CI never need GDAL, rasterio
+or Python. Full regeneration steps: `docs/SETUP.md`.
 
 ## Requirements
 
 Python 3.11+ with `rasterio`, `numpy`, `shapely`, `pyproj`. Build machine only:
 
 ```bash
-python -m pip install rasterio numpy shapely pyproj
+python -m pip install rasterio numpy shapely pyproj pillow
 ```
 
 ## Data
