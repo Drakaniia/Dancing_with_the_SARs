@@ -4,5 +4,9 @@ src-tauri/target
 *.pdf
 *.log
 
+# pinned upstream data release (scripts/tiles/fetch_data.py) and pipeline cache
+/data/
+__pycache__/
+
 .codegraph/
 
