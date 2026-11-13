@@ -1,29 +1,33 @@
+import { useEffect } from "react";
 import { MapCanvas } from "@/features/map/MapCanvas";
+import { ProvenanceModal } from "@/features/provenance/ProvenanceModal";
 import { LeftRail } from "@/features/shell/LeftRail";
 import { RailSheet } from "@/features/shell/RailSheet";
 import { RightRail } from "@/features/shell/RightRail";
 import { useRailMode } from "@/features/shell/useRailMode";
 import { TopBar } from "@/features/topbar/TopBar";
+import { useDatasetStore } from "@/stores/datasetStore";
 import { type RailMode, useUiStore } from "@/stores/uiStore";
 import { ThemeProvider } from "./providers/ThemeProvider";
 
-/** Column tracks per breakpoint — the map is the only flexible track. */
 const COLUMNS: Record<RailMode, string> = {
   wide: "var(--rail-left-w-wide) 1fr var(--rail-right-w)",
   default: "var(--rail-left-w-default) 1fr",
   compact: "1fr",
 };
 
-/**
- * Shell composition. Region order is locked to the reference: top bar, then left rail · map · right
- * rail. On `default` the right rail becomes an overlay sheet; on `compact` both rails do and push
- * nothing.
- */
 export function AppShell() {
   useRailMode();
   const railMode = useUiStore((state) => state.railMode);
   const openRails = useUiStore((state) => state.openRails);
   const toggleRail = useUiStore((state) => state.toggleRail);
+  const loadManifestAndTables = useDatasetStore(
+    (state) => state.loadManifestAndTables,
+  );
+
+  useEffect(() => {
+    void loadManifestAndTables();
+  }, [loadManifestAndTables]);
 
   const leftIsSheet = railMode === "compact";
   const rightIsSheet = railMode !== "wide";
@@ -62,6 +66,8 @@ export function AppShell() {
       >
         <RightRail />
       </RailSheet>
+
+      <ProvenanceModal />
     </div>
   );
 }

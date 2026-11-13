@@ -1,21 +1,16 @@
 import { motion, useReducedMotion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Slider } from "@/shared/ui/Slider";
+import { isForecastPeriod } from "@/shared/utils/dates";
 import { useDatasetStore, useTimelineDates } from "@/stores/datasetStore";
 import { DUR_MED, EASE_OUT, REDUCED_MOTION } from "@/styles/tokens";
 import { PlaybackButton } from "./PlaybackButton";
 import { usePlayback } from "./usePlayback";
 
-/** How long the pointer must be still before the bar recedes. */
 const IDLE_MS = 3000;
-/** Opacity the bar settles at while idle — present, but out of the way. */
-const IDLE_OPACITY = 0.4;
+const IDLE_OPACITY = 0.55;
+const MAX_VISIBLE_TICKS = 9;
 
-/**
- * Bottom-center glass bar: play/pause, the momentum scrub slider and the date tick row. Dragging
- * the slider pauses playback and releasing resumes it only if it was playing before the grab, so
- * a scrub is never destructive.
- */
 export function AnimationBar() {
   const dates = useTimelineDates();
   const currentDate = useDatasetStore((state) => state.currentDate);
@@ -26,7 +21,6 @@ export function AnimationBar() {
   const wasPlayingRef = useRef(false);
   const idleTimerRef = useRef<number | null>(null);
 
-  // Any pointer movement wakes the bar; it recedes again after a still period.
   useEffect(() => {
     const wake = () => {
       setIdle(false);
@@ -47,6 +41,18 @@ export function AnimationBar() {
 
   const lastIndex = Math.max(dates.length - 1, 0);
   const index = Math.max(dates.indexOf(currentDate ?? ""), 0);
+
+  const visibleTicks = useMemo(() => {
+    if (dates.length <= MAX_VISIBLE_TICKS) return dates;
+    const out: string[] = [];
+    for (let i = 0; i < MAX_VISIBLE_TICKS; i++) {
+      const idx = Math.round(
+        (i * (dates.length - 1)) / (MAX_VISIBLE_TICKS - 1),
+      );
+      out.push(dates[idx]);
+    }
+    return Array.from(new Set(out));
+  }, [dates]);
 
   const stepTo = (next: number) => {
     const date = dates[Math.min(Math.max(next, 0), lastIndex)];
@@ -82,19 +88,27 @@ export function AnimationBar() {
             ariaValueText={currentDate ?? undefined}
           />
 
-          <div className="flex justify-between pt-1 text-caption tabular-nums">
-            {dates.map((date) => (
-              <span
-                key={date}
-                className={`transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] ${
-                  date === currentDate
-                    ? "text-[var(--color-accent)]"
-                    : "text-[var(--color-text-secondary)]"
-                }`}
-              >
-                {date}
-              </span>
-            ))}
+          <div className="flex justify-between pt-1 font-display text-[11px] tabular-nums">
+            {visibleTicks.map((date) => {
+              const active = date === currentDate;
+              const forecast = isForecastPeriod(date);
+              return (
+                <button
+                  key={date}
+                  type="button"
+                  onClick={() => setCurrentDate(date)}
+                  className={`truncate px-0.5 transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] ${
+                    active
+                      ? "font-semibold text-[var(--color-accent)]"
+                      : forecast
+                        ? "border-b border-dashed border-[var(--color-warning)] text-[var(--color-text-secondary)]"
+                        : "text-[var(--color-text-secondary)] hover:text-[var(--color-text)]"
+                  }`}
+                >
+                  {date.split(" (vs ")[0]}
+                </button>
+              );
+            })}
           </div>
         </div>
       </motion.div>

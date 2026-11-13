@@ -4,7 +4,6 @@ import type { SelectionPayload } from "@/shared/types/selection";
 import { useSelectionStore } from "@/stores/selectionStore";
 import { REDUCED_MOTION } from "@/styles/tokens";
 
-/** `14.5995° N, 120.9842° E` — four decimals, hemisphere suffix. */
 export function formatCoords({
   lat,
   lng,
@@ -29,16 +28,18 @@ const TONE_CLASS: Record<NonNullable<MetricRowProps["tone"]>, string> = {
 function MetricRow({ label, value, tone = "default" }: MetricRowProps) {
   return (
     <div className="flex items-baseline justify-between gap-3">
-      <dt className="text-label text-[var(--color-text-secondary)]">{label}</dt>
-      <dd className={`text-label tabular-nums ${TONE_CLASS[tone]}`}>{value}</dd>
+      <dt className="truncate text-label text-[var(--color-text-secondary)]">
+        {label}
+      </dt>
+      <dd
+        className={`shrink-0 font-display text-label tabular-nums ${TONE_CLASS[tone]}`}
+      >
+        {value}
+      </dd>
     </div>
   );
 }
 
-/**
- * Location Info: the selected point's coordinates and place, then the metric rows. Before any
- * selection it shows a muted hint; rows cross-fade when the selection changes.
- */
 export function LocationInfoPanel() {
   const selected = useSelectionStore((state) => state.selected);
   const reducedMotion = useReducedMotion();
@@ -69,8 +70,12 @@ export function LocationInfoPanel() {
           <dl className="flex flex-col gap-1.5">
             {selected.rate !== undefined ? (
               <MetricRow
-                label="Land Subsidence Rate"
-                value={`${selected.rate} cm/year`}
+                label="Primary Reading"
+                value={
+                  selected.samples && selected.samples.length > 0
+                    ? `${selected.rate} ${selected.samples[0].units}`
+                    : `${selected.rate} cm/year`
+                }
                 tone="danger"
               />
             ) : null}
@@ -81,6 +86,48 @@ export function LocationInfoPanel() {
             />
             <MetricRow label="Data Source" value={LOCATION_INFO.dataSource} />
           </dl>
+
+          {selected.samples && selected.samples.length > 0 ? (
+            <div className="flex flex-col gap-1.5 border-t border-[var(--color-panel-border)] pt-2">
+              <div className="flex items-center justify-between text-caption text-[var(--color-text-muted)]">
+                <span>Sampled Raster Values</span>
+                <span>
+                  {selected.samplingMode === "desktop-tiff"
+                    ? "GeoTIFF Direct"
+                    : "AOI Domain Readout"}
+                </span>
+              </div>
+              <ul className="flex flex-col gap-1">
+                {selected.samples.map((sample) => (
+                  <li
+                    key={`${sample.layerId}-${sample.period}`}
+                    className="flex flex-col gap-0.5 rounded-[var(--radius-sm)] bg-[var(--color-fill-1)] px-2 py-1"
+                  >
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="truncate text-caption font-medium text-[var(--color-text)]">
+                        {sample.name}
+                      </span>
+                      <span className="shrink-0 font-display text-caption font-semibold text-[var(--color-accent)] tabular-nums">
+                        {sample.className
+                          ? sample.className
+                          : sample.value !== null
+                            ? `${sample.value} ${sample.units}`
+                            : "nodata"}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] text-[var(--color-text-muted)]">
+                      <span>Period: {sample.period}</span>
+                      {sample.caveats[0] ? (
+                        <span className="max-w-[11rem] truncate">
+                          {sample.caveats[0]}
+                        </span>
+                      ) : null}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </motion.div>
       ) : (
         <motion.p

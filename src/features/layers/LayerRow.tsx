@@ -1,28 +1,41 @@
 import type { ReactNode } from "react";
 import type { ChangeType } from "@/shared/types/dataset";
 import type { LayerKind } from "@/shared/types/layer";
+import type { ClassEntry, Ramp } from "@/shared/types/manifest";
 import { Checkbox } from "@/shared/ui/Checkbox";
-import { gradientFor } from "@/shared/utils/colorScales";
+import { gradientFor, gradientFromRamp } from "@/shared/utils/colorScales";
 
 export interface LayerSwatchProps {
   kind: LayerKind;
   changeType?: ChangeType;
+  ramp?: Ramp;
+  classes?: ClassEntry[];
 }
 
-/**
- * 20px layer swatch. Data layers show the layer's own colormap so the row maps to what it paints;
- * chrome layers show a mark instead — an imagery gradient for the basemap, a dashed outline for
- * boundaries, a type glyph for labels.
- */
-export function LayerSwatch({ kind, changeType }: LayerSwatchProps) {
+export function LayerSwatch({
+  kind,
+  changeType,
+  ramp,
+  classes,
+}: LayerSwatchProps) {
   const base = "h-5 w-5 shrink-0 rounded-[var(--radius-sm)] border";
+
+  if (kind === "manifest-layer") {
+    return (
+      <span
+        aria-hidden="true"
+        className={`${base} border-[var(--color-panel-border)]`}
+        style={{ background: gradientFromRamp(ramp, classes, "135deg") }}
+      />
+    );
+  }
 
   if (kind === "change-type" && changeType) {
     return (
       <span
         aria-hidden="true"
         className={`${base} border-[var(--color-panel-border)]`}
-        style={{ background: gradientFor(changeType) }}
+        style={{ background: gradientFor(changeType, "135deg") }}
       />
     );
   }
@@ -66,7 +79,6 @@ export interface LayerRowProps {
   swatch: ReactNode;
 }
 
-/** One Map Layers row: checkbox, swatch, label. The whole row is the click target. */
 export function LayerRow({ label, checked, onToggle, swatch }: LayerRowProps) {
   return (
     <Checkbox

@@ -1,6 +1,12 @@
 import {
+  Activity,
+  CloudSun,
+  Flame,
   Leaf,
   type LucideIcon,
+  Mountain,
+  Radar,
+  Trees,
   TrendingDown,
   TriangleAlert,
   Waves,
@@ -13,14 +19,25 @@ const ICONS: Record<ChangeType, LucideIcon> = {
   subsidence: TrendingDown,
   vegetation: Leaf,
   water: Waves,
+  radar: Radar,
+  landcover: Trees,
+  earthquake: Flame,
+  climate: CloudSun,
+  outlook: Activity,
+  terrain: Mountain,
 };
 
-/** Change-type accent, per the icon mapping in the spec. */
 const ICON_CLASS: Record<ChangeType, string> = {
   elevation: "text-[var(--color-warning)]",
   subsidence: "text-[var(--color-accent-cyan)]",
   vegetation: "text-[var(--color-success)]",
   water: "text-[var(--color-accent)]",
+  radar: "text-[var(--color-accent)]",
+  landcover: "text-[var(--color-success)]",
+  earthquake: "text-[var(--color-danger)]",
+  climate: "text-[var(--color-accent-cyan)]",
+  outlook: "text-[var(--color-warning)]",
+  terrain: "text-[var(--color-text-secondary)]",
 };
 
 export interface ChangeTypeRowProps {
@@ -30,17 +47,13 @@ export interface ChangeTypeRowProps {
   onToggle: (visible: boolean) => void;
 }
 
-/**
- * One Surface Change Types row: 36px tall, 18px icon in the type's colour, label, trailing switch.
- * The switch is the single affordance per type (no separate checkbox).
- */
 export function ChangeTypeRow({
   changeType,
   label,
   visible,
   onToggle,
 }: ChangeTypeRowProps) {
-  const Icon = ICONS[changeType];
+  const Icon = ICONS[changeType] ?? Radar;
 
   return (
     <div className="flex h-9 items-center gap-2 rounded-[var(--radius-sm)] px-1.5 transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:bg-[var(--color-fill-1)]">
@@ -48,7 +61,7 @@ export function ChangeTypeRow({
         aria-hidden="true"
         size={18}
         strokeWidth={1.5}
-        className={`shrink-0 ${ICON_CLASS[changeType]}`}
+        className={`shrink-0 ${ICON_CLASS[changeType] ?? "text-[var(--color-accent)]"}`}
       />
       <span
         className={`flex-1 truncate text-body ${

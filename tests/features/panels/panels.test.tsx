@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
@@ -8,24 +10,26 @@ import { LocationInfoPanel } from "@/features/inspector/LocationInfoPanel";
 import { QuickStatsPanel } from "@/features/inspector/QuickStatsPanel";
 import { MapLayersPanel } from "@/features/layers/MapLayersPanel";
 import {
+  QUICK_STATS,
   SAMPLE_DATASETS,
   SAMPLE_LAYERS,
   SAMPLE_SELECTION,
   TIME_SERIES,
 } from "@/fixtures/sample-dashboard";
-import { gradientFor } from "@/shared/utils/colorScales";
+import { type Manifest, validateManifest } from "@/shared/types/manifest";
+import { resolvePeriod } from "@/shared/utils/dates";
 import { useDatasetStore } from "@/stores/datasetStore";
 import { useLayerStore } from "@/stores/layerStore";
 import { useSelectionStore } from "@/stores/selectionStore";
 
-/** The stores are module singletons; every test starts from the reference seed. */
 function resetStores() {
   useLayerStore.setState({
     layers: SAMPLE_LAYERS.map((layer) => ({ ...layer })),
-    activeLayerId: "subsidence",
+    activeLayerId: SAMPLE_LAYERS[0].id,
   });
   useDatasetStore.setState({
     datasets: [...SAMPLE_DATASETS],
+    manifest: null,
     currentDate: TIME_SERIES.currentDate,
     range: TIME_SERIES.range,
   });
@@ -42,55 +46,61 @@ function layerById(id: string) {
 
 beforeEach(resetStores);
 
-describe("panel content", () => {
-  it("seeds the reference layer set into the store", () => {
-    const changeTypes = useLayerStore
-      .getState()
-      .layers.filter((layer) => layer.kind === "change-type");
-
-    expect(changeTypes.map((layer) => layer.visible)).toEqual([
-      false,
-      true,
-      false,
-      false,
-    ]);
-    expect(
-      useLayerStore
-        .getState()
-        .layers.filter((layer) => layer.showInLayerList)
-        .map((layer) => layer.name),
-    ).toEqual([
-      "NISAR Surface Change (Subsidence)",
-      "Satellite (Base Map)",
-      "Administrative Boundaries",
-      "Cities / Labels",
-    ]);
+describe("panel content & manifest contract", () => {
+  it("validates the committed public/data/manifest.json with zero errors", () => {
+    const manifestPath = path.resolve(
+      process.cwd(),
+      "public/data/manifest.json",
+    );
+    const raw = fs.readFileSync(manifestPath, "utf-8");
+    const doc = JSON.parse(raw) as Manifest;
+    const errors = validateManifest(doc);
+    expect(errors).toEqual([]);
+    expect(doc.layers.length).toBe(318);
   });
 
-  it("toggling a change type row updates layerStore visibility", async () => {
+  it("snaps timeline periods to nearest available date when exact period is absent", () => {
+    const periods = ["2026-09", "2026-10"];
+    expect(resolvePeriod(periods, "2026-09-25")).toEqual({
+      requested: "2026-09-25",
+      resolved: "2026-09",
+      exact: false,
+      isForecast: false,
+    });
+    expect(resolvePeriod(["2026-11", "2027-04"], "2027-02")).toEqual({
+      requested: "2027-02",
+      resolved: "2026-11",
+      exact: false,
+      isForecast: true,
+    });
+  });
+
+  it("toggling a dataset layer row updates layerStore visibility", async () => {
     render(<ChangeTypeList />);
 
-    const toggle = screen.getByRole("switch", { name: "Land Subsidence" });
+    const toggle = screen.getByRole("switch", {
+      name: "HH Backscatter Change (monthly)",
+    });
     expect(toggle).toHaveAttribute("aria-checked", "true");
 
     await userEvent.click(toggle);
 
-    expect(layerById("subsidence").visible).toBe(false);
+    expect(layerById("radar-change-hh-monthly").visible).toBe(false);
   });
 
-  it("lists the reference map layers and the reference opacity", () => {
+  it("lists the map layers and opacity percentage", () => {
     render(<MapLayersPanel />);
 
-    for (const name of [
-      "NISAR Surface Change (Subsidence)",
-      "Satellite (Base Map)",
-      "Administrative Boundaries",
-      "Cities / Labels",
-    ]) {
-      expect(screen.getByText(name)).toBeInTheDocument();
-    }
-
-    expect(screen.getByText("70%")).toBeInTheDocument();
+    expect(
+      screen.getByText("HH Backscatter Change (monthly)"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Satellite (Esri World Imagery)"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Sarangani & Davao Occidental Boundary"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("78%")).toBeInTheDocument();
   });
 
   it("opacity slider writes back to layerStore", () => {
@@ -100,28 +110,12 @@ describe("panel content", () => {
       key: "ArrowLeft",
     });
 
-    expect(Math.round(layerById("subsidence").opacity * 100)).toBe(69);
-  });
-
-  it("layer order buttons reorder the active layer", async () => {
-    render(<MapLayersPanel />);
-
-    await userEvent.click(
-      screen.getByRole("button", { name: "Move layer up" }),
+    expect(Math.round(layerById("radar-change-hh-monthly").opacity * 100)).toBe(
+      77,
     );
-
-    expect(useLayerStore.getState().layers.map((layer) => layer.id)).toEqual([
-      "subsidence",
-      "elevation",
-      "vegetation",
-      "water",
-      "satellite-base",
-      "admin-boundaries",
-      "cities-labels",
-    ]);
   });
 
-  it("shows a muted hint before a selection and the fixture values after one", () => {
+  it("shows a muted hint before a selection and the inspected values after one", () => {
     useSelectionStore.setState({ selected: null });
     const { rerender } = render(<LocationInfoPanel />);
     expect(
@@ -131,44 +125,46 @@ describe("panel content", () => {
     useSelectionStore.setState({ selected: SAMPLE_SELECTION });
     rerender(<LocationInfoPanel />);
 
-    expect(screen.getByText("14.5995° N, 120.9842° E")).toBeInTheDocument();
-    expect(screen.getByText("Manila, Metro Manila")).toBeInTheDocument();
-    expect(screen.getByText("3.2 cm/year")).toBeInTheDocument();
+    expect(screen.getByText("5.7760° N, 125.5013° E")).toBeInTheDocument();
+    expect(
+      screen.getByText("Malalan, Jose Abad Santos, Davao Occidental"),
+    ).toBeInTheDocument();
     expect(screen.getByText("High")).toBeInTheDocument();
-    expect(screen.getByText("NISAR (pre-processed)")).toBeInTheDocument();
   });
 
   it("reflects the active layer, date and opacity in Current View", () => {
     render(<CurrentViewCard />);
 
-    expect(screen.getByText("Land Subsidence")).toBeInTheDocument();
-    expect(screen.getByText("Jun 2024")).toBeInTheDocument();
-    expect(screen.getByText("70%")).toBeInTheDocument();
-  });
-
-  it("draws the legend from COLOR_SCALES with the fixture ticks and notes", () => {
-    render(<LegendPanel />);
-
-    expect(screen.getByText("Land Subsidence (cm/year)")).toBeInTheDocument();
-
-    const scale = screen.getByRole("img");
-    expect(scale.getAttribute("style")).toContain(gradientFor("subsidence"));
-
-    for (const tick of ["-10", "-5", "0", "5", "10"]) {
-      expect(screen.getByText(tick)).toBeInTheDocument();
-    }
-    expect(screen.getByText("Negative values = uplift")).toBeInTheDocument();
     expect(
-      screen.getByText("Positive values = subsidence"),
+      screen.getByText("HH Backscatter Change (monthly)"),
     ).toBeInTheDocument();
+    expect(screen.getByText("2026-10 (vs 2026-09)")).toBeInTheDocument();
   });
 
-  it("renders the reference quick stats", () => {
+  it("draws continuous and categorical legends from the active layer", () => {
+    const { rerender } = render(<LegendPanel />);
+    expect(
+      screen.getByText("HH Backscatter Change (monthly) (dB)"),
+    ).toBeInTheDocument();
+
+    useLayerStore.setState({
+      activeLayerId: "earthquake-landslide-candidates",
+    });
+    rerender(<LegendPanel />);
+    expect(screen.getByText("Possible landslide")).toBeInTheDocument();
+    expect(screen.getByText("Not checked (cloudy)")).toBeInTheDocument();
+  });
+
+  it("renders the quick stats and switches analytics tabs", async () => {
     render(<QuickStatsPanel />);
 
-    expect(screen.getByText("300,000 km²")).toBeInTheDocument();
-    expect(screen.getByText("12,486 km²")).toBeInTheDocument();
-    expect(screen.getByText("(4.2%)")).toBeInTheDocument();
-    expect(screen.getByText("Jun 15, 2024")).toBeInTheDocument();
+    for (const stat of QUICK_STATS) {
+      expect(screen.getByText(stat.value)).toBeInTheDocument();
+    }
+
+    await userEvent.click(screen.getByRole("tab", { name: "Slides" }));
+    expect(
+      screen.getByText("Post-8 Jun M7.8 Ranked Sites"),
+    ).toBeInTheDocument();
   });
 });

@@ -1,10 +1,12 @@
-import { Compass, Layers, Minus, Plus } from "lucide-react";
+import { Compass, Focus, Layers, Minus, Plus } from "lucide-react";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 import { LayerRow, LayerSwatch } from "@/features/layers/LayerRow";
 import { IconButton } from "@/shared/ui/IconButton";
 import { Popover } from "@/shared/ui/Popover";
+import { SARANGANI_DAVOCC_BOUNDS } from "@/shared/utils/geo";
+import { useDatasetStore } from "@/stores/datasetStore";
 import { useLayerStore } from "@/stores/layerStore";
 import { REDUCED_MOTION, SPRING_UI } from "@/styles/tokens";
 
@@ -12,10 +14,6 @@ export interface MapControlsProps {
   map: MapLibreMap | null;
 }
 
-/**
- * Top-right map chrome: zoom in / zoom out / compass reset / layer switcher. Glass `36px` buttons;
- * the compass needle tracks the map bearing on the UI spring.
- */
 export function MapControls({ map }: MapControlsProps) {
   const [bearing, setBearing] = useState(0);
   const [layersOpen, setLayersOpen] = useState(false);
@@ -23,6 +21,9 @@ export function MapControls({ map }: MapControlsProps) {
 
   const layers = useLayerStore((state) => state.layers);
   const toggleVisibility = useLayerStore((state) => state.toggleVisibility);
+  const bounds = useDatasetStore(
+    (state) => state.manifest?.bounds ?? SARANGANI_DAVOCC_BOUNDS,
+  );
 
   useEffect(() => {
     if (!map) return;
@@ -39,6 +40,17 @@ export function MapControls({ map }: MapControlsProps) {
   const rows = layers
     .filter((layer) => layer.showInLayerList)
     .sort((a, b) => a.order - b.order);
+
+  const fitAoi = () => {
+    if (!map) return;
+    map.fitBounds(
+      [
+        [bounds[0], bounds[1]],
+        [bounds[2], bounds[3]],
+      ],
+      { padding: 36, duration: 750 },
+    );
+  };
 
   return (
     <div className="flex flex-col gap-2">
@@ -58,6 +70,15 @@ export function MapControls({ map }: MapControlsProps) {
         onClick={() => map?.zoomOut()}
       >
         <Minus size={18} strokeWidth={1.5} />
+      </IconButton>
+
+      <IconButton
+        label="Frame Sarangani & Davao Occidental AOI"
+        size="md"
+        disabled={!map}
+        onClick={fitAoi}
+      >
+        <Focus size={18} strokeWidth={1.5} />
       </IconButton>
 
       <IconButton
@@ -86,7 +107,7 @@ export function MapControls({ map }: MapControlsProps) {
           </IconButton>
         }
       >
-        <ul className="flex w-56 flex-col gap-0.5">
+        <ul className="flex w-64 max-h-80 overflow-y-auto flex-col gap-0.5">
           {rows.map((layer) => (
             <li key={layer.id}>
               <LayerRow
@@ -97,6 +118,8 @@ export function MapControls({ map }: MapControlsProps) {
                   <LayerSwatch
                     kind={layer.kind}
                     changeType={layer.changeType}
+                    ramp={layer.ramp}
+                    classes={layer.classes}
                   />
                 }
               />

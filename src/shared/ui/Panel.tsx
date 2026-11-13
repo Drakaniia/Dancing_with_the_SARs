@@ -57,7 +57,7 @@ export function Panel({
   return (
     <section
       aria-labelledby={titleId}
-      className={`overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-panel-border)] shadow-[var(--shadow-1)] ${variant === "glass" ? "glass" : "bg-[var(--color-panel)]"} ${className ?? ""}`}
+      className={`shrink-0 overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-panel-border)] shadow-[var(--shadow-1)] ${variant === "glass" ? "glass" : "bg-[var(--color-panel)]"} ${className ?? ""}`}
     >
       <button
         type="button"

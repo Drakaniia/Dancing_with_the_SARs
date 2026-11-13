@@ -5,64 +5,70 @@ import { type RefObject, useEffect, useState } from "react";
 import type { LayerConfig } from "@/shared/types/layer";
 import {
   PHILIPPINES_BOUNDS,
-  PHILIPPINES_CENTER,
-  PHILIPPINES_ZOOM,
+  SARANGANI_CENTER,
+  SARANGANI_DAVOCC_BOUNDS,
+  SARANGANI_ZOOM,
 } from "@/shared/utils/geo";
+import { useDatasetStore } from "@/stores/datasetStore";
 import { useLayerStore } from "@/stores/layerStore";
+import { useSelectionStore } from "@/stores/selectionStore";
+import { useUiStore } from "@/stores/uiStore";
 
 maplibregl.setWorkerUrl(workerUrl);
 
-/** MapLibre style document, served from `public/styles/basemap.json`. */
 export const BASEMAP_STYLE_URL = "/styles/basemap.json";
 
 export type MapStatus = "initializing" | "ready" | "unsupported" | "error";
 
-/**
- * Store layer id → MapLibre style layer id, for the layers the style owns. The NISAR overlay
- * layers are built by `TileOverlay` instead, because their sources are date-dependent.
- */
 export const STYLE_LAYER_BY_STORE_ID: Record<string, string> = {
   "satellite-base": "basemap",
   "admin-boundaries": "admin-boundaries",
+  "aoi-boundary": "aoi-boundary",
+  "landslide-polygons": "landslide-polygons",
   "cities-labels": "cities-labels",
 };
 
 export interface LayerBinding {
-  /** MapLibre style layer id. */
   layerId: string;
   visible: boolean;
 }
 
-/** Pure mapping from store layers to the style layers they drive. */
 export function resolveLayerBindings(layers: LayerConfig[]): LayerBinding[] {
   const bindings: LayerBinding[] = [];
   for (const layer of layers) {
     const layerId = STYLE_LAYER_BY_STORE_ID[layer.id];
-    if (layerId) bindings.push({ layerId, visible: layer.visible });
+    if (layerId) {
+      bindings.push({ layerId, visible: layer.visible });
+    }
   }
   return bindings;
 }
 
-/** Applies store-driven visibility to the style layers, skipping any the style does not define. */
 export function applyLayerBindings(
   map: Pick<maplibregl.Map, "getLayer" | "setLayoutProperty">,
   bindings: LayerBinding[],
 ): void {
   for (const binding of bindings) {
-    if (!map.getLayer(binding.layerId)) continue;
-    map.setLayoutProperty(
-      binding.layerId,
-      "visibility",
-      binding.visible ? "visible" : "none",
-    );
+    if (map.getLayer(binding.layerId)) {
+      map.setLayoutProperty(
+        binding.layerId,
+        "visibility",
+        binding.visible ? "visible" : "none",
+      );
+    }
+    if (
+      binding.layerId === "aoi-boundary" &&
+      map.getLayer("aoi-boundary-casing")
+    ) {
+      map.setLayoutProperty(
+        "aoi-boundary-casing",
+        "visibility",
+        binding.visible ? "visible" : "none",
+      );
+    }
   }
 }
 
-/**
- * Whether the environment can host a WebGL map. Checked before constructing MapLibre so a
- * headless/test environment (or a device without WebGL) falls back to a message instead of
- * throwing from deep inside the renderer.
- */
 export function webglSupported(): boolean {
   return (
     typeof WebGL2RenderingContext !== "undefined" ||
@@ -71,32 +77,33 @@ export function webglSupported(): boolean {
 }
 
 export function createMap(container: HTMLElement): maplibregl.Map {
+  const origin =
+    typeof window !== "undefined" && window.location.origin.startsWith("http")
+      ? window.location.origin
+      : "";
   return new maplibregl.Map({
     container,
-    style: BASEMAP_STYLE_URL,
-    center: PHILIPPINES_CENTER,
-    zoom: PHILIPPINES_ZOOM,
+    style: `${origin}${BASEMAP_STYLE_URL}`,
+    center: SARANGANI_CENTER,
+    zoom: SARANGANI_ZOOM,
     maxBounds: PHILIPPINES_BOUNDS,
     attributionControl: false,
+    canvasContextAttributes: { preserveDrawingBuffer: true },
   });
 }
 
 export interface UseMapLibreResult {
-  /** The live map, or `null` before the style has loaded / when WebGL is unavailable. */
   map: maplibregl.Map | null;
   status: MapStatus;
 }
 
-/**
- * Owns the MapLibre lifecycle: creates the map on mount, destroys it on unmount, and keeps the
- * style's chrome layers (basemap, boundaries, labels) in sync with `layerStore`.
- */
 export function useMapLibre(
   containerRef: RefObject<HTMLElement | null>,
 ): UseMapLibreResult {
   const [map, setMap] = useState<maplibregl.Map | null>(null);
   const [status, setStatus] = useState<MapStatus>("initializing");
   const layers = useLayerStore((state) => state.layers);
+  const flyToTarget = useUiStore((state) => state.flyToTarget);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -116,24 +123,63 @@ export function useMapLibre(
       return;
     }
 
-    const handleLoad = () => setStatus("ready");
+    const handleLoad = () => {
+      setStatus("ready");
+      const bounds =
+        useDatasetStore.getState().manifest?.bounds ?? SARANGANI_DAVOCC_BOUNDS;
+      try {
+        instance.fitBounds(
+          [
+            [bounds[0], bounds[1]],
+            [bounds[2], bounds[3]],
+          ],
+          { padding: 36, duration: 0 },
+        );
+      } catch {
+        // ignore in headless mock
+      }
+    };
+
+    const handleClick = (event: maplibregl.MapMouseEvent) => {
+      const { lng, lat } = event.lngLat;
+      const activeTool = useUiStore.getState().activeTool;
+      if (activeTool === "measure") {
+        useUiStore.getState().addMeasurePoint([lng, lat]);
+      }
+      void useSelectionStore.getState().inspectCoordinate(lng, lat);
+    };
+
     instance.on("load", handleLoad);
-    if (instance.loaded()) setStatus("ready");
+    instance.on("click", handleClick);
+    if (instance.loaded()) handleLoad();
     setMap(instance);
 
     return () => {
       instance.off("load", handleLoad);
+      instance.off("click", handleClick);
       instance.remove();
       setMap(null);
       setStatus("initializing");
     };
   }, [containerRef]);
 
-  // Style layers only exist once the style has loaded, so the first application waits for `ready`.
   useEffect(() => {
     if (!map || status !== "ready") return;
     applyLayerBindings(map, resolveLayerBindings(layers));
   }, [map, status, layers]);
+
+  useEffect(() => {
+    if (!map || status !== "ready" || !flyToTarget) return;
+    try {
+      map.flyTo({
+        center: [flyToTarget.lng, flyToTarget.lat],
+        zoom: flyToTarget.zoom ?? 11.5,
+        duration: 900,
+      });
+    } catch {
+      // ignore in headless test
+    }
+  }, [map, status, flyToTarget]);
 
   return { map, status };
 }

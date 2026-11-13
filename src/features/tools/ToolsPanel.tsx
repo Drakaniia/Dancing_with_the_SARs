@@ -5,9 +5,12 @@ import {
   Pencil,
   Ruler,
 } from "lucide-react";
-import { useState } from "react";
 import { LOCATION_INFO, TOOLS, type ToolId } from "@/fixtures/sample-dashboard";
 import { useBookmarkStore } from "@/stores/bookmarkStore";
+import { useDatasetStore } from "@/stores/datasetStore";
+import { useActiveLayer } from "@/stores/layerStore";
+import { useSelectionStore } from "@/stores/selectionStore";
+import { useUiStore } from "@/stores/uiStore";
 import { ToolButton } from "./ToolButton";
 
 const ICONS: Record<ToolId, LucideIcon> = {
@@ -17,31 +20,48 @@ const ICONS: Record<ToolId, LucideIcon> = {
   export: Download,
 };
 
-/**
- * Tools: a four-up grid of Measure / Draw / Bookmark / Export.
- *
- * Bookmark writes to `bookmarkStore`; Measure and Draw toggle the active interaction mode (the map
- * modes they switch on arrive with the map phase); Export is a no-op until the export command
- * exists.
- */
 export function ToolsPanel() {
-  const [active, setActive] = useState<ToolId | null>(null);
+  const activeTool = useUiStore((state) => state.activeTool);
+  const setActiveTool = useUiStore((state) => state.setActiveTool);
   const addBookmark = useBookmarkStore((state) => state.addBookmark);
+  const selected = useSelectionStore((state) => state.selected);
+  const activeLayer = useActiveLayer();
+  const currentDate = useDatasetStore((state) => state.currentDate);
 
   const run = (id: ToolId) => {
-    if (id === "export") return;
+    if (id === "export") {
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        layer: activeLayer?.id,
+        period: currentDate,
+        selection: selected,
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `nisar-export-${currentDate ?? "snapshot"}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      return;
+    }
 
     if (id === "bookmark") {
+      const lng = selected?.lng ?? LOCATION_INFO.lng;
+      const lat = selected?.lat ?? LOCATION_INFO.lat;
+      const name = selected?.placeName ?? LOCATION_INFO.place;
       addBookmark({
         id: `bookmark-${Date.now()}`,
-        name: LOCATION_INFO.place,
-        center: [LOCATION_INFO.lng, LOCATION_INFO.lat],
-        zoom: 8,
+        name,
+        center: [lng, lat],
+        zoom: 11,
       });
       return;
     }
 
-    setActive((current) => (current === id ? null : id));
+    setActiveTool(activeTool === id ? null : id);
   };
 
   return (
@@ -51,7 +71,7 @@ export function ToolsPanel() {
           key={tool.id}
           icon={ICONS[tool.id]}
           label={tool.label}
-          active={active === tool.id}
+          active={activeTool === tool.id}
           onClick={() => run(tool.id)}
         />
       ))}
