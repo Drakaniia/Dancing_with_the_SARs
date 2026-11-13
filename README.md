@@ -12,6 +12,22 @@
   </div>
 </div>
 
+## Sample Screenshots
+
+Representative desktop views of the running app, captured at 1600 × 1000. Click any image to view it at full size. To regenerate them, or the data and tiles behind them, see [docs/SETUP.md](docs/SETUP.md).
+
+| Sand Atlas · Light Dashboard | Night Atlas · Dark Dashboard |
+| --- | --- |
+| [![Light dashboard showing the Sarangani and Davao Occidental radar overlay, layer controls, timeline, and inspector](docs/screenshots/dashboard-light.png)](docs/screenshots/dashboard-light.png) | [![Dark dashboard showing the same radar overlay with the Night Atlas interface](docs/screenshots/dashboard-dark.png)](docs/screenshots/dashboard-dark.png) |
+| Explore surface-change layers, adjust opacity, and navigate the timeline. | View the same map workspace in the dark theme. |
+
+| Location Inspection | Dataset Provenance |
+| --- | --- |
+| [![Selected map location with coordinates and sampled layer readings in the inspector](docs/screenshots/location-inspection.png)](docs/screenshots/location-inspection.png) | [![Dataset provenance dialog with release details, layer families, and scientific caveats](docs/screenshots/data-provenance.png)](docs/screenshots/data-provenance.png) |
+| Click the map to inspect coordinates and layer readings. | Review the pinned data release, catalogue coverage, and interpretation limits. |
+
+To refresh these images, start `pnpm dev --host 127.0.0.1 --port 5173`, then run `python scripts/capture_screenshots.py` in another terminal. The capture script requires Python Playwright and Microsoft Edge; it does not add frontend dependencies.
+
 ## Getting Started
 
 ```bash

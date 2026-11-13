@@ -1,21 +1,15 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useEffect, useState } from "react";
+import { SCALE_BAR } from "@/fixtures/sample-dashboard";
 import { metersPerPixel } from "@/shared/utils/geo";
 
-/** Bar geometry: four 100 km segments, labelled `0 100 200 300 400 km` per the reference. */
-const LABELS = ["0", "100", "200", "300", "400 km"];
-const SEGMENT_METERS = 100_000;
-/** Below this zoom the bar would outgrow the map, so it is hidden rather than clipped. */
+const SEGMENT_METERS = 10_000;
 const MIN_ZOOM = 3;
 
 export interface ScaleBarProps {
   map: MapLibreMap | null;
 }
 
-/**
- * Bottom-left scale bar: alternating light/dark segments whose width tracks the map's ground
- * resolution. Decorative (`aria-hidden`) — it mirrors map state the user already perceives.
- */
 export function ScaleBar({ map }: ScaleBarProps) {
   const [resolution, setResolution] = useState<number | null>(null);
   const [zoom, setZoom] = useState(0);
@@ -37,13 +31,14 @@ export function ScaleBar({ map }: ScaleBarProps) {
 
   if (resolution === null || zoom < MIN_ZOOM) return null;
 
-  const segmentWidth = SEGMENT_METERS / resolution;
-  const totalWidth = segmentWidth * (LABELS.length - 1);
+  const rawSegmentWidth = SEGMENT_METERS / resolution;
+  const segmentWidth = Math.min(Math.max(rawSegmentWidth, 24), 56);
+  const totalWidth = segmentWidth * (SCALE_BAR.length - 1);
 
   return (
     <div aria-hidden="true" className="flex flex-col gap-1">
       <div className="flex h-1.5">
-        {LABELS.slice(0, -1).map((label, index) => (
+        {SCALE_BAR.slice(0, -1).map((label, index) => (
           <span
             key={label}
             className={`h-full border border-[var(--color-chrome-border)] ${
@@ -59,7 +54,7 @@ export function ScaleBar({ map }: ScaleBarProps) {
         className="flex justify-between text-caption text-[var(--color-text)] tabular-nums"
         style={{ width: `${totalWidth}px` }}
       >
-        {LABELS.map((label) => (
+        {SCALE_BAR.map((label) => (
           <span key={label}>{label}</span>
         ))}
       </div>

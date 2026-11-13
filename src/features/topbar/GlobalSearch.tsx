@@ -6,33 +6,36 @@ import {
   useRef,
   useState,
 } from "react";
-import { PHILIPPINES_LOCATIONS } from "@/features/search/locations";
+import {
+  type LocationEntry,
+  PHILIPPINES_LOCATIONS,
+} from "@/features/search/locations";
 import { SEARCH_PLACEHOLDER } from "@/fixtures/sample-dashboard";
 import { IconButton } from "@/shared/ui/IconButton";
 import { Popover } from "@/shared/ui/Popover";
+import { useSelectionStore } from "@/stores/selectionStore";
+import { useUiStore } from "@/stores/uiStore";
 
 export interface SearchSelection {
   name: string;
   center: [number, number];
+  zoom?: number;
 }
 
 export interface GlobalSearchProps {
-  /** Compact rail modes collapse the field to an icon that opens a search sheet. */
   compact?: boolean;
-  /** Phase 4 wires this to the map fly-to. */
   onSelect?: (selection: SearchSelection) => void;
 }
 
-/**
- * Global location search. Results are filtered from the curated Philippines list and rendered in a
- * glass popover anchored under the field. In compact mode the field collapses to an icon.
- */
 export function GlobalSearch({ compact = false, onSelect }: GlobalSearchProps) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const requestFlyTo = useUiStore((state) => state.requestFlyTo);
+  const inspectCoordinate = useSelectionStore(
+    (state) => state.inspectCoordinate,
+  );
 
-  // The compact field only mounts inside the popover, so focus it on open rather than via autoFocus.
   useEffect(() => {
     if (compact && open) inputRef.current?.focus();
   }, [compact, open]);
@@ -40,15 +43,34 @@ export function GlobalSearch({ compact = false, onSelect }: GlobalSearchProps) {
   const results = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     if (!normalized) return PHILIPPINES_LOCATIONS;
-    return PHILIPPINES_LOCATIONS.filter((location) =>
-      location.name.toLowerCase().includes(normalized),
+    return PHILIPPINES_LOCATIONS.filter(
+      (location) =>
+        location.name.toLowerCase().includes(normalized) ||
+        (location.province ?? "").toLowerCase().includes(normalized),
     );
   }, [query]);
 
-  const choose = (selection: SearchSelection) => {
-    setQuery(selection.name);
+  const choose = (location: LocationEntry) => {
+    setQuery(location.name);
     setOpen(false);
-    onSelect?.(selection);
+    requestFlyTo(
+      location.center[0],
+      location.center[1],
+      location.zoom ?? 11.5,
+      location.name,
+    );
+    void inspectCoordinate(
+      location.center[0],
+      location.center[1],
+      location.province
+        ? `${location.name}, ${location.province}`
+        : location.name,
+    );
+    onSelect?.({
+      name: location.name,
+      center: location.center,
+      zoom: location.zoom,
+    });
   };
 
   const field = (
@@ -65,10 +87,14 @@ export function GlobalSearch({ compact = false, onSelect }: GlobalSearchProps) {
         aria-label="Search locations"
         placeholder={SEARCH_PLACEHOLDER}
         value={query}
-        onChange={(event) => setQuery(event.target.value)}
+        onFocus={() => setOpen(true)}
+        onChange={(event) => {
+          setQuery(event.target.value);
+          setOpen(true);
+        }}
         onKeyDown={(event: KeyboardEvent<HTMLInputElement>) => {
           if (event.key === "Enter" && results[0]) {
-            choose({ name: results[0].name, center: results[0].center });
+            choose(results[0]);
           }
         }}
         className="h-9 w-full rounded-[var(--radius-md)] border border-[var(--color-chrome-border)] bg-[var(--color-fill-2)] pr-3 pl-8 text-body text-[var(--color-text)] placeholder:text-[var(--color-text-muted)] focus-visible:border-[var(--color-focus)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-panel)] focus-visible:outline-none"
@@ -84,7 +110,7 @@ export function GlobalSearch({ compact = false, onSelect }: GlobalSearchProps) {
     >
       {results.length === 0 ? (
         <p className="px-2 py-1.5 text-caption text-[var(--color-text-muted)]">
-          No locations found
+          No locations found in Mindanao or Philippines
         </p>
       ) : (
         results.map((location) => (
@@ -93,12 +119,15 @@ export function GlobalSearch({ compact = false, onSelect }: GlobalSearchProps) {
             type="button"
             role="option"
             aria-selected={false}
-            onClick={() =>
-              choose({ name: location.name, center: location.center })
-            }
-            className="block w-full rounded-[var(--radius-sm)] px-2 py-1.5 text-left text-body text-[var(--color-text)] transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:bg-[var(--color-fill-2)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:outline-none"
+            onClick={() => choose(location)}
+            className="flex w-full items-baseline justify-between gap-2 rounded-[var(--radius-sm)] px-2 py-1.5 text-left text-body text-[var(--color-text)] transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:bg-[var(--color-fill-2)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:outline-none"
           >
-            {location.name}
+            <span className="truncate font-medium">{location.name}</span>
+            {location.province ? (
+              <span className="shrink-0 text-caption text-[var(--color-text-secondary)]">
+                {location.province}
+              </span>
+            ) : null}
           </button>
         ))
       )}
@@ -110,7 +139,7 @@ export function GlobalSearch({ compact = false, onSelect }: GlobalSearchProps) {
       <Popover
         open={open}
         onOpenChange={setOpen}
-        label="Search Philippines"
+        label="Search locations"
         align="end"
         trigger={
           <IconButton label="Search locations">
@@ -130,8 +159,8 @@ export function GlobalSearch({ compact = false, onSelect }: GlobalSearchProps) {
     <Popover
       open={open}
       onOpenChange={setOpen}
-      label="Search Philippines"
-      trigger={<div className="w-[clamp(20rem,32vw,30rem)]">{field}</div>}
+      label="Search locations"
+      trigger={<div className="w-[clamp(18rem,28vw,28rem)]">{field}</div>}
     >
       {resultsList}
     </Popover>

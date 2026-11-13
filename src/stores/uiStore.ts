@@ -1,5 +1,6 @@
 import { isTauri } from "@tauri-apps/api/core";
 import { create } from "zustand";
+import type { ToolId } from "@/fixtures/sample-dashboard";
 
 export type PanelId =
   | "change-types"
@@ -14,6 +15,7 @@ export type PanelId =
 
 export type RailMode = "wide" | "default" | "compact";
 export type RailSide = "left" | "right";
+export type AnalyticsTab = "inspector" | "landslides" | "climate" | "outlook";
 
 export const PANEL_IDS: readonly PanelId[] = [
   "change-types",
@@ -27,7 +29,6 @@ export const PANEL_IDS: readonly PanelId[] = [
   "quick-stats",
 ];
 
-/** Every panel starts expanded, matching the reference dashboard. */
 export const DEFAULT_PANELS: Record<PanelId, boolean> = {
   "change-types": true,
   "time-series": true,
@@ -40,24 +41,46 @@ export const DEFAULT_PANELS: Record<PanelId, boolean> = {
   "quick-stats": true,
 };
 
+export interface FlyToTarget {
+  lng: number;
+  lat: number;
+  zoom?: number;
+  label?: string;
+  timestamp: number;
+}
+
 export interface UiState {
   railMode: RailMode;
   openRails: Record<RailSide, boolean>;
   panels: Record<PanelId, boolean>;
+  provenanceOpen: boolean;
+  activeTool: ToolId | null;
+  analyticsTab: AnalyticsTab;
+  flyToTarget: FlyToTarget | null;
+  measurePoints: [number, number][];
   setPanelOpen: (id: PanelId, open: boolean) => void;
   togglePanel: (id: PanelId) => void;
   setRailMode: (mode: RailMode) => void;
   toggleRail: (side: RailSide) => void;
+  setProvenanceOpen: (open: boolean) => void;
+  setActiveTool: (tool: ToolId | null) => void;
+  setAnalyticsTab: (tab: AnalyticsTab) => void;
+  requestFlyTo: (
+    lng: number,
+    lat: number,
+    zoom?: number,
+    label?: string,
+  ) => void;
+  addMeasurePoint: (pt: [number, number]) => void;
+  clearMeasurePoints: () => void;
 }
 
 const SETTINGS_STORE = "settings.json";
 const PANELS_KEY = "ui.panels";
 
-/** Mirrors `--breakpoint-default` / `--breakpoint-wide` in src/styles/tokens.css. */
 const BREAKPOINT_DEFAULT = 1024;
 const BREAKPOINT_WIDE = 1440;
 
-/** Tauri is absent in the web build; persistence is skipped there and state stays in memory. */
 function canPersist(): boolean {
   return typeof window !== "undefined" && isTauri();
 }
@@ -92,15 +115,19 @@ async function persistPanels(panels: Record<PanelId, boolean>): Promise<void> {
     const store = await load(SETTINGS_STORE, { autoSave: true });
     await store.set(PANELS_KEY, panels);
   } catch {
-    // Persistence is best-effort; the in-memory state is still correct.
+    // Best-effort persistence.
   }
 }
 
 export const useUiStore = create<UiState>((set) => ({
   railMode: "wide",
-  // Overlay rails (compact/default) start closed; wide rails ignore this flag.
   openRails: { left: false, right: false },
   panels: { ...DEFAULT_PANELS },
+  provenanceOpen: false,
+  activeTool: null,
+  analyticsTab: "inspector",
+  flyToTarget: null,
+  measurePoints: [],
 
   setPanelOpen: (id, open) =>
     set((state) => {
@@ -123,6 +150,29 @@ export const useUiStore = create<UiState>((set) => ({
     set((state) => ({
       openRails: { ...state.openRails, [side]: !state.openRails[side] },
     })),
+
+  setProvenanceOpen: (provenanceOpen) => set({ provenanceOpen }),
+
+  setActiveTool: (activeTool) =>
+    set((state) => ({
+      activeTool,
+      measurePoints: activeTool === "measure" ? state.measurePoints : [],
+    })),
+
+  setAnalyticsTab: (analyticsTab) => set({ analyticsTab }),
+
+  requestFlyTo: (lng, lat, zoom = 11.5, label) =>
+    set({
+      flyToTarget: { lng, lat, zoom, label, timestamp: Date.now() },
+    }),
+
+  addMeasurePoint: (pt) =>
+    set((state) => ({
+      measurePoints:
+        state.measurePoints.length >= 2 ? [pt] : [...state.measurePoints, pt],
+    })),
+
+  clearMeasurePoints: () => set({ measurePoints: [] }),
 }));
 
 export function resolveRailMode(width: number): RailMode {
@@ -131,10 +181,6 @@ export function resolveRailMode(width: number): RailMode {
   return "compact";
 }
 
-/**
- * Loads the persisted panel collapse state. Safe to call more than once; resolves to the
- * in-memory defaults when the store is unavailable (web build, tests).
- */
 export async function hydrateUiStore(): Promise<void> {
   const persisted = await readPersistedPanels();
   if (!persisted) return;
@@ -143,6 +189,4 @@ export async function hydrateUiStore(): Promise<void> {
   }));
 }
 
-// Restore persisted panels on module load; consumers that need to await it can call
-// `hydrateUiStore()` directly.
 void hydrateUiStore();

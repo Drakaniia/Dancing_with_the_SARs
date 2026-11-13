@@ -7,10 +7,9 @@ import {
   STYLE_LAYER_BY_STORE_ID,
 } from "@/features/map/useMapLibre";
 import { SAMPLE_LAYERS } from "@/fixtures/sample-dashboard";
-import { metersPerPixel, tileTemplate } from "@/shared/utils/geo";
+import { metersPerPixel, tileSegment, tileTemplate } from "@/shared/utils/geo";
 import { useLayerStore } from "@/stores/layerStore";
 
-/** Minimal stand-in for the MapLibre map surface the binding applier touches. */
 type MapLike = Parameters<typeof applyLayerBindings>[0];
 
 function fakeMap(existing: string[]) {
@@ -25,15 +24,16 @@ function fakeMap(existing: string[]) {
 }
 
 describe("map layer bindings", () => {
-  it("maps store layer ids to style layer ids and skips overlay layers", () => {
+  it("maps store layer ids to style layer ids and skips raster overlay layers", () => {
     const bindings = resolveLayerBindings([...SAMPLE_LAYERS]);
 
     expect(bindings).toEqual([
       { layerId: "basemap", visible: true },
-      { layerId: "admin-boundaries", visible: false },
+      { layerId: "aoi-boundary", visible: true },
+      { layerId: "landslide-polygons", visible: true },
       { layerId: "cities-labels", visible: true },
     ]);
-    expect(Object.keys(STYLE_LAYER_BY_STORE_ID)).toHaveLength(3);
+    expect(Object.keys(STYLE_LAYER_BY_STORE_ID)).toHaveLength(5);
   });
 
   it("applies visibility only to style layers the style actually defines", () => {
@@ -64,17 +64,20 @@ describe("map layer bindings", () => {
   });
 });
 
-describe("map scale helpers", () => {
+describe("map scale & tile path helpers", () => {
   it("resolves ground resolution per Web Mercator", () => {
     expect(metersPerPixel(0, 0)).toBeCloseTo(156543.03392, 5);
     expect(metersPerPixel(0, 1)).toBeCloseTo(78271.51696, 4);
-    // Latitude shrinks the ground resolution by cos(lat).
     expect(metersPerPixel(60, 0)).toBeCloseTo(156543.03392 * 0.5, 4);
   });
 
-  it("keeps a {z}/{x}/{y} template for the date-scoped overlay source", () => {
-    expect(tileTemplate("subsidence", "Jun 2024")).toBe(
-      "tiles/subsidence/Jun 2024/{z}/{x}/{y}.png",
-    );
+  it("normalizes period strings into URL-safe tile segments without spaces", () => {
+    expect(tileSegment("2026-10 (vs 2026-09)")).toBe("2026-10-vs-2026-09");
+    expect(
+      tileTemplate(
+        "radar-change-hh-monthly",
+        tileSegment("2026-10 (vs 2026-09)"),
+      ),
+    ).toBe("tiles/radar-change-hh-monthly/2026-10-vs-2026-09/{z}/{x}/{y}.png");
   });
 });

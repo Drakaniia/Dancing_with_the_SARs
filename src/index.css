@@ -1,23 +1,11 @@
 @import "tailwindcss";
 @import "./styles/tokens.css";
 
-/**
- * Tailwind v4 theme wiring.
- *
- * `@theme inline` keeps each theme value as a `var(--token)` reference instead of freezing it, so
- * utilities resolve against the semantic tokens in `src/styles/tokens.css` — which is what makes
- * the reduced-transparency/contrast media queries restyle the chrome.
- *
- * No raw values here: every alias points at a semantic token.
- */
 @theme inline {
-  /* Surface & content colors */
   --color-background: var(--color-bg);
   --color-foreground: var(--color-text);
   --color-elevated: var(--color-bg-elevated);
   --color-panel: var(--color-panel);
-  /* Aliased as `surface-header`, not `panel-header`: `text-<name>` is shared by the typography and
-     color namespaces, and `text-panel-header` must resolve to the panel-header *type* scale. */
   --color-surface-header: var(--color-panel-header);
   --color-panel-border: var(--color-panel-border);
   --color-border: var(--color-panel-border);
@@ -33,7 +21,6 @@
   --color-warning: var(--color-warning);
   --color-focus: var(--color-focus);
 
-  /* Typography */
   --font-ui: var(--font-ui);
   --font-display: var(--font-display);
   --text-title: var(--text-title);
@@ -65,33 +52,32 @@
   --text-readout--letter-spacing: var(--text-readout-tracking);
   --text-readout--font-weight: var(--text-readout-weight);
 
-  /* Radius (Tailwind's `sm`/`md`/`lg` scale is re-pointed at the token values) */
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
   --radius-pill: var(--radius-pill);
 
-  /* Spacing helpers that are not on Tailwind's numeric scale */
   --spacing-rail: var(--rail-pad);
   --spacing-panel: var(--panel-pad);
   --spacing-stack: var(--panel-gap);
 
-  /* Elevation */
   --shadow-1: var(--shadow-1);
   --shadow-2: var(--shadow-2);
   --shadow-pop: var(--shadow-pop);
 }
 
-/* Breakpoints stay literal: media queries cannot reference custom properties. */
 @theme {
   --breakpoint-default: 1024px;
   --breakpoint-wide: 1440px;
 }
 
 @layer base {
-  /* The app ships one warm light palette; native controls and scrollbars must match it. */
   html {
     color-scheme: light;
+  }
+
+  html[data-theme="dark"] {
+    color-scheme: dark;
   }
 
   body {
@@ -99,18 +85,49 @@
     color: var(--color-text);
     font-family: var(--font-ui);
   }
+
+  /* Antislop R-39: every enabled interactive element has pointer cursor; disabled has not-allowed */
+  a[href],
+  button:not(:disabled),
+  summary,
+  select:not(:disabled),
+  label[for],
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="tab"]:not([aria-disabled="true"]),
+  [role="switch"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  select:disabled,
+  input:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
+  /* Emil Kowalski tactile button press feedback */
+  button:not(:disabled):active {
+    transform: scale(0.97);
+  }
 }
 
-/* ── Material utilities ─────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 
-/* Opaque structural chrome (side rails). */
 @utility rail {
   background-color: var(--material-rail-bg);
   box-shadow: var(--material-rail-edge);
 }
 
-/* Translucent floating chrome (map controls, animation bar, popups).
-   Reduced transparency sets `--material-glass-blur` to `none`. */
 @utility glass {
   background-color: var(--material-glass-bg);
   backdrop-filter: var(--material-glass-blur);

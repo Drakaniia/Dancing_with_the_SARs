@@ -11,21 +11,21 @@ beforeEach(() => {
 
 describe("nextDate", () => {
   it("steps forward through the series", () => {
-    expect(nextDate(dates, "Jan 2023")).toBe("Apr 2023");
-    expect(nextDate(dates, "Jun 2024")).toBe("Oct 2024");
+    expect(nextDate(dates, "2025-Q1")).toBe("2025-06");
+    expect(nextDate(dates, "2026-09")).toBe("2026-10");
   });
 
   it("wraps from the last date back to the first", () => {
-    expect(nextDate(dates, "Dec 2024")).toBe("Jan 2023");
+    expect(nextDate(dates, "2027-04")).toBe("2025-Q1");
   });
 
   it("starts at the first date when the current date is unknown", () => {
-    expect(nextDate(dates, null)).toBe("Jan 2023");
-    expect(nextDate(dates, "Not a date")).toBe("Jan 2023");
+    expect(nextDate(dates, null)).toBe("2025-Q1");
+    expect(nextDate(dates, "Not a date")).toBe("2025-Q1");
   });
 
   it("returns null when there is no series", () => {
-    expect(nextDate([], "Jan 2023")).toBeNull();
+    expect(nextDate([], "2025-Q1")).toBeNull();
   });
 });
 
