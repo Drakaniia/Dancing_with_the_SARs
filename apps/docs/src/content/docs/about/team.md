@@ -5,7 +5,7 @@ description: The Cartographers, the team behind the NISAR Surface Change Monitor
 
 <div class="team-photo">
 
-![The Cartographers team photo](../../../../../../public/images/team-image.jpg)
+![The Cartographers team photo](../../../../../web/public/images/team-image.jpg)
 
 </div>
 
@@ -39,12 +39,13 @@ Languages spoken: English and Tagalog.
 ## Links
 
 - [Project repository](https://github.com/Drakaniia/Dancing_with_the_SARs)
-- [Upstream data release](https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar)
+- [Data repository](https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar): the team's separate data-processing repo (see [Data sources](/data/sources/))
 - [Space Apps team page](https://www.spaceappschallenge.org/2026/find-a-team/the-cartographers/)
 
 ## Acknowledgements
 
-Data comes from:
+The team's data repository is built from these upstream products (details in
+[Data sources](/data/sources/)):
 
 - NASA-ISRO NISAR (L2 GCOV, provisional).
 - Landsat HLS.

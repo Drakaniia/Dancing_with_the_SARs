@@ -43,6 +43,7 @@ export default defineConfig({
         {
           label: "Data",
           items: [
+            { label: "Data sources", slug: "data/sources" },
             { label: "The NISAR release", slug: "data/release" },
             { label: "Layer catalogue", slug: "data/catalogue" },
             { label: "Manifest format", slug: "data/manifest" },

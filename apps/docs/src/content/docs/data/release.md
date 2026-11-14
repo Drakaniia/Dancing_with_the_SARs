@@ -3,9 +3,11 @@ title: The NISAR release
 description: The upstream GeoTIFF release behind every layer, what it contains, and the measured raster contract.
 ---
 
-Every layer in the app is derived from one upstream data release, produced by the team's
-processing and published at
+Every layer in the app is derived from one data release in the team's separate data-processing
+repository,
 [monteropeterdominic-arch/sarangani-davao-occidental-nisar](https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar).
+This page describes what that release contains, as measured by the inventory. For how the two
+repositories connect and which upstream products feed them, see [Data sources](/data/sources/).
 
 :::caution
 The older `nisar-mindanao` repository is a draft. Do not use it.

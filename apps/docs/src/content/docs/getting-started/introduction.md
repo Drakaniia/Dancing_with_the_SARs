@@ -40,9 +40,10 @@ area:
 - **Outlook:** a 12-month El Niño scenario (Nov 2026 – Oct 2027).
 - **Terrain:** SRTM elevation, slope and aspect.
 
-All of it comes from one pinned data release and is described by a single generated
-[manifest](/data/manifest/), so the dashboard never shows a value it cannot trace back to a source
-file.
+All of it comes from the team's separate data repository,
+[sarangani-davao-occidental-nisar](https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar),
+pinned to one commit. A single generated [manifest](/data/manifest/) describes it, so the dashboard
+never shows a value it cannot trace back to a source file. See [Data sources](/data/sources/).
 
 ![Dark dashboard with the Night Atlas interface](../../../../../../docs/screenshots/dashboard-dark.png)
 
@@ -50,6 +51,7 @@ file.
 
 | | |
 | --- | --- |
+| Data | [sarangani-davao-occidental-nisar](https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar) @ `7ea38ff` |
 | Area of interest | Sarangani + Davao Occidental, 5,268 km², bounds 124.357–125.715 °E, 5.365–6.633 °N |
 | Native grid | EPSG:32651 (UTM 51N), 30 m |
 | Catalogue | 57 layers, 318 layer-dates, 81 timeline periods |

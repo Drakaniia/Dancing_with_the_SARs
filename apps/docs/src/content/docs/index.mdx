@@ -44,6 +44,24 @@ import { Card, CardGrid, LinkCard } from "@astrojs/starlight/components";
   </Card>
 </CardGrid>
 
+## Where the data comes from
+
+All real data comes from the team's separate data-processing repository. The app pins one
+commit of it, and every tile, legend and inspector value traces back to that commit.
+
+<CardGrid>
+  <LinkCard
+    title="sarangani-davao-occidental-nisar"
+    description="The team's companion data repo: NISAR, Landsat HLS, MODIS, GPM IMERG, SRTM and NOAA CPC products for Sarangani and Davao Occidental. Pinned at 7ea38ff."
+    href="https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar"
+  />
+  <LinkCard
+    title="Data sources"
+    description="How the two repositories connect, and which upstream products feed each layer."
+    href="/data/sources/"
+  />
+</CardGrid>
+
 ## Where to go next
 
 <CardGrid>
