@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { OPACITY, SAMPLE_LAYERS } from "@/fixtures/sample-dashboard";
+import { SAMPLE_LAYERS } from "@/fixtures/sample-dashboard";
 import type { LayerConfig } from "@/shared/types/layer";
 import type { Manifest, ManifestLayer } from "@/shared/types/manifest";
 
@@ -14,6 +14,9 @@ interface LayerState {
   reorder: (fromIndex: number, toIndex: number) => void;
   hydrateFromManifest: (manifest: Manifest) => void;
 }
+
+/** Data layers start almost opaque so they stand out from the light basemap. */
+const DATA_OPACITY = 0.95;
 
 const DEFAULT_VISIBLE_IDS = new Set(["radar-change-hh-monthly"]);
 const DEFAULT_PINNED_IDS = new Set([
@@ -127,7 +130,10 @@ export const useLayerStore = create<LayerState>((set) => ({
           family: entry.family,
           changeType: entry.family,
           visible,
-          opacity: existing?.opacity ?? OPACITY,
+          opacity:
+            existing?.kind === "manifest-layer"
+              ? existing.opacity
+              : DATA_OPACITY,
           order: order++,
           showInLayerList,
           units: entry.units,

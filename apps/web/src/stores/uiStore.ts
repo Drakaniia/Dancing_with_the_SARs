@@ -140,7 +140,7 @@ export const useUiStore = create<UiState>((set) => ({
   analyticsTab: "inspector",
   flyToTarget: null,
   measurePoints: [],
-  terrain3d: false,
+  terrain3d: true,
 
   setPanelOpen: (id, open) =>
     set((state) => {

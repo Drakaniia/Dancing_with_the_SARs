@@ -114,9 +114,9 @@ export function TileOverlay({ map, ready }: TileOverlayProps) {
             "line-cap": "round",
           },
           paint: {
-            "line-color": "#ffffff",
-            "line-width": 3.4,
-            "line-opacity": 0.9,
+            "line-color": "#fffaf0",
+            "line-width": 3.6,
+            "line-opacity": 0.95,
           },
         },
         beforeLabels,
@@ -134,8 +134,8 @@ export function TileOverlay({ map, ready }: TileOverlayProps) {
             "line-cap": "round",
           },
           paint: {
-            "line-color": "#3a3328",
-            "line-width": 1.4,
+            "line-color": "#3b2a17",
+            "line-width": 1.8,
             "line-opacity": 0.92,
           },
         },
@@ -249,6 +249,9 @@ export function TileOverlay({ map, ready }: TileOverlayProps) {
           source: sourceId,
           paint: {
             "raster-opacity": layer.opacity,
+            // a little extra contrast so the data stands out from the light basemap
+            "raster-contrast": 0.12,
+            "raster-saturation": 0.15,
             "raster-resampling":
               (entry?.valueType ?? layer.valueType) === "categorical"
                 ? "nearest"

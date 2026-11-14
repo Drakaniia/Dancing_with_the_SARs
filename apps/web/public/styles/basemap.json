@@ -3,14 +3,23 @@
   "name": "NISAR Surface Change Monitor · Sarangani & Davao Occidental",
   "glyphs": "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
   "sources": {
-    "esri-light-gray": {
+    "esri-ocean-base": {
       "type": "raster",
       "tiles": [
-        "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+        "https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}"
       ],
       "tileSize": 256,
-      "maxzoom": 16,
-      "attribution": "Esri, HERE, Garmin, © OpenStreetMap contributors"
+      "maxzoom": 10,
+      "attribution": "Esri, GEBCO, NOAA, Garmin, HERE"
+    },
+    "hillshade-dem": {
+      "type": "raster-dem",
+      "tiles": [
+        "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"
+      ],
+      "encoding": "terrarium",
+      "tileSize": 256,
+      "maxzoom": 13
     },
     "esri-world-imagery": {
       "type": "raster",
@@ -139,9 +148,9 @@
     }
   },
   "sky": {
-    "sky-color": "#dfe9f2",
-    "horizon-color": "#f1efe9",
-    "fog-color": "#f4f1ea",
+    "sky-color": "#eaf2f5",
+    "horizon-color": "#f7f4ec",
+    "fog-color": "#f7f4ec",
     "sky-horizon-blend": 0.6,
     "horizon-fog-blend": 0.6,
     "fog-ground-blend": 0.9
@@ -150,13 +159,18 @@
     {
       "id": "background",
       "type": "background",
-      "paint": { "background-color": "#f4f1ea" }
+      "paint": { "background-color": "#eef3f1" }
     },
     {
       "id": "light-basemap",
       "type": "raster",
-      "source": "esri-light-gray",
-      "paint": { "raster-opacity": 1 }
+      "source": "esri-ocean-base",
+      "paint": {
+        "raster-opacity": 0.65,
+        "raster-saturation": 0.25,
+        "raster-brightness-min": 0.18,
+        "raster-contrast": -0.15
+      }
     },
     {
       "id": "basemap",
@@ -164,6 +178,18 @@
       "source": "esri-world-imagery",
       "layout": { "visibility": "none" },
       "paint": { "raster-opacity": 1 }
+    },
+    {
+      "id": "hillshade",
+      "type": "hillshade",
+      "source": "hillshade-dem",
+      "paint": {
+        "hillshade-exaggeration": 0.22,
+        "hillshade-illumination-direction": 315,
+        "hillshade-shadow-color": "#9aa58a",
+        "hillshade-highlight-color": "#ffffff",
+        "hillshade-accent-color": "#b9bfa5"
+      }
     },
     {
       "id": "admin-boundaries",
@@ -176,6 +202,7 @@
       "id": "cities-labels",
       "type": "symbol",
       "source": "reference-labels",
+      "filter": ["!=", ["get", "kind"], "epicentre"],
       "layout": {
         "visibility": "visible",
         "text-field": ["get", "name"],
@@ -199,12 +226,12 @@
           "match",
           ["get", "kind"],
           "sea",
-          "#4f7896",
+          "#2f6f86",
           "epicentre",
-          "#c0392b",
-          "#2a2620"
+          "#b03a2e",
+          "#3b2f22"
         ],
-        "text-halo-color": "#ffffff",
+        "text-halo-color": "#fff8e8",
         "text-halo-width": 1.6
       }
     }
