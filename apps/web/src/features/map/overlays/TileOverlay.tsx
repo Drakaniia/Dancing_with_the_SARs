@@ -1,6 +1,10 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useEffect, useRef } from "react";
 import {
+  offlineTilesAvailable,
+  tileProtocolUrl,
+} from "@/features/offline/tileCache";
+import {
   resolveTileUrl,
   SARANGANI_DAVOCC_BOUNDS,
   tileSegment,
@@ -141,6 +145,7 @@ export function TileOverlay({ map, ready }: TileOverlayProps) {
     if (!map || !ready) return;
 
     const origin = resolveOriginPrefix();
+    const useTileCache = offlineTilesAvailable();
     const bounds = manifest?.bounds ?? SARANGANI_DAVOCC_BOUNDS;
 
     const dataLayers = layers.filter(
@@ -188,7 +193,9 @@ export function TileOverlay({ map, ready }: TileOverlayProps) {
       const relPath = entry?.tilePath
         ? entry.tilePath
         : tileTemplate(layer.id, tileSegment(period));
-      const tilePath = resolveTileUrl(relPath, TILE_BASE_URL, origin);
+      const tilePath = useTileCache
+        ? tileProtocolUrl(relPath)
+        : resolveTileUrl(relPath, TILE_BASE_URL, origin);
 
       if (builtTilePathsRef.current[layer.id] !== tilePath) {
         removeOverlays(map, [layer.id]);

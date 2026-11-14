@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useTheme } from "@/app/providers/ThemeProvider";
+import { OfflineTilesSection } from "@/features/offline/OfflineTilesSection";
 import { IconButton } from "@/shared/ui/IconButton";
 import { Popover } from "@/shared/ui/Popover";
 import { useBookmarkStore } from "@/stores/bookmarkStore";
@@ -240,6 +241,7 @@ export function TopBarActions({ className }: TopBarActionsProps) {
               Inspect 7ea38ff
             </button>
           </div>
+          <OfflineTilesSection />
         </div>
       </Popover>
     </nav>

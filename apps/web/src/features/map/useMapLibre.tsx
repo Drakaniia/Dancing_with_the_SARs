@@ -2,6 +2,11 @@ import * as maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
 import { type RefObject, useEffect, useState } from "react";
+import {
+  createTileProtocolHandler,
+  offlineTilesAvailable,
+  TILE_PROTOCOL,
+} from "@/features/offline/tileCache";
 import type { LayerConfig } from "@/shared/types/layer";
 import {
   PHILIPPINES_BOUNDS,
@@ -15,6 +20,11 @@ import { useSelectionStore } from "@/stores/selectionStore";
 import { useUiStore } from "@/stores/uiStore";
 
 maplibregl.setWorkerUrl(workerUrl);
+
+// Desktop + remote tile host: overlays load via nisar-tile:// (offline cache first).
+if (offlineTilesAvailable()) {
+  maplibregl.addProtocol(TILE_PROTOCOL, createTileProtocolHandler());
+}
 
 export const BASEMAP_STYLE_URL = "/styles/basemap.json";
 
