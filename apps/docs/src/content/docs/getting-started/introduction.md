@@ -60,8 +60,9 @@ never shows a value it cannot trace back to a source file. See [Data sources](/D
 
 ## What it is not
 
-The app shows **radar backscatter change, not ground deformation**. Uplift and subsidence need
-NISAR GUNW interferograms spanning 8 June 2026, which the release does not contain. See
+The app shows **radar backscatter change, not ground deformation**. No public NISAR data exists
+before 19 June 2026, so NISAR cannot measure the quake's uplift, and a Sentinel-1 InSAR test
+could not measure it either. See
 [Provenance and limitations](/Dancing_with_the_SARs/data/limitations/) for this and the other caveats the app surfaces.
 
 ## Next steps

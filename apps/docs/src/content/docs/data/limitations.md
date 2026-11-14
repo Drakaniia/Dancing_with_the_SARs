@@ -30,18 +30,18 @@ Exports carry the same `source` block, so a shared reading stays traceable. See
 
 These five limits come from the release itself and appear verbatim in the provenance dialog.
 
-1. **Radar change is backscatter, not deformation.** Radar layers show L-band backscatter
-   intensity in dB, not InSAR ground uplift or subsidence. Deformation requires NISAR GUNW
-   interferograms spanning 8 June 2026. The first NISAR scene in the release is 28 June 2026,
-   after the quake, so radar does not show the quake itself.
-2. **Daily passes are swaths.** NISAR by-date layers are single-pass swaths. Coverage ranges
-   from about 4 % (30 Sep) to 100 % (23 Sep, 17 Oct) of the provinces. Monthly composites
+1. **Radar change is backscatter, not deformation.** Radar layers show L-band backscatter, not
+   ground deformation. No public NISAR data exists before 19 June 2026, so NISAR cannot
+   measure the quake's uplift. The team tested Sentinel-1 InSAR (`sentinel1_quake/` in the data
+   repo) and it could not measure it either. The first NISAR scene in the release is 28 June
+   2026, after the quake, so radar does not show the quake itself.
+2. **Daily passes are swaths.** NISAR by-date layers are single-pass swaths. Inside the two
+   provinces, coverage ranges from 19 % (30 Sep) to 89 % (23 Sep, 17 Oct). Monthly composites
    cover 98–100 %.
 3. **ML vegetation is approximate.** The NISAR-derived EVI and NDMI explain roughly one third
    of optical variance. Read them as structural canopy estimates.
 4. **Landslide checks are incomplete.** About 30 % of the post-quake optical window
-   (9 Jun – 25 Sep 2026) was cloud-obscured (class 4, not checked). SRTM elevation checks were
-   unavailable south of 5.9 °N (class 5).
+   (9 Jun – 25 Sep 2026) was cloud-obscured (class 4, not checked).
 5. **The outlook is a scenario.** The 12-month El Niño outlook (Nov 2026 – Oct 2027) is a
    conditional climate scenario (sensitivity per +1 °C ONI), not a deterministic weather forecast.
 
@@ -50,7 +50,7 @@ These five limits come from the release itself and appear verbatim in the proven
 Each manifest entry carries `caveats[]`. The inspector shows the first caveat next to each
 sampled value. For example, the default radar change layer carries:
 
-- _Backscatter change, not ground deformation (uplift/subsidence requires GUNW interferometry)._
+- _Backscatter change, not ground deformation: no public NISAR data exists before 19 June 2026, so NISAR cannot measure the quake's uplift._
 - _Does not capture the 8 June 2026 quake directly: first NISAR scene is 28 June 2026._
 
 ## Other things to know

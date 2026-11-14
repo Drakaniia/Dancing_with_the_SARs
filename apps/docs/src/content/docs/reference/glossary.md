@@ -28,8 +28,9 @@ canopy.
 
 **GCOV.** The NISAR Level-2 geocoded polarimetric covariance product: calibrated backscatter.
 
-**GUNW.** The NISAR geocoded unwrapped interferogram: the product needed for ground
-deformation (uplift and subsidence). It is **not** in the release.
+**GUNW.** The NISAR geocoded unwrapped interferogram, the product normally used for ground
+deformation (uplift and subsidence). It is **not** in the release, and none can span the
+quake because no public NISAR data exists before 19 June 2026.
 
 **HH / HV.** Radar polarisations. HH is horizontal transmit and receive. HV is horizontal
 transmit and vertical receive (cross-pol), and is more sensitive to vegetation volume.

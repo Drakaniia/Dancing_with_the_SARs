@@ -98,6 +98,13 @@ pnpm r2:tiles --dry-run           # print the plan without changing anything
    retries. Progress is saved to `data/.r2-upload-<bucket>.json`, so a re-run only uploads new or
    changed tiles (`--force` re-uploads all). `index.json` is published last.
 
+6. **Data files.** Publishes `manifest.json`, `tables.json`, `boundary.geojson` and
+   `landslides.geojson` from `apps/web/public/data/` to `<bucket>/data/`, manifest last. The app
+   fetches `<VITE_TILE_BASE_URL>/data/<file>` first (revalidated, 60 s cache) and falls back to the
+   copy bundled in the installer when the host is unset, offline or errors. To change the data
+   without a release, rebuild with the pipeline and run `pnpm r2:data`; it takes seconds. Keep
+   the manifest's `tilePath` values compatible with the tiles already in the bucket.
+
 Wrangler has no bulk upload, so the first upload starts one process per tile and takes a while.
 It costs about 28,500 write operations, well inside the free 1 million per month. Run
 `pnpm r2:upload` after each pipeline rebuild, or `pnpm r2:setup` to redo only the bucket

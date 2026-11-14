@@ -69,6 +69,6 @@ match tile colours. See [Colour ramps](/Dancing_with_the_SARs/pipeline/ramps/).
 ## Coverage
 
 Some layers do not cover the whole area. NISAR **by-date** layers are single-pass swaths, with
-coverage from about 4 % to 100 % of the provinces. Where the manifest records coverage, the
+coverage from 19 % (30 Sep) to 89 % (23 Sep, 17 Oct) inside the two provinces. Where the manifest records coverage, the
 Current View card shows it next to the opacity (for example `80% · 13% AOI`). An empty part of
 the map can mean "no pass here", not "no change".

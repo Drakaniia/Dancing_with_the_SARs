@@ -36,12 +36,12 @@ implementation actually landed.
 2. A tagged release or pinned commit.
 3. QGIS `.qml` styles.
 4. A machine-readable index of files.
-5. **GUNW/InSAR deformation spanning 8 June 2026**, the only way to bring real
-   elevation/subsidence layers back.
+5. **Deformation data (InSAR/uplift/subsidence)** that spans 8 June 2026. No public NISAR
+   data exists before 19 June 2026, and a Sentinel-1 InSAR test could not measure it either.
 6. The webmap's tile-generation code.
 
 The inventory showed that the release has no index, no tag, no `.qml`, no 4326 rasters and no
-GUNW, but does include webmap export scripts.
+deformation data, but does include webmap export scripts.
 
 ## Budget: plan versus reality
 

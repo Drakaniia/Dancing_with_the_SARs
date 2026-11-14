@@ -72,8 +72,8 @@ upstream GeoTIFF release ──► scripts/tiles (Python, build time)
 ```
 
 1. **At startup**, `AppShell` calls `datasetStore.loadManifestAndTables()`. It fetches
-   `/data/manifest.json` and `/data/tables.json`, validates the manifest, and seeds the layer
-   store.
+   `data/manifest.json` and `data/tables.json` (from `<VITE_TILE_BASE_URL>/data/` first, then the
+   bundled `/data/` copy), validates the manifest, and seeds the layer store.
 2. **`TileOverlay`** keeps one MapLibre raster source and layer per visible data layer. It
    resolves each layer's period for the current date and points the source at that entry's
    `tilePath`.

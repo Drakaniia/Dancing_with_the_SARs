@@ -40,6 +40,18 @@ the docs.
 cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
 ```
 
+## Cloudflare R2 (build machine only)
+
+Needs `pnpm exec wrangler login` once. See
+[Host the tiles on Cloudflare R2](/Dancing_with_the_SARs/getting-started/installation/#host-the-tiles-on-cloudflare-r2).
+
+| Command          | What it does                                                                                    |
+| ---------------- | ----------------------------------------------------------------------------------------------- |
+| `pnpm r2:tiles`  | Bucket, CORS, public URL, then upload tiles and data files                                      |
+| `pnpm r2:setup`  | Redo only the bucket, CORS and public URL                                                       |
+| `pnpm r2:upload` | Upload changed tiles, then the data files                                                       |
+| `pnpm r2:data`   | Upload only `manifest.json`, `tables.json` and the GeoJSON to `data/` (seconds, no app release) |
+
 ## Python (build machine only)
 
 | Command                                                                      | What it does                                                       |

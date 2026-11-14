@@ -87,7 +87,7 @@ There is **one entry per layer-date**: 318 entries for 57 unique ids. Entries th
   "domain": [-3, 3],
   "coverage": 1, // optional: fraction of the AOI with data
   "caveats": [
-    "Backscatter change, not ground deformation (uplift/subsidence requires GUNW interferometry)",
+    "Backscatter change, not ground deformation: no public NISAR data exists before 19 June 2026, so NISAR cannot measure the quake's uplift",
     "Does not capture the 8 June 2026 quake directly: first NISAR scene is 28 June 2026",
   ],
 }

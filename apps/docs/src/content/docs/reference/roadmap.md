@@ -21,9 +21,10 @@ phases: foundation, data layer, single layer, multi-layer, advanced features, po
 
 When the team's real GeoTIFF release arrived, two facts reshaped the app:
 
-1. **There is no deformation layer.** Uplift needs GUNW interferometry spanning 8 June 2026,
-   and the first NISAR scene is 28 June. Elevation change and subsidence could not be filled
-   honestly.
+1. **There is no deformation layer.** No public NISAR data exists before 19 June 2026 (the
+   first scene in the release is 28 June), so NISAR cannot measure the quake's uplift. A
+   Sentinel-1 InSAR test could not measure it either. Elevation change and subsidence could
+   not be filled honestly.
 2. **The calendars clash.** Daily NISAR passes, quarterly Landsat, monthly MODIS and a
    forecast range cannot share one tick list.
 
@@ -53,8 +54,9 @@ pixel sampling.
   `datasetStore.recordTileError()` so the data status warning works.
 - **Faster sampling:** cache decoded bands across clicks, or decode only the block that contains
   the pixel.
-- **Deformation layers:** add elevation/subsidence once GUNW interferograms spanning the quake
-  are available.
+- **Deformation layers:** add elevation/subsidence only if a data source that can measure the
+  quake's uplift appears. NISAR (no public data before 19 June 2026) and the Sentinel-1
+  InSAR test could not.
 - **Unused groundwork:** file import, the tile cache, the GeoTIFF worker, and PNG screenshot
   export.
 - **Tile distribution:** a release artifact or object storage, so fresh clones do not need to run

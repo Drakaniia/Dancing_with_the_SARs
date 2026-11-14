@@ -77,7 +77,8 @@ so the timeline is parsed from the band descriptions rather than guessed from fi
 
 ## What the release does not contain
 
-- **No deformation rasters** (GUNW / InSAR / uplift / subsidence).
+- **No deformation rasters** (InSAR / uplift / subsidence). No public NISAR data exists before
+  19 June 2026, so NISAR cannot measure the quake's uplift.
 - No EPSG:4326 rasters.
 - No QGIS `.qml` styles.
 - No machine-readable index.
@@ -99,4 +100,5 @@ CSV:
 - **Outlook scenario:** 12 months of rainfall normal/expected/p10/p90, EVI/NDVI/LST anomalies,
   and the share of land below normal greenness.
 - **MODIS monthly series:** 321 rows, 2000–2026.
-- **Epicentre:** 125.147 °E, 6.0215 °N, 8 Jun 2026 07:37 PST, 33 km depth.
+- **Epicentre:** 125.056 °E, 5.599 °N (USGS us7000srb1), offshore about 32 km south of Maasim,
+  8 Jun 2026 07:37 PHT (UTC+8). Depth 57 km (USGS) / 33 km (PHIVOLCS).
