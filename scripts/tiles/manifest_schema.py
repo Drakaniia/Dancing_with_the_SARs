@@ -1,10 +1,10 @@
-"""Validator for `public/data/manifest.json` (spec §4, D20).
+"""Validator for `apps/web/public/data/manifest.json` (spec §4, D20).
 
 The manifest is the only contract between the pipeline and the app, so it is checked on
 both sides of the boundary: the pipeline refuses to write a manifest that fails here, and
 the app test suite (P2) runs the same rules against the committed file.
 
-No third-party imports: `python scripts/tiles/manifest_schema.py public/data/manifest.json`
+No third-party imports: `python scripts/tiles/manifest_schema.py apps/web/public/data/manifest.json`
 works on a machine with nothing but Python.
 """
 
@@ -245,7 +245,7 @@ def validate(doc: dict) -> list[str]:
 
 def main(argv: list[str]) -> int:
     if len(argv) != 2:
-        print("usage: python scripts/tiles/manifest_schema.py public/data/manifest.json",
+        print("usage: python scripts/tiles/manifest_schema.py apps/web/public/data/manifest.json",
               file=sys.stderr)
         return 2
     with open(argv[1], encoding="utf-8") as fh:

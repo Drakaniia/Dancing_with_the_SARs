@@ -6,7 +6,7 @@
     "useIgnoreFile": true,
   },
   "files": {
-    "includes": ["src/**/*", "tests/**/*"],
+    "includes": ["apps/web/src/**/*", "apps/web/tests/**/*"],
   },
   "css": {
     "parser": {

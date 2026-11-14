@@ -4,10 +4,10 @@
   "version": "0.1.0",
   "identifier": "com.nisar.surface-change-monitor",
   "build": {
-    "beforeDevCommand": "pnpm run dev",
+    "beforeDevCommand": "pnpm --filter web dev",
     "devUrl": "http://localhost:5173",
-    "beforeBuildCommand": "pnpm run build",
-    "frontendDist": "../dist"
+    "beforeBuildCommand": "pnpm --filter web build",
+    "frontendDist": "../../web/dist"
   },
   "app": {
     "windows": [

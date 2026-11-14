@@ -8,7 +8,7 @@
 Per layer-date (spec 5.1): warp EPSG:32651 -> EPSG:3857 with overviews and the boundary
 mask, render the ramp or categorical classes into a PNG8 palette, cut z5-z13/z11 XYZ tiles
 (skipping empty ones), export boundary/landslide GeoJSONs and CSV tables as JSON, then
-write `public/data/manifest.json` and report measured tiles and bytes against the budget.
+write `apps/web/public/data/manifest.json` and report measured tiles and bytes against the budget.
 """
 
 from __future__ import annotations
@@ -45,8 +45,10 @@ from ramps import CLASS_SCHEMES, RAMPS, TRANSPARENT, colorize, colorize_classes,
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 DATA_DIR = "data"
 CACHE_DIR = os.path.join(DATA_DIR, ".cache")
-TILE_ROOT = os.path.join("public", "tiles")
-PUBLIC_DATA_DIR = os.path.join("public", "data")
+# The web app (apps/web) serves everything under its public/ folder.
+WEB_PUBLIC_DIR = os.path.join("apps", "web", "public")
+TILE_ROOT = os.path.join(WEB_PUBLIC_DIR, "tiles")
+PUBLIC_DATA_DIR = os.path.join(WEB_PUBLIC_DIR, "data")
 MANIFEST_PATH = os.path.join(PUBLIC_DATA_DIR, "manifest.json")
 
 PIPELINE_NAME = "nisar-tile-pipeline"
@@ -779,7 +781,7 @@ def round_coords(coords, precision: int = 5):
 
 
 def export_vectors_and_tables(data_dir: str) -> None:
-    """Convert GPKG vectors to GeoJSON and CSV tables to JSON under `public/data/`."""
+    """Convert GPKG vectors to GeoJSON and CSV tables to JSON under `apps/web/public/data/`."""
     out_dir = os.path.join(ROOT, PUBLIC_DATA_DIR)
     os.makedirs(out_dir, exist_ok=True)
 
@@ -1126,7 +1128,7 @@ def spot_check(doc: dict) -> list[str]:
     """One decode per layer plus a tile-directory check for the committed tree."""
     problems: list[str] = []
     for layer in doc["layers"]:
-        folder = os.path.join(ROOT, "public", *layer["tilePath"].split("/")[:3])
+        folder = os.path.join(ROOT, WEB_PUBLIC_DIR, *layer["tilePath"].split("/")[:3])
         pngs = []
         for dirpath, _, names in os.walk(folder):
             pngs.extend(os.path.join(dirpath, name) for name in names if name.endswith(".png"))

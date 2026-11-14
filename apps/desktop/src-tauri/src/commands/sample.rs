@@ -103,15 +103,18 @@ pub fn wgs84_to_utm51n(lng_deg: f64, lat_deg: f64) -> (f64, f64) {
     (easting, northing)
 }
 
+/// Path of the committed manifest served by the web app, relative to the repo root.
+fn web_manifest_path(root: &Path) -> PathBuf {
+    ["apps", "web", "public", "data", "manifest.json"]
+        .iter()
+        .fold(root.to_path_buf(), |path, part| path.join(part))
+}
+
 fn resolve_workspace_root(app: &tauri::AppHandle) -> PathBuf {
+    // `tauri dev` runs from apps/desktop/src-tauri, so walk up until the repo root is found.
     if let Ok(cwd) = std::env::current_dir() {
-        if cwd.join("public").join("data").join("manifest.json").exists() {
-            return cwd;
-        }
-        if let Some(parent) = cwd.parent() {
-            if parent.join("public").join("data").join("manifest.json").exists() {
-                return parent.to_path_buf();
-            }
+        if let Some(root) = cwd.ancestors().find(|dir| web_manifest_path(dir).exists()) {
+            return root.to_path_buf();
         }
     }
     if let Ok(res_dir) = app.path().resource_dir() {
@@ -193,8 +196,9 @@ pub async fn sample_layers(
     layer_ids: Option<Vec<String>>,
 ) -> Result<Vec<LayerSample>, String> {
     let root = resolve_workspace_root(&app);
-    let manifest_path = if root.join("public").join("data").join("manifest.json").exists() {
-        root.join("public").join("data").join("manifest.json")
+    let web_manifest = web_manifest_path(&root);
+    let manifest_path = if web_manifest.exists() {
+        web_manifest
     } else {
         root.join("data").join("manifest.json")
     };

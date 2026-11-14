@@ -1,6 +1,6 @@
 node_modules
 dist
-src-tauri/target
+apps/desktop/src-tauri/target
 *.pdf
 *.log
 
@@ -8,7 +8,7 @@ src-tauri/target
 /data/
 __pycache__/
 # generated map tiles (~480 MB): rebuild with scripts/tiles/pipeline.py, see docs/SETUP.md
-/public/tiles/
+/apps/web/public/tiles/
 
 .codegraph/
 
