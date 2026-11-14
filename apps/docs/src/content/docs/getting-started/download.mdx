@@ -34,12 +34,12 @@ app.
   Ubuntu, Debian and Fedora releases include.
 
 :::caution[Map overlays in the installers]
-The installers include the layer manifest, legends, timeline and Quick Stats tables. They
-don't include the ~500 MB of generated map tiles (they aren't committed, so the release build
-can't bundle them) or the source GeoTIFFs the inspector reads. In an installed build the
-layers are listed but the raster overlays stay blank, and inspector readings fall back to
-placeholders.
+The installers include the layer manifest, legends, timeline and Quick Stats tables. The
+~500 MB of generated map tiles are not bundled. The app streams them from a Cloudflare R2
+bucket, so the raster overlays need an internet connection. To use them offline, open
+**Settings → Offline Map Tiles** and choose **Download for offline**. The source GeoTIFFs the inspector
+reads are not included either, so inspector readings fall back to placeholders.
 
-To see the full map, build from source and generate the tiles. See
+To use the inspector, build from source and generate the tiles. See
 [Installation](/Dancing_with_the_SARs/getting-started/installation/#load-the-map-tiles).
 :::

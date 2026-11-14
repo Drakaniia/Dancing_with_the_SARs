@@ -66,6 +66,60 @@ another machine, the map renders but the inspector returns no values until `fetc
 populated `data/`.
 :::
 
+## Host the tiles on Cloudflare R2
+
+The installers stream tiles from a remote host instead of bundling them. Cloudflare R2's free tier
+(10 GB storage, no egress fees) holds the whole pyramid. The app reads
+`<VITE_TILE_BASE_URL>/tiles/<id>/<segment>/{z}/{x}/{y}.png`. Without the variable it falls back to
+`apps/web/public/tiles/`.
+
+`scripts/r2/tiles.mjs` automates the whole setup with the repo's `wrangler` CLI. Enable R2 once in
+the Cloudflare dashboard (the free tier needs a payment method on file), then:
+
+```bash
+pnpm exec wrangler login          # once; allow R2 access
+pnpm r2:tiles --github            # setup + upload; --github also sets the release variable
+pnpm r2:tiles --dry-run           # print the plan without changing anything
+```
+
+`pnpm r2:tiles` runs these steps:
+
+1. **Bucket.** Creates `nisar-tiles` (override with `--bucket` or `R2_BUCKET`) unless it exists.
+   Add `--location apac` (or another hint) to choose where it is stored.
+2. **CORS.** Allows `GET`/`HEAD` from any origin. MapLibre fetches tiles with CORS, and the desktop
+   app runs on `http://tauri.localhost` (Windows) or `tauri://localhost` (macOS, Linux).
+3. **Public URL.** Enables the bucket's `r2.dev` URL and writes it to `apps/web/.env.local` as
+   `VITE_TILE_BASE_URL`. With `--github` it also runs `gh variable set TILE_BASE_URL`, which
+   `release.yml` bakes into the installers. The `r2.dev` URL is rate-limited, so connect a custom
+   domain for heavy traffic.
+4. **Index.** Writes `apps/web/public/tiles/index.json`: every tile key and size, plus a version
+   hash. The desktop app's offline download reads it.
+5. **Upload.** Runs `wrangler r2 object put` for each tile, 8 in parallel (`--concurrency`), with
+   retries. Progress is saved to `data/.r2-upload-<bucket>.json`, so a re-run only uploads new or
+   changed tiles (`--force` re-uploads all). `index.json` is published last.
+
+Wrangler has no bulk upload, so the first upload starts one process per tile and takes a while.
+It costs about 28,500 write operations, well inside the free 1 million per month. Run
+`pnpm r2:upload` after each pipeline rebuild, or `pnpm r2:setup` to redo only the bucket
+settings.
+
+:::note
+The pipeline skips fully transparent tiles, so the bucket returns 404 for them. The desktop app
+answers those with a transparent tile. The browser build logs the misses in the console.
+:::
+
+## Offline map tiles (desktop)
+
+With `VITE_TILE_BASE_URL` set, the desktop app loads overlays cache-first: each tile is read from
+`<app cache dir>/tiles/` and fetched from R2 only on a miss. Every fetched tile is kept, so areas
+you have viewed keep working offline.
+
+**Settings → Offline Map Tiles → Download for offline** fetches the whole pyramid (about 500 MB)
+from `tiles/index.json`. It downloads 6 tiles at a time and skips tiles already cached at the
+right size, so **Resume download** and **Check for updates** only fetch what is missing or
+changed. **Remove offline tiles** clears the cache. The basemap and the pixel inspector's
+GeoTIFFs are not part of the download.
+
 ## Build a release
 
 ```bash

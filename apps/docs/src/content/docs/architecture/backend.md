@@ -16,6 +16,8 @@ tauri::Builder::default()
         commands::export::export_screenshot,
         commands::fs_cache::read_tile_cache,
         commands::fs_cache::write_tile_cache,
+        commands::fs_cache::missing_tile_cache,
+        commands::fs_cache::clear_tile_cache,
         commands::sample::sample_layers,
     ])
 ```
@@ -92,12 +94,14 @@ frontend falls back to placeholder readings.
 
 ## Other commands
 
-| Command             | Signature                                 | Behaviour                                                                                                 |
-| ------------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `import_file`       | `() -> ImportedFile { name, path, size }` | Opens a file picker filtered to GeoTIFF and GeoJSON, and returns metadata. Not yet used by the UI.        |
-| `export_screenshot` | `(data_url: String) -> String`            | Saves a `data:image/png;base64,…` URL through a save dialog and returns the path. Not yet used by the UI. |
-| `read_tile_cache`   | `(key: String) -> Option<Vec<u8>>`        | Reads `<app cache dir>/tiles/<key>`.                                                                      |
-| `write_tile_cache`  | `(key: String, data: Vec<u8>)`            | Writes `<app cache dir>/tiles/<key>`.                                                                     |
+| Command              | Signature                                      | Behaviour                                                                                                 |
+| -------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `import_file`        | `() -> ImportedFile { name, path, size }`      | Opens a file picker filtered to GeoTIFF and GeoJSON, and returns metadata. Not yet used by the UI.        |
+| `export_screenshot`  | `(data_url: String) -> String`                 | Saves a `data:image/png;base64,…` URL through a save dialog and returns the path. Not yet used by the UI. |
+| `read_tile_cache`    | `(key: String) -> Response` (raw bytes)        | Reads `<app cache dir>/tiles/<key>`. An empty body means not cached.                                      |
+| `write_tile_cache`   | raw body, `x-tile-key` header                  | Writes `<app cache dir>/tiles/<key>` through a `.part` file.                                              |
+| `missing_tile_cache` | `(entries: Vec<(String, u64)>) -> Vec<String>` | Keys that are not cached or whose cached size differs.                                                    |
+| `clear_tile_cache`   | `()`                                           | Deletes `<app cache dir>/tiles/`.                                                                         |
 
 ## Store plugin
 
