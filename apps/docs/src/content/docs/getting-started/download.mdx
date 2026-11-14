@@ -1,9 +1,20 @@
 ---
 title: Download
-description: Download the NISAR Surface Change Monitor desktop app for Windows, macOS or Linux.
+description: Download the NISAR Surface Change Monitor desktop app for Windows, macOS or Linux, or use it in your browser.
 ---
 
+import { LinkButton } from "@astrojs/starlight/components";
 import DownloadButtons from "../../../components/DownloadButtons.astro";
+
+## Use in browser
+
+Don't want to install anything? The web version runs the same dashboard in your browser and
+streams the map overlays from the internet. Bookmarks and panel layout are saved in your
+browser. Offline map tiles and automatic updates need the desktop app.
+
+<LinkButton href="/Dancing_with_the_SARs/app/" icon="external">Open the web app</LinkButton>
+
+## Desktop app
 
 The desktop app bundles the dashboard, every layer in the manifest and the pixel inspector.
 Pick the installer for your system. The highlighted buttons match the system you're browsing

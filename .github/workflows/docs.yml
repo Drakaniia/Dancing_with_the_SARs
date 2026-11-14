@@ -1,15 +1,19 @@
 name: Docs
 
-# Builds the Astro Starlight site in apps/docs and deploys it to GitHub Pages:
-# https://drakaniia.github.io/Dancing_with_the_SARs/
+# Builds the Astro Starlight site in apps/docs plus the browser version of the dashboard
+# (apps/web) and deploys both to GitHub Pages as one site:
+#   https://drakaniia.github.io/Dancing_with_the_SARs/       docs
+#   https://drakaniia.github.io/Dancing_with_the_SARs/app/   web app
+# The web app streams its map tiles from the R2 host in the repository variable TILE_BASE_URL
+# (same one the release workflow uses).
 
 on:
   push:
     branches: [main]
     paths:
       - "apps/docs/**"
+      - "apps/web/**"
       - "docs/screenshots/**"
-      - "apps/web/public/images/**"
       - "pnpm-lock.yaml"
       - ".github/workflows/docs.yml"
   workflow_dispatch:
@@ -44,11 +48,29 @@ jobs:
           node-version: 24
           cache: pnpm
 
-      - name: Install docs dependencies
-        run: pnpm install --frozen-lockfile --filter docs
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --filter docs --filter web
 
       - name: Build docs
         run: pnpm --filter docs build
+
+      - name: Check tile host
+        env:
+          TILE_BASE_URL: ${{ vars.TILE_BASE_URL }}
+        run: |
+          if [ -z "$TILE_BASE_URL" ]; then
+            echo "::warning::TILE_BASE_URL is not set; the web app will show blank map overlays."
+          else
+            echo "Tiles will load from $TILE_BASE_URL"
+          fi
+
+      - name: Build web app
+        env:
+          VITE_TILE_BASE_URL: ${{ vars.TILE_BASE_URL }}
+        run: pnpm --filter web build:pages
+
+      - name: Combine sites
+        run: cp -r apps/web/dist apps/docs/dist/app
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
