@@ -73,7 +73,7 @@ export const DATA_CREDITS: readonly CreditGroup[] = [
       },
       {
         label:
-          "Esri World Light Gray Canvas, World Imagery, World Boundaries and Places (basemaps)",
+          "Esri World Ocean Base, World Imagery, World Boundaries and Places (basemaps); Mapzen/AWS terrain tiles (3D and hill shading)",
         href: "https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9",
       },
       {
