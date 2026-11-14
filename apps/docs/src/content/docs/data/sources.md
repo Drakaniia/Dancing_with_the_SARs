@@ -15,7 +15,7 @@ those files into map tiles and a manifest.
 |             |                                                                                                                                                                                    |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Role        | The team's data-processing repo: NISAR, Landsat, MODIS, climate and terrain products for Sarangani and Davao Occidental                                                            |
-| Commit used | [`7ea38ff1b5c0dd4571b1935d01c5bd71ebf72862`](https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar/tree/7ea38ff1b5c0dd4571b1935d01c5bd71ebf72862) on `main` |
+| Commit used | [`1505baefd6f0443f80379a8979c995dc2c90bed5`](https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar/tree/1505baefd6f0443f80379a8979c995dc2c90bed5) on `main` |
 | Contents    | 212 files (727 MB): 186 GeoTIFFs, the area-of-interest boundary, CSV tables, processing scripts                                                                                    |
 | Grid        | EPSG:32651 (UTM 51N), 30 m                                                                                                                                                         |
 

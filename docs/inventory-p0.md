@@ -15,7 +15,7 @@ commands at the end.
 |               |                                                                                |
 | ------------- | ------------------------------------------------------------------------------ |
 | Repo          | `monteropeterdominic-arch/sarangani-davao-occidental-nisar`                    |
-| Pinned commit | `7ea38ff1b5c0dd4571b1935d01c5bd71ebf72862` (`main`, no tags or releases exist) |
+| Pinned commit | `1505baefd6f0443f80379a8979c995dc2c90bed5` (`main`, no tags or releases exist) |
 | Fetched       | 2026-11-02T06:24:31Z · 212 files · 727,237,938 bytes                           |
 | Location      | gitignored `data/` (D3), populated by `fetch_data.py`                          |
 

@@ -17,7 +17,7 @@ The older `nisar-mindanao` repository is a draft. Do not use it.
 
 |                |                                                                                |
 | -------------- | ------------------------------------------------------------------------------ |
-| Pinned commit  | `7ea38ff1b5c0dd4571b1935d01c5bd71ebf72862` (`main`; no tags or releases exist) |
+| Pinned commit  | `1505baefd6f0443f80379a8979c995dc2c90bed5` (`main`; no tags or releases exist) |
 | Size           | 212 files, 727,237,938 bytes                                                   |
 | Local location | gitignored `data/`, populated by `scripts/tiles/fetch_data.py`                 |
 | Pin record     | `data/.pin.json` (repo, commit, file and byte counts)                          |

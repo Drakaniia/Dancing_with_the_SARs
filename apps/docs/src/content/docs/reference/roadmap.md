@@ -36,7 +36,7 @@ pixel sampling.
 
 | Phase | Scope                                                                                                | Status                               |
 | ----- | ---------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| P0    | Inventory: fetch, contract checks, tile estimate                                                     | Done, at commit `7ea38ff`            |
+| P0    | Inventory: fetch, contract checks, tile estimate                                                     | Done, at commit `1505bae`            |
 | P1    | Pipeline: warp → ramp → tile → manifest → report, incremental, budget gate, schema test              | Done (pipeline 2.1.0)                |
 | P2    | App data model: manifest types and validator, stores, timeline union and snapping, families, legends | Done                                 |
 | P3    | Map: manifest-driven `TileOverlay`, boundary GeoJSON, fit to the area of interest                    | Done; tile-error reporting not wired |

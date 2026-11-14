@@ -24,7 +24,7 @@ export function DataStatus() {
     : tileErrorCount > 0
       ? `${dataLayerCount} layers · ${tileErrorCount} tile warning(s)`
       : manifest
-        ? `${dataLayerCount} layers · ${manifest.dates.length} dates (7ea38ff)`
+        ? `${dataLayerCount} layers · ${manifest.dates.length} dates (1505bae)`
         : DATA_STATUS.label;
 
   return (

@@ -14,7 +14,7 @@ export const DASHBOARD = {
 } as const;
 
 export const DATA_STATUS = {
-  label: "NISAR Release 7ea38ff · 318 Layer-Dates",
+  label: "NISAR Release 1505bae · 318 Layer-Dates",
   state: "loaded",
 } as const;
 
@@ -354,7 +354,7 @@ export const SAMPLE_DATASET: Dataset = {
   bounds: SARANGANI_DAVOCC_BOUNDS,
   crs: "EPSG:32651",
   units: "dB",
-  source: "NISAR L2 GCOV · HLS · MODIS · SRTM (7ea38ff)",
+  source: "NISAR L2 GCOV · HLS · MODIS · SRTM (1505bae)",
 };
 
 export const SAMPLE_DATASETS: readonly Dataset[] = [SAMPLE_DATASET];

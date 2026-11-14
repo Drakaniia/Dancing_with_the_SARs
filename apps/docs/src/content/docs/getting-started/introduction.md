@@ -51,7 +51,7 @@ never shows a value it cannot trace back to a source file. See [Data sources](/D
 
 |                  |                                                                                                                              |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Data             | [sarangani-davao-occidental-nisar](https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar) @ `7ea38ff` |
+| Data             | [sarangani-davao-occidental-nisar](https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar) @ `1505bae` |
 | Area of interest | Sarangani + Davao Occidental, 5,268 km², bounds 124.357–125.715 °E, 5.365–6.633 °N                                           |
 | Native grid      | EPSG:32651 (UTM 51N), 30 m                                                                                                   |
 | Catalogue        | 57 layers, 318 layer-dates, 81 timeline periods                                                                              |

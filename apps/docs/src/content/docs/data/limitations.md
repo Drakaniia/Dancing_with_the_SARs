@@ -12,7 +12,7 @@ UI: once in the provenance dialog, and per layer as caveats.
 The **Dataset Provenance & Scientific Caveats** dialog opens from the data status pill, the
 database icon, or **Settings → Release Provenance**. It reports:
 
-- **Pinned commit:** `7ea38ff1`, the exact upstream release consumed.
+- **Pinned commit:** `1505bae1`, the exact upstream release consumed.
 - **Catalogue scope:** 57 layers, 318 slices.
 - **Tile pyramid:** 28,530 tiles, about 506.5 MB.
 - **Native grid and CRS:** EPSG:32651, 30 m.
