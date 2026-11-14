@@ -11,7 +11,12 @@ import {
   TERRAIN_SOURCE_ID,
 } from "@/features/map/useMapLibre";
 import { SAMPLE_LAYERS } from "@/fixtures/sample-dashboard";
-import { metersPerPixel, tileSegment, tileTemplate } from "@/shared/utils/geo";
+import {
+  metersPerPixel,
+  resolveTileUrl,
+  tileSegment,
+  tileTemplate,
+} from "@/shared/utils/geo";
 import { useLayerStore } from "@/stores/layerStore";
 import { useUiStore } from "@/stores/uiStore";
 
@@ -136,5 +141,18 @@ describe("map scale & tile path helpers", () => {
         tileSegment("2026-10 (vs 2026-09)"),
       ),
     ).toBe("tiles/radar-change-hh-monthly/2026-10-vs-2026-09/{z}/{x}/{y}.png");
+  });
+
+  it("prefers a configured remote tile base over the app origin", () => {
+    const rel = "tiles/terrain-slope/static/{z}/{x}/{y}.png";
+    expect(
+      resolveTileUrl(rel, "https://pub-abc.r2.dev/", "http://tauri.localhost"),
+    ).toBe("https://pub-abc.r2.dev/tiles/terrain-slope/static/{z}/{x}/{y}.png");
+    expect(resolveTileUrl(rel, "  ", "http://localhost:5173")).toBe(
+      "http://localhost:5173/tiles/terrain-slope/static/{z}/{x}/{y}.png",
+    );
+    expect(resolveTileUrl(rel, undefined, "")).toBe(
+      "/tiles/terrain-slope/static/{z}/{x}/{y}.png",
+    );
   });
 });

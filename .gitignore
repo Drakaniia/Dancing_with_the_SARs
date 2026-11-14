@@ -9,6 +9,8 @@ apps/desktop/src-tauri/target
 __pycache__/
 # generated map tiles (~480 MB): rebuild with scripts/tiles/pipeline.py, see docs/SETUP.md
 /apps/web/public/tiles/
+# local Vite env overrides (e.g. VITE_TILE_BASE_URL)
+*.local
 
 .codegraph/
 

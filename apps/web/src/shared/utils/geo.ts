@@ -57,3 +57,18 @@ export function tileTemplate(
 ): string {
   return `tiles/${changeTypeOrLayerId}/${date}/{z}/{x}/{y}.png`;
 }
+
+/**
+ * Absolute URL for a relative tile path such as `tiles/<id>/<segment>/{z}/{x}/{y}.png`.
+ * A configured remote base (`VITE_TILE_BASE_URL`, e.g. a Cloudflare R2 bucket holding the
+ * `tiles/` prefix) wins; otherwise tiles come from the app's own origin (`public/tiles/`).
+ */
+export function resolveTileUrl(
+  relPath: string,
+  remoteBase: string | undefined,
+  origin: string,
+): string {
+  const remote = remoteBase?.trim().replace(/\/+$/, "");
+  if (remote) return `${remote}/${relPath}`;
+  return origin ? `${origin}/${relPath}` : `/${relPath}`;
+}

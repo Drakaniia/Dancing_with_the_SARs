@@ -1,6 +1,7 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useEffect, useRef } from "react";
 import {
+  resolveTileUrl,
   SARANGANI_DAVOCC_BOUNDS,
   tileSegment,
   tileTemplate,
@@ -12,6 +13,8 @@ const BELOW_LAYER_ID = "aoi-boundary-casing";
 const FALLBACK_BELOW_ID = "cities-labels";
 const LAYER_PREFIX = "nisar-";
 const SOURCE_SUFFIX = "-source";
+// Remote tile host baked in at build time (see vite-env.d.ts); unset = public/tiles/.
+const TILE_BASE_URL = import.meta.env.VITE_TILE_BASE_URL;
 
 export interface TileOverlayProps {
   map: MapLibreMap | null;
@@ -185,7 +188,7 @@ export function TileOverlay({ map, ready }: TileOverlayProps) {
       const relPath = entry?.tilePath
         ? entry.tilePath
         : tileTemplate(layer.id, tileSegment(period));
-      const tilePath = origin ? `${origin}/${relPath}` : `/${relPath}`;
+      const tilePath = resolveTileUrl(relPath, TILE_BASE_URL, origin);
 
       if (builtTilePathsRef.current[layer.id] !== tilePath) {
         removeOverlays(map, [layer.id]);
