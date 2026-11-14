@@ -1,6 +1,6 @@
 [package]
 name = "nisar-surface-change-monitor"
-version = "0.2.0"
+version = "0.3.0"
 description = "NISAR Surface Change Monitor"
 authors = ["The Cartographers"]
 license = "MIT"
