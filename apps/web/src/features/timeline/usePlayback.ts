@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { useDatasetStore } from "@/stores/datasetStore";
+import { getTimelineSteps, stepIndexFor } from "./timelineSteps";
 
 export const PLAYBACK_SPEEDS = [0.5, 1, 2, 4] as const;
 export type PlaybackSpeed = (typeof PLAYBACK_SPEEDS)[number];
@@ -31,10 +32,11 @@ function tick(now: number): void {
   if (!playing || now - lastStep < BASE_STEP_MS / speed) return;
   lastStep = now;
 
-  const { manifest, datasets, currentDate, setCurrentDate } =
-    useDatasetStore.getState();
-  const dates = manifest?.dates ?? datasets[0]?.dates ?? [];
-  const next = nextDate(dates, currentDate);
+  const { currentDate, setCurrentDate } = useDatasetStore.getState();
+  const steps = getTimelineSteps();
+  if (steps.length === 0) return;
+  const here = steps[stepIndexFor(steps, currentDate)];
+  const next = nextDate(steps, here);
   if (next) setCurrentDate(next);
 }
 

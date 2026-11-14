@@ -4,13 +4,14 @@ import { TIME_SERIES } from "@/fixtures/sample-dashboard";
 import { IconButton } from "@/shared/ui/IconButton";
 import { Slider } from "@/shared/ui/Slider";
 import { isForecastPeriod, resolvePeriod } from "@/shared/utils/dates";
-import { useDatasetStore, useTimelineDates } from "@/stores/datasetStore";
+import { useDatasetStore } from "@/stores/datasetStore";
 import { useActiveLayer } from "@/stores/layerStore";
 import { PlaybackButton } from "./PlaybackButton";
+import { stepIndexFor, useTimelineSteps } from "./timelineSteps";
 import { PLAYBACK_SPEEDS, usePlayback } from "./usePlayback";
 
 export function TimeSeriesPanel() {
-  const dates = useTimelineDates();
+  const dates = useTimelineSteps();
   const currentDate = useDatasetStore((state) => state.currentDate);
   const range = useDatasetStore((state) => state.range);
   const setCurrentDate = useDatasetStore((state) => state.setCurrentDate);
@@ -20,7 +21,7 @@ export function TimeSeriesPanel() {
 
   const steps = dates.length > 0 ? dates : [...TIME_SERIES.ticks];
   const lastIndex = Math.max(steps.length - 1, 0);
-  const index = Math.max(steps.indexOf(currentDate ?? ""), 0);
+  const index = stepIndexFor(steps, currentDate);
 
   const stepTo = (nextIndex: number) => {
     const date = steps[Math.min(Math.max(nextIndex, 0), lastIndex)];

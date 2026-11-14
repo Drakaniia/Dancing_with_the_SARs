@@ -2,9 +2,10 @@ import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Slider } from "@/shared/ui/Slider";
 import { isForecastPeriod } from "@/shared/utils/dates";
-import { useDatasetStore, useTimelineDates } from "@/stores/datasetStore";
+import { useDatasetStore } from "@/stores/datasetStore";
 import { DUR_MED, EASE_OUT, REDUCED_MOTION } from "@/styles/tokens";
 import { PlaybackButton } from "./PlaybackButton";
+import { stepIndexFor, useTimelineSteps } from "./timelineSteps";
 import { usePlayback } from "./usePlayback";
 
 const IDLE_MS = 3000;
@@ -12,7 +13,7 @@ const IDLE_OPACITY = 0.55;
 const MAX_VISIBLE_TICKS = 9;
 
 export function AnimationBar() {
-  const dates = useTimelineDates();
+  const dates = useTimelineSteps();
   const currentDate = useDatasetStore((state) => state.currentDate);
   const setCurrentDate = useDatasetStore((state) => state.setCurrentDate);
   const { playing, toggle, pause, play } = usePlayback();
@@ -40,7 +41,8 @@ export function AnimationBar() {
   }, []);
 
   const lastIndex = Math.max(dates.length - 1, 0);
-  const index = Math.max(dates.indexOf(currentDate ?? ""), 0);
+  const index = stepIndexFor(dates, currentDate);
+  const shownDate = dates[index] ?? currentDate;
 
   const visibleTicks = useMemo(() => {
     if (dates.length <= MAX_VISIBLE_TICKS) return dates;
@@ -85,12 +87,12 @@ export function AnimationBar() {
               if (wasPlayingRef.current) play();
             }}
             aria-label="Time series position"
-            ariaValueText={currentDate ?? undefined}
+            ariaValueText={shownDate ?? undefined}
           />
 
           <div className="flex justify-between pt-1 font-display text-[11px] tabular-nums">
             {visibleTicks.map((date) => {
-              const active = date === currentDate;
+              const active = date === shownDate;
               const forecast = isForecastPeriod(date);
               return (
                 <button
