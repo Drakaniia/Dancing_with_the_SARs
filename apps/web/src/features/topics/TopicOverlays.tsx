@@ -188,7 +188,14 @@ export function TopicOverlays({
   ready: boolean;
 }) {
   const { topicId, viewId, option, frame } = useTopicStore();
+  const started = useTopicStore((s) => s.started);
+  const applyStart = useTopicStore((s) => s.applyStart);
   const manifest = useDatasetStore((s) => s.manifest);
+
+  // Show the opening view once the real layers are in the store.
+  useEffect(() => {
+    if (manifest && !started) applyStart();
+  }, [manifest, started, applyStart]);
 
   useEffect(() => {
     if (!map || !ready) return;
