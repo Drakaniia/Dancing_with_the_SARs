@@ -50,3 +50,23 @@ export const TOPICS: readonly TopicMeta[] = [
     families: ["outlook"],
   },
 ] as const;
+
+/**
+ * Secondary layers (single passes, single-track pairs, helper and baseline layers). They sit
+ * under "More maps" in each group so the main list stays short; a secondary layer that is
+ * switched on or selected is always shown.
+ */
+const EXTRA_LAYER_PATTERNS: readonly RegExp[] = [
+  /\(by date\)/i,
+  /same-track/i,
+  /valid observations/i,
+  /^baseline/i,
+  /composite/i,
+  /classifier confidence/i,
+  /slope aspect/i,
+  /sensitivity/i,
+];
+
+export function isExtraLayer(name: string): boolean {
+  return EXTRA_LAYER_PATTERNS.some((pattern) => pattern.test(name));
+}

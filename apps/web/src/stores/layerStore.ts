@@ -148,7 +148,7 @@ export const useLayerStore = create<LayerState>((set) => ({
           id: "satellite-base",
           name: "Satellite (Esri World Imagery)",
           kind: "basemap",
-          visible: true,
+          visible: false,
           opacity: 1,
           order: order++,
           showInLayerList: true,
