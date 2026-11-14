@@ -4,7 +4,8 @@
  *
  *   node scripts/r2/tiles.mjs setup    # bucket + CORS + public r2.dev URL + apps/web/.env.local
  *   node scripts/r2/tiles.mjs index    # write apps/web/public/tiles/index.json
- *   node scripts/r2/tiles.mjs upload   # index + parallel, resumable upload of changed tiles
+ *   node scripts/r2/tiles.mjs upload   # index + parallel, resumable upload of changed tiles, then data
+ *   node scripts/r2/tiles.mjs data     # publish only manifest/tables/GeoJSON to <bucket>/data/ (seconds)
  *   node scripts/r2/tiles.mjs all      # setup, then upload (default)
  *
  * Options:
@@ -34,6 +35,9 @@ const ROOT = path.resolve(
 );
 const TILES_DIR = path.join(ROOT, "apps/web/public/tiles");
 const INDEX_FILE = path.join(TILES_DIR, "index.json");
+const DATA_DIR = path.join(ROOT, "apps/web/public/data");
+// Small files the app reads at runtime; served from <bucket>/data/ so they update without a release.
+const DATA_CACHE_CONTROL = "public, max-age=60";
 const ENV_FILE = path.join(ROOT, "apps/web/.env.local");
 const TILE_CACHE_CONTROL = "public, max-age=86400";
 const INDEX_CACHE_CONTROL = "public, max-age=60";
@@ -82,8 +86,10 @@ function parseArgs(argv) {
     } else if (!arg.startsWith("-")) opts.command = arg;
     else fail(`Unknown option ${arg}`);
   }
-  if (!["setup", "index", "upload", "all"].includes(opts.command)) {
-    fail(`Unknown command "${opts.command}" (use setup, index, upload or all)`);
+  if (!["setup", "index", "upload", "data", "all"].includes(opts.command)) {
+    fail(
+      `Unknown command "${opts.command}" (use setup, index, upload, data or all)`,
+    );
   }
   if (!/^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/.test(opts.bucket)) {
     fail(`Invalid bucket name "${opts.bucket}" (3-63 chars: a-z, 0-9, -)`);
@@ -325,17 +331,24 @@ function saveState(bucket, state) {
   fs.writeFileSync(statePath(bucket), JSON.stringify(state));
 }
 
-async function putObject(opts, key, file, cacheControl) {
+function contentType(key) {
+  if (key.endsWith(".geojson")) return "application/geo+json";
+  if (key.endsWith(".json")) return "application/json";
+  return "image/png";
+}
+
+/** `key` is relative to the bucket's `tiles/` prefix unless `prefix` says otherwise. */
+async function putObject(opts, key, file, cacheControl, prefix = "tiles") {
   const args = [
     "r2",
     "object",
     "put",
-    `${opts.bucket}/tiles/${key}`,
+    `${opts.bucket}/${prefix}/${key}`,
     "--file",
     file,
     "--remote",
     "--content-type",
-    key.endsWith(".json") ? "application/json" : "image/png",
+    contentType(key),
     "--cache-control",
     cacheControl,
   ];
@@ -435,15 +448,53 @@ async function upload(opts) {
   console.log("Upload complete: tiles/index.json published.");
 }
 
+/** Publishes the small runtime data files. Manifest goes last: it points at tiles and tables. */
+async function uploadData(opts) {
+  if (!fs.existsSync(DATA_DIR)) {
+    fail(
+      `${path.relative(ROOT, DATA_DIR)} not found. Run scripts/tiles/pipeline.py first.`,
+    );
+  }
+  const rank = (f) => (f === "manifest.json" ? 1 : 0);
+  const files = fs
+    .readdirSync(DATA_DIR)
+    .filter((f) => /\.(json|geojson)$/.test(f))
+    .sort((a, b) => rank(a) - rank(b) || (a < b ? -1 : 1));
+  console.log(`Publishing ${files.length} data files to ${opts.bucket}/data/`);
+  for (const file of files) {
+    if (opts.dryRun) {
+      console.log(
+        `  [dry-run] wrangler r2 object put ${opts.bucket}/data/${file}`,
+      );
+      continue;
+    }
+    const result = await putObject(
+      opts,
+      file,
+      path.join(DATA_DIR, file),
+      DATA_CACHE_CONTROL,
+      "data",
+    );
+    if (result.code !== 0) {
+      fail(`data/${file} upload failed: ${result.out.trim()}`);
+    }
+    console.log(`  data/${file}`);
+  }
+}
+
 // ---------------------------------------------------------------- main
 
 const opts = parseArgs(process.argv.slice(2));
 if (opts.command === "setup") await setup(opts);
 else if (opts.command === "index") writeIndex(listTiles());
-else if (opts.command === "upload") await upload(opts);
-else {
+else if (opts.command === "data") await uploadData(opts);
+else if (opts.command === "upload") {
+  await upload(opts);
+  await uploadData(opts);
+} else {
   const url = await setup(opts);
   await upload(opts);
+  await uploadData(opts);
   if (url)
     console.log(
       `\nTiles are served from ${url}/tiles/. Rebuild the app to use them.`,

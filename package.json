@@ -17,6 +17,7 @@
     "docs:preview": "pnpm --filter docs preview",
     "r2:setup": "node scripts/r2/tiles.mjs setup",
     "r2:upload": "node scripts/r2/tiles.mjs upload",
+    "r2:data": "node scripts/r2/tiles.mjs data",
     "r2:tiles": "node scripts/r2/tiles.mjs all"
   },
   "devDependencies": {
