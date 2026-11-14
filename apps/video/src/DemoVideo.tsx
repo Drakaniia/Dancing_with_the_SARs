@@ -1,5 +1,5 @@
 import {Audio} from '@remotion/media';
-import {AbsoluteFill, Sequence, staticFile} from 'remotion';
+import {AbsoluteFill, Sequence, staticFile, Track} from 'remotion';
 import {AppChrome} from './components/AppChrome';
 import {CreditsCard} from './components/CreditsCard';
 import {Hud} from './components/Hud';
@@ -28,12 +28,48 @@ export const DemoVideo = () => (
         <CreditsCard />
       </Sequence>
     </AbsoluteFill>
-    <Audio
-      src={staticFile(
-        'ElevenLabs_2026-11-14T12_21_12_Jessica - Playful, Bright, Warm_pvc_s50_sim75_v4.mp3'
-      )}
-      durationInFrames={1124.57}
-      from={5}
-    />
+    <Track
+      name="ElevenLabs_2026-11-14T12_21_12_Jessica - Playful, Bright, Warm_pvc_s50_sim75_v4.mp3"
+    >
+      <Audio
+        src={staticFile(
+          'ElevenLabs_2026-11-14T12_21_12_Jessica - Playful, Bright, Warm_pvc_s50_sim75_v4.mp3'
+        )}
+        from={5}
+        durationInFrames={43}
+      />
+      <Audio
+        src={staticFile(
+          'ElevenLabs_2026-11-14T12_21_12_Jessica - Playful, Bright, Warm_pvc_s50_sim75_v4.mp3'
+        )}
+        from={49}
+        durationInFrames={73}
+        trimBefore={52.4300000000001}
+      />
+      <Audio
+        src={staticFile(
+          'ElevenLabs_2026-11-14T12_21_12_Jessica - Playful, Bright, Warm_pvc_s50_sim75_v4.mp3'
+        )}
+        from={123}
+        durationInFrames={146}
+        trimBefore={198.43}
+      />
+      <Audio
+        src={staticFile(
+          'ElevenLabs_2026-11-14T12_21_12_Jessica - Playful, Bright, Warm_pvc_s50_sim75_v4.mp3'
+        )}
+        from={271}
+        durationInFrames={234}
+        trimBefore={351.43}
+      />
+      <Audio
+        src={staticFile(
+          'ElevenLabs_2026-11-14T12_21_12_Jessica - Playful, Bright, Warm_pvc_s50_sim75_v4.mp3'
+        )}
+        from={506}
+        durationInFrames={482.57}
+        trimBefore={642.43}
+      />
+    </Track>
   </>
 );
