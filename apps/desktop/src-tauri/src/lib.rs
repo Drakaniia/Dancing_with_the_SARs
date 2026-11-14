@@ -17,6 +17,8 @@ pub fn run() {
             commands::export::export_screenshot,
             commands::fs_cache::read_tile_cache,
             commands::fs_cache::write_tile_cache,
+            commands::fs_cache::missing_tile_cache,
+            commands::fs_cache::clear_tile_cache,
             commands::sample::sample_layers,
         ])
         .run(tauri::generate_context!())
