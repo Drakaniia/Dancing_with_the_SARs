@@ -8,8 +8,10 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_store::Builder::new().build())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| {
             let _store = app.store("config.json")?;
+            commands::updater::check_on_startup(app.handle());
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -20,6 +22,7 @@ pub fn run() {
             commands::fs_cache::missing_tile_cache,
             commands::fs_cache::clear_tile_cache,
             commands::sample::sample_layers,
+            commands::updater::check_for_updates,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

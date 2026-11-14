@@ -1,5 +1,12 @@
-import { isTauri } from "@tauri-apps/api/core";
-import { ExternalLink, Info, Satellite, Scale, X } from "lucide-react";
+import { invoke, isTauri } from "@tauri-apps/api/core";
+import {
+  ExternalLink,
+  Info,
+  RefreshCw,
+  Satellite,
+  Scale,
+  X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useUiStore } from "@/stores/uiStore";
 import {
@@ -30,10 +37,57 @@ function useAppVersion(open: boolean): string | null {
   return version;
 }
 
+type UpdateStatus = "idle" | "checking" | "found" | "latest" | "error";
+
+const UPDATE_STATUS_TEXT: Record<Exclude<UpdateStatus, "idle">, string> = {
+  checking: "Checking…",
+  found: "Update found",
+  latest: "Up to date",
+  error: "Check failed. Try again later.",
+};
+
+/** Desktop-only manual update check; the Rust side shows the install prompt. */
+function UpdateCheck() {
+  const [status, setStatus] = useState<UpdateStatus>("idle");
+
+  const check = async () => {
+    setStatus("checking");
+    try {
+      const found = await invoke<boolean>("check_for_updates");
+      setStatus(found ? "found" : "latest");
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  return (
+    <span className="inline-flex items-center gap-2">
+      <button
+        type="button"
+        onClick={() => void check()}
+        disabled={status === "checking"}
+        className="inline-flex items-center gap-1 rounded-[var(--radius-sm)] bg-[var(--color-fill-3)] px-2 py-1 text-caption text-[var(--color-text)] hover:bg-[var(--color-fill-4)] disabled:opacity-60"
+      >
+        <RefreshCw
+          size={13}
+          className={status === "checking" ? "animate-spin" : undefined}
+        />
+        Check for updates
+      </button>
+      {status !== "idle" ? (
+        <output className="text-caption text-[var(--color-text-secondary)]">
+          {UPDATE_STATUS_TEXT[status]}
+        </output>
+      ) : null}
+    </span>
+  );
+}
+
 export function AboutModal() {
   const open = useUiStore((state) => state.aboutOpen);
   const setOpen = useUiStore((state) => state.setAboutOpen);
   const version = useAppVersion(open);
+  const desktop = isTauri();
 
   useEffect(() => {
     if (!open) return;
@@ -85,6 +139,11 @@ export function AboutModal() {
               Built by The Cartographers for the NASA Space Apps Challenge
               2026.
             </p>
+            {desktop ? (
+              <div className="pt-1">
+                <UpdateCheck />
+              </div>
+            ) : null}
           </div>
 
           <p className="flex items-start gap-2 rounded-[var(--radius-md)] border border-[var(--color-panel-border)] bg-[var(--color-fill-1)] px-3 py-2 text-body text-[var(--color-text)]">
