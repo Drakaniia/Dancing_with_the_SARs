@@ -9,6 +9,11 @@ name: Release
 #
 # The draft release is created once, before the matrix starts, so the parallel
 # builds all upload to the same release instead of racing to create their own.
+#
+# Map tiles (~480 MB) are not committed, so the installers stream them from a
+# remote host. Set the repository variable TILE_BASE_URL (Settings -> Secrets and
+# variables -> Actions -> Variables) to the public bucket URL, for example
+# https://pub-<id>.r2.dev. It is baked into the frontend as VITE_TILE_BASE_URL.
 
 on:
   push:
@@ -105,10 +110,22 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Check tile host
+        shell: bash
+        env:
+          TILE_BASE_URL: ${{ vars.TILE_BASE_URL }}
+        run: |
+          if [ -z "$TILE_BASE_URL" ]; then
+            echo "::warning::TILE_BASE_URL is not set; installers will show blank map overlays."
+          else
+            echo "Tiles will load from $TILE_BASE_URL"
+          fi
+
       - name: Build and upload release assets
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VITE_TILE_BASE_URL: ${{ vars.TILE_BASE_URL }}
         with:
           projectPath: apps/desktop
           tauriScript: pnpm tauri
