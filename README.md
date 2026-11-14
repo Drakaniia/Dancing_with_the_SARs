@@ -41,6 +41,15 @@ pnpm run tauri dev
 pnpm run tauri build
 ```
 
+## Documentation
+
+Full documentation (user guide, data catalogue, tile pipeline, architecture) is an Astro Starlight site in `apps/docs`:
+
+```bash
+pnpm docs:dev     # http://localhost:4321
+pnpm docs:build   # static site in apps/docs/dist/
+```
+
 ## Project Structure
 
 See `docs/superpowers/specs/2026-10-10-project-structure-design.md` for the full architecture spec.
