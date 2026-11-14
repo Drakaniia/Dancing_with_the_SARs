@@ -5,3 +5,4 @@ packages:
 # package.json "pnpm.onlyBuiltDependencies" field, which pnpm no longer reads).
 allowBuilds:
   esbuild: true
+  workerd: true

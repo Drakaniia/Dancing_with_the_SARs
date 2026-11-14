@@ -14,9 +14,13 @@
     "lint:fix": "biome check --write apps/web/src apps/web/tests",
     "docs:dev": "pnpm --filter docs dev",
     "docs:build": "pnpm --filter docs build",
-    "docs:preview": "pnpm --filter docs preview"
+    "docs:preview": "pnpm --filter docs preview",
+    "r2:setup": "node scripts/r2/tiles.mjs setup",
+    "r2:upload": "node scripts/r2/tiles.mjs upload",
+    "r2:tiles": "node scripts/r2/tiles.mjs all"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.1"
+    "@biomejs/biome": "2.3.1",
+    "wrangler": "^4.161.0"
   }
 }
