@@ -3,6 +3,15 @@
   "name": "NISAR Surface Change Monitor · Sarangani & Davao Occidental",
   "glyphs": "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
   "sources": {
+    "esri-light-gray": {
+      "type": "raster",
+      "tiles": [
+        "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+      ],
+      "tileSize": 256,
+      "maxzoom": 16,
+      "attribution": "Esri, HERE, Garmin, © OpenStreetMap contributors"
+    },
     "esri-world-imagery": {
       "type": "raster",
       "tiles": [
@@ -130,9 +139,9 @@
     }
   },
   "sky": {
-    "sky-color": "#0b2238",
-    "horizon-color": "#5b7c99",
-    "fog-color": "#1b3550",
+    "sky-color": "#dfe9f2",
+    "horizon-color": "#f1efe9",
+    "fog-color": "#f4f1ea",
     "sky-horizon-blend": 0.6,
     "horizon-fog-blend": 0.6,
     "fog-ground-blend": 0.9
@@ -141,12 +150,19 @@
     {
       "id": "background",
       "type": "background",
-      "paint": { "background-color": "#091522" }
+      "paint": { "background-color": "#f4f1ea" }
+    },
+    {
+      "id": "light-basemap",
+      "type": "raster",
+      "source": "esri-light-gray",
+      "paint": { "raster-opacity": 1 }
     },
     {
       "id": "basemap",
       "type": "raster",
       "source": "esri-world-imagery",
+      "layout": { "visibility": "none" },
       "paint": { "raster-opacity": 1 }
     },
     {
@@ -183,13 +199,13 @@
           "match",
           ["get", "kind"],
           "sea",
-          "#b8dff8",
+          "#4f7896",
           "epicentre",
-          "#ffb399",
-          "#fffdf8"
+          "#c0392b",
+          "#2a2620"
         ],
-        "text-halo-color": "#14181d",
-        "text-halo-width": 1.4
+        "text-halo-color": "#ffffff",
+        "text-halo-width": 1.6
       }
     }
   ]

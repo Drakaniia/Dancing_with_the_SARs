@@ -25,7 +25,7 @@ import { Switch } from "@/shared/ui/Switch";
 import { gradientFromRamp } from "@/shared/utils/colorScales";
 import { useLayerStore } from "@/stores/layerStore";
 import { ChangeTypeRow } from "./ChangeTypeRow";
-import { TOPICS, type TopicId } from "./topics";
+import { isExtraLayer, TOPICS, type TopicId } from "./topics";
 
 const FAMILY_ICONS: Record<LayerFamily, LucideIcon> = {
   radar: Radar,
@@ -99,6 +99,10 @@ export function ChangeTypeList() {
     );
   }
 
+  const [showExtras, setShowExtras] = useState<
+    Partial<Record<LayerFamily, boolean>>
+  >({});
+
   const toggleFamily = (family: LayerFamily) => {
     setExpandedFamilies((prev) => ({ ...prev, [family]: !prev[family] }));
   };
@@ -110,6 +114,12 @@ export function ChangeTypeList() {
     const isOpen = expandedFamilies[meta.family];
     const activeCount = familyLayers.filter((l) => l.visible).length;
     const Icon = FAMILY_ICONS[meta.family];
+    const mainLayers = familyLayers.filter(
+      (l) => !isExtraLayer(l.name) || l.visible || l.id === activeLayerId,
+    );
+    const extraCount = familyLayers.length - mainLayers.length;
+    const extrasOpen = showExtras[meta.family] === true;
+    const shownLayers = extrasOpen ? familyLayers : mainLayers;
 
     return (
       <div
@@ -158,7 +168,7 @@ export function ChangeTypeList() {
 
         {isOpen ? (
           <ul className="flex flex-col gap-0.5 border-t border-[var(--color-panel-border)] bg-[var(--color-panel)] p-1">
-            {familyLayers.map((layer) => {
+            {shownLayers.map((layer) => {
               const isFocused = layer.id === activeLayerId;
               const periodCount = layer.periods?.length ?? 1;
               return (
@@ -212,6 +222,23 @@ export function ChangeTypeList() {
                 </li>
               );
             })}
+            {extraCount > 0 || extrasOpen ? (
+              <li>
+                <button
+                  type="button"
+                  aria-expanded={extrasOpen}
+                  onClick={() =>
+                    setShowExtras((prev) => ({
+                      ...prev,
+                      [meta.family]: !extrasOpen,
+                    }))
+                  }
+                  className="w-full rounded-[var(--radius-sm)] px-1.5 py-1 text-left text-caption text-[var(--color-accent)] hover:bg-[var(--color-fill-1)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:outline-none"
+                >
+                  {extrasOpen ? "Fewer maps" : `More maps (${extraCount})`}
+                </button>
+              </li>
+            ) : null}
           </ul>
         ) : null}
       </div>
