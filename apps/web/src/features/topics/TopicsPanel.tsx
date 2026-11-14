@@ -340,11 +340,11 @@ export function TopicsPanel() {
                   key={period}
                   type="button"
                   aria-pressed={period === activePeriod}
-                  onClick={() =>
-                    opt.kind === "images"
-                      ? selectFrame(index)
-                      : setCurrentDate(period)
-                  }
+                  onClick={() => {
+                    if (opt.kind === "images") selectFrame(index);
+                    // keep the app's date in step (its "nearest period" note and the timeline)
+                    if (/^\d{4}-\d{2}/.test(period)) setCurrentDate(period);
+                  }}
                   className={`rounded-[var(--radius-sm)] border px-1.5 py-0.5 font-display text-[11px] tabular-nums ${
                     period === activePeriod ? pillOn : pillOff
                   }`}
