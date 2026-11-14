@@ -227,6 +227,8 @@
   --rail-left-w-wide: 19.5rem;
   --rail-left-w-default: 17.5rem;
   --rail-right-w: 21.5rem;
+  /* Collapsed icon strip: one 32px icon button plus the rail padding on each side. */
+  --rail-collapsed-w: 3.25rem;
 
   /* ── Breakpoints ───────────────────────────────────────────────────────── */
   --breakpoint-default: 1024px;

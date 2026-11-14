@@ -41,6 +41,15 @@ export const DEFAULT_PANELS: Record<PanelId, boolean> = {
   "quick-stats": true,
 };
 
+/**
+ * Whether each inline rail is expanded or collapsed to its icon strip. The right rail starts
+ * collapsed so the map gets the room; the left rail holds the primary controls and starts open.
+ */
+export const DEFAULT_EXPANDED_RAILS: Record<RailSide, boolean> = {
+  left: true,
+  right: false,
+};
+
 export interface FlyToTarget {
   lng: number;
   lat: number;
@@ -52,6 +61,8 @@ export interface FlyToTarget {
 export interface UiState {
   railMode: RailMode;
   openRails: Record<RailSide, boolean>;
+  /** Inline (non-sheet) rails: expanded, or collapsed to an icon strip. Persisted. */
+  expandedRails: Record<RailSide, boolean>;
   panels: Record<PanelId, boolean>;
   provenanceOpen: boolean;
   aboutOpen: boolean;
@@ -65,6 +76,8 @@ export interface UiState {
   togglePanel: (id: PanelId) => void;
   setRailMode: (mode: RailMode) => void;
   toggleRail: (side: RailSide) => void;
+  setRailExpanded: (side: RailSide, expanded: boolean) => void;
+  toggleRailExpanded: (side: RailSide) => void;
   setProvenanceOpen: (open: boolean) => void;
   setAboutOpen: (open: boolean) => void;
   setActiveTool: (tool: ToolId | null) => void;
@@ -83,6 +96,7 @@ export interface UiState {
 
 const SETTINGS_STORE = "settings.json";
 const PANELS_KEY = "ui.panels";
+const RAILS_KEY = "ui.rails";
 
 const BREAKPOINT_DEFAULT = 1024;
 const BREAKPOINT_WIDE = 1440;
@@ -95,31 +109,40 @@ function isPanelId(value: string): value is PanelId {
   return (PANEL_IDS as readonly string[]).includes(value);
 }
 
-async function readPersistedPanels(): Promise<Partial<
-  Record<PanelId, boolean>
-> | null> {
+function isRailSide(value: string): value is RailSide {
+  return value === "left" || value === "right";
+}
+
+/** Reads a `Record<K, boolean>` setting, keeping only known keys. */
+async function readPersistedFlags<K extends string>(
+  key: string,
+  isKey: (value: string) => value is K,
+): Promise<Partial<Record<K, boolean>> | null> {
   if (!canPersist()) return null;
   try {
     const { load } = await import("@tauri-apps/plugin-store");
     const store = await load(SETTINGS_STORE, { autoSave: true });
-    const value = await store.get<Record<string, boolean>>(PANELS_KEY);
+    const value = await store.get<Record<string, boolean>>(key);
     if (!value || typeof value !== "object") return null;
-    const panels: Partial<Record<PanelId, boolean>> = {};
-    for (const [id, open] of Object.entries(value)) {
-      if (isPanelId(id) && typeof open === "boolean") panels[id] = open;
+    const flags: Partial<Record<K, boolean>> = {};
+    for (const [id, on] of Object.entries(value)) {
+      if (isKey(id) && typeof on === "boolean") flags[id] = on;
     }
-    return panels;
+    return flags;
   } catch {
     return null;
   }
 }
 
-async function persistPanels(panels: Record<PanelId, boolean>): Promise<void> {
+async function persistFlags(
+  key: string,
+  flags: Record<string, boolean>,
+): Promise<void> {
   if (!canPersist()) return;
   try {
     const { load } = await import("@tauri-apps/plugin-store");
     const store = await load(SETTINGS_STORE, { autoSave: true });
-    await store.set(PANELS_KEY, panels);
+    await store.set(key, flags);
   } catch {
     // Best-effort persistence.
   }
@@ -128,6 +151,7 @@ async function persistPanels(panels: Record<PanelId, boolean>): Promise<void> {
 export const useUiStore = create<UiState>((set) => ({
   railMode: "wide",
   openRails: { left: false, right: false },
+  expandedRails: { ...DEFAULT_EXPANDED_RAILS },
   panels: { ...DEFAULT_PANELS },
   provenanceOpen: false,
   aboutOpen: false,
@@ -141,14 +165,14 @@ export const useUiStore = create<UiState>((set) => ({
     set((state) => {
       if (state.panels[id] === open) return state;
       const panels = { ...state.panels, [id]: open };
-      void persistPanels(panels);
+      void persistFlags(PANELS_KEY, panels);
       return { panels };
     }),
 
   togglePanel: (id) =>
     set((state) => {
       const panels = { ...state.panels, [id]: !state.panels[id] };
-      void persistPanels(panels);
+      void persistFlags(PANELS_KEY, panels);
       return { panels };
     }),
 
@@ -158,6 +182,24 @@ export const useUiStore = create<UiState>((set) => ({
     set((state) => ({
       openRails: { ...state.openRails, [side]: !state.openRails[side] },
     })),
+
+  setRailExpanded: (side, expanded) =>
+    set((state) => {
+      if (state.expandedRails[side] === expanded) return state;
+      const expandedRails = { ...state.expandedRails, [side]: expanded };
+      void persistFlags(RAILS_KEY, expandedRails);
+      return { expandedRails };
+    }),
+
+  toggleRailExpanded: (side) =>
+    set((state) => {
+      const expandedRails = {
+        ...state.expandedRails,
+        [side]: !state.expandedRails[side],
+      };
+      void persistFlags(RAILS_KEY, expandedRails);
+      return { expandedRails };
+    }),
 
   setProvenanceOpen: (provenanceOpen) => set({ provenanceOpen }),
 
@@ -196,10 +238,14 @@ export function resolveRailMode(width: number): RailMode {
 }
 
 export async function hydrateUiStore(): Promise<void> {
-  const persisted = await readPersistedPanels();
-  if (!persisted) return;
+  const [panels, rails] = await Promise.all([
+    readPersistedFlags(PANELS_KEY, isPanelId),
+    readPersistedFlags(RAILS_KEY, isRailSide),
+  ]);
+  if (!panels && !rails) return;
   useUiStore.setState((state) => ({
-    panels: { ...state.panels, ...persisted },
+    panels: { ...state.panels, ...panels },
+    expandedRails: { ...state.expandedRails, ...rails },
   }));
 }
 

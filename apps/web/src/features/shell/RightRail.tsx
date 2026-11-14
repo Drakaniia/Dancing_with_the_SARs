@@ -3,46 +3,49 @@ import { CurrentViewCard } from "@/features/inspector/CurrentViewCard";
 import { LegendPanel } from "@/features/inspector/LegendPanel";
 import { LocationInfoPanel } from "@/features/inspector/LocationInfoPanel";
 import { QuickStatsPanel } from "@/features/inspector/QuickStatsPanel";
-import { Panel } from "@/shared/ui/Panel";
+import { Rail, type RailPanelDef, type RailPresentation } from "./Rail";
 
 /**
- * Right info rail. Panel order is locked to the reference:
+ * Panel order is locked to the reference:
  * Current View → Legend → Location Info → Quick Stats.
  */
-export function RightRail() {
+const RIGHT_PANELS: readonly RailPanelDef[] = [
+  {
+    id: "current-view",
+    title: "Current View",
+    icon: Eye,
+    Content: CurrentViewCard,
+  },
+  { id: "legend", title: "Legend", icon: Palette, Content: LegendPanel },
+  {
+    id: "location-info",
+    title: "Location Info",
+    icon: MapPin,
+    Content: LocationInfoPanel,
+  },
+  {
+    id: "quick-stats",
+    title: "Quick Stats",
+    icon: BarChart3,
+    Content: QuickStatsPanel,
+  },
+];
+
+export interface RightRailProps {
+  presentation?: RailPresentation;
+  onClose?: () => void;
+  expandedWidth?: string;
+}
+
+/** Right info rail. Starts collapsed to its icon strip on wide screens. */
+export function RightRail(props: RightRailProps) {
   return (
-    <aside
-      aria-label="Location and layer information"
-      className="flex h-full min-h-0 w-full flex-col gap-[var(--panel-gap)] overflow-y-auto bg-[var(--color-bg)] p-[var(--rail-pad)]"
-    >
-      <Panel
-        id="current-view"
-        title="Current View"
-        icon={<Eye size={16} strokeWidth={1.5} />}
-      >
-        <CurrentViewCard />
-      </Panel>
-      <Panel
-        id="legend"
-        title="Legend"
-        icon={<Palette size={16} strokeWidth={1.5} />}
-      >
-        <LegendPanel />
-      </Panel>
-      <Panel
-        id="location-info"
-        title="Location Info"
-        icon={<MapPin size={16} strokeWidth={1.5} />}
-      >
-        <LocationInfoPanel />
-      </Panel>
-      <Panel
-        id="quick-stats"
-        title="Quick Stats"
-        icon={<BarChart3 size={16} strokeWidth={1.5} />}
-      >
-        <QuickStatsPanel />
-      </Panel>
-    </aside>
+    <Rail
+      side="right"
+      label="Location and layer information"
+      title="Inspector"
+      panels={RIGHT_PANELS}
+      {...props}
+    />
   );
 }

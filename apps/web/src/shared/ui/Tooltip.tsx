@@ -13,7 +13,7 @@ import {
 } from "react";
 import { DUR_FAST, EASE_OUT, REDUCED_MOTION } from "@/styles/tokens";
 
-export type TooltipSide = "top" | "bottom";
+export type TooltipSide = "top" | "bottom" | "left" | "right";
 
 export interface TooltipTriggerProps {
   "aria-describedby"?: string;
@@ -35,8 +35,25 @@ export interface TooltipProps {
 }
 
 const OFFSET_CLASS: Record<TooltipSide, string> = {
-  top: "bottom-full mb-2",
-  bottom: "top-full mt-2",
+  top: "left-1/2 bottom-full mb-2",
+  bottom: "left-1/2 top-full mt-2",
+  left: "top-1/2 right-full mr-2 whitespace-nowrap",
+  right: "top-1/2 left-full ml-2 whitespace-nowrap",
+};
+
+/** Start position, a few px toward the trigger, so enter and exit share one path. */
+const NUDGE: Record<TooltipSide, { x?: number; y?: number }> = {
+  top: { y: 4 },
+  bottom: { y: -4 },
+  left: { x: 4 },
+  right: { x: -4 },
+};
+
+const ORIGIN: Record<TooltipSide, string> = {
+  top: "bottom center",
+  bottom: "top center",
+  left: "center right",
+  right: "center left",
 };
 
 /**
@@ -78,7 +95,8 @@ export function Tooltip({
     setOpen(false);
   };
 
-  const offset = reducedMotion ? 0 : side === "top" ? 4 : -4;
+  const vertical = side === "top" || side === "bottom";
+  const nudge = reducedMotion ? {} : NUDGE[side];
 
   return (
     <span className="relative inline-flex">
@@ -97,19 +115,19 @@ export function Tooltip({
           <motion.span
             role="tooltip"
             id={tooltipId}
-            initial={{ opacity: 0, y: offset, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: offset, scale: 0.98 }}
+            initial={{ opacity: 0, ...nudge, scale: 0.98 }}
+            animate={{ opacity: 1, ...(vertical ? { y: 0 } : { x: 0 }), scale: 1 }}
+            exit={{ opacity: 0, ...nudge, scale: 0.98 }}
             transition={
               reducedMotion
                 ? REDUCED_MOTION
                 : { duration: DUR_FAST, ease: EASE_OUT }
             }
             style={{
-              x: "-50%",
-              transformOrigin: side === "top" ? "bottom center" : "top center",
+              ...(vertical ? { x: "-50%" } : { y: "-50%" }),
+              transformOrigin: ORIGIN[side],
             }}
-            className={`glass pointer-events-none absolute left-1/2 z-[var(--z-popover)] max-w-[18rem] rounded-[var(--radius-md)] border border-[var(--color-chrome-border)] px-2 py-1 text-caption text-[var(--color-text)] shadow-[var(--shadow-pop)] ${OFFSET_CLASS[side]} ${className ?? ""}`}
+            className={`glass pointer-events-none absolute z-[var(--z-popover)] max-w-[18rem] rounded-[var(--radius-md)] border border-[var(--color-chrome-border)] px-2 py-1 text-caption text-[var(--color-text)] shadow-[var(--shadow-pop)] ${OFFSET_CLASS[side]} ${className ?? ""}`}
           >
             {content}
           </motion.span>
