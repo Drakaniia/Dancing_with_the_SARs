@@ -148,9 +148,9 @@
     }
   },
   "sky": {
-    "sky-color": "#eaf2f5",
-    "horizon-color": "#f7f4ec",
-    "fog-color": "#f7f4ec",
+    "sky-color": "#cfe6f2",
+    "horizon-color": "#f3efe2",
+    "fog-color": "#e9f1ee",
     "sky-horizon-blend": 0.6,
     "horizon-fog-blend": 0.6,
     "fog-ground-blend": 0.9
@@ -159,18 +159,13 @@
     {
       "id": "background",
       "type": "background",
-      "paint": { "background-color": "#eef3f1" }
+      "paint": { "background-color": "#bfdbe3" }
     },
     {
       "id": "light-basemap",
       "type": "raster",
       "source": "esri-ocean-base",
-      "paint": {
-        "raster-opacity": 0.65,
-        "raster-saturation": 0.25,
-        "raster-brightness-min": 0.18,
-        "raster-contrast": -0.15
-      }
+      "paint": { "raster-saturation": 0.25, "raster-brightness-min": 0.05 }
     },
     {
       "id": "basemap",
@@ -184,11 +179,11 @@
       "type": "hillshade",
       "source": "hillshade-dem",
       "paint": {
-        "hillshade-exaggeration": 0.22,
+        "hillshade-exaggeration": 0.5,
         "hillshade-illumination-direction": 315,
-        "hillshade-shadow-color": "#9aa58a",
-        "hillshade-highlight-color": "#ffffff",
-        "hillshade-accent-color": "#b9bfa5"
+        "hillshade-shadow-color": "#4f6b3a",
+        "hillshade-highlight-color": "#fffbe8",
+        "hillshade-accent-color": "#6d7f45"
       }
     },
     {

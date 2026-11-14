@@ -82,7 +82,7 @@ export function applyLayerBindings(
 
 export const TERRAIN_SOURCE_ID = "terrain-dem";
 export const TERRAIN_EXAGGERATION = 1.5;
-export const TERRAIN_PITCH = 60;
+export const TERRAIN_PITCH = 50;
 export const MAX_PITCH = 75;
 
 type TerrainMap = Pick<
@@ -187,6 +187,15 @@ export function useMapLibre(
           ],
           { padding: 36, duration: 0 },
         );
+        // 3D is on by default: tilt now and step back a little so both provinces stay in view.
+        if (useUiStore.getState().terrain3d) {
+          const center = instance.getCenter();
+          instance.jumpTo({
+            pitch: TERRAIN_PITCH,
+            zoom: instance.getZoom() - 0.25,
+            center: [center.lng, center.lat - 0.08],
+          });
+        }
       } catch {
         // ignore in headless mock
       }
