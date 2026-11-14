@@ -3,14 +3,37 @@ import { describe, expect, it } from "vitest";
 import { MapCanvas } from "@/features/map/MapCanvas";
 import {
   applyLayerBindings,
+  applyTerrain,
   resolveLayerBindings,
   STYLE_LAYER_BY_STORE_ID,
+  TERRAIN_EXAGGERATION,
+  TERRAIN_PITCH,
+  TERRAIN_SOURCE_ID,
 } from "@/features/map/useMapLibre";
 import { SAMPLE_LAYERS } from "@/fixtures/sample-dashboard";
 import { metersPerPixel, tileSegment, tileTemplate } from "@/shared/utils/geo";
 import { useLayerStore } from "@/stores/layerStore";
+import { useUiStore } from "@/stores/uiStore";
 
 type MapLike = Parameters<typeof applyLayerBindings>[0];
+type TerrainMapLike = Parameters<typeof applyTerrain>[0];
+
+function fakeTerrainMap(hasDem: boolean) {
+  let terrain: unknown = null;
+  const pitches: number[] = [];
+  const map = {
+    getSource: (id: string) =>
+      hasDem && id === TERRAIN_SOURCE_ID ? { id } : undefined,
+    getTerrain: () => terrain,
+    setTerrain: (value: unknown) => {
+      terrain = value;
+    },
+    easeTo: (options: { pitch: number }) => {
+      pitches.push(options.pitch);
+    },
+  } as unknown as TerrainMapLike;
+  return { map, pitches, getTerrain: () => terrain };
+}
 
 function fakeMap(existing: string[]) {
   const calls: { layerId: string; value: unknown }[] = [];
@@ -61,6 +84,40 @@ describe("map layer bindings", () => {
     expect(
       screen.getByText("Map unavailable — WebGL is required"),
     ).toBeInTheDocument();
+  });
+});
+
+describe("3D terrain toggle", () => {
+  it("drapes the map over the DEM and pitches the camera, then flattens it back", () => {
+    const { map, pitches, getTerrain } = fakeTerrainMap(true);
+
+    expect(applyTerrain(map, true, 0)).toBe(true);
+    expect(getTerrain()).toEqual({
+      source: TERRAIN_SOURCE_ID,
+      exaggeration: TERRAIN_EXAGGERATION,
+    });
+
+    expect(applyTerrain(map, true, 0)).toBe(false);
+
+    expect(applyTerrain(map, false, 0)).toBe(true);
+    expect(getTerrain()).toBeNull();
+    expect(pitches).toEqual([TERRAIN_PITCH, 0]);
+  });
+
+  it("stays flat when the style has no DEM source", () => {
+    const { map, pitches, getTerrain } = fakeTerrainMap(false);
+
+    expect(applyTerrain(map, true, 0)).toBe(false);
+    expect(getTerrain()).toBeNull();
+    expect(pitches).toEqual([]);
+  });
+
+  it("toggles the 3D flag in the UI store", () => {
+    useUiStore.setState({ terrain3d: false });
+    useUiStore.getState().toggleTerrain3d();
+    expect(useUiStore.getState().terrain3d).toBe(true);
+    useUiStore.getState().setTerrain3d(false);
+    expect(useUiStore.getState().terrain3d).toBe(false);
   });
 });
 

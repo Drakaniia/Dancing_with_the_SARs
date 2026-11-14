@@ -58,6 +58,8 @@ export interface UiState {
   analyticsTab: AnalyticsTab;
   flyToTarget: FlyToTarget | null;
   measurePoints: [number, number][];
+  /** 3D terrain view (pitched camera over a DEM) instead of the flat map. */
+  terrain3d: boolean;
   setPanelOpen: (id: PanelId, open: boolean) => void;
   togglePanel: (id: PanelId) => void;
   setRailMode: (mode: RailMode) => void;
@@ -73,6 +75,8 @@ export interface UiState {
   ) => void;
   addMeasurePoint: (pt: [number, number]) => void;
   clearMeasurePoints: () => void;
+  setTerrain3d: (enabled: boolean) => void;
+  toggleTerrain3d: () => void;
 }
 
 const SETTINGS_STORE = "settings.json";
@@ -128,6 +132,7 @@ export const useUiStore = create<UiState>((set) => ({
   analyticsTab: "inspector",
   flyToTarget: null,
   measurePoints: [],
+  terrain3d: false,
 
   setPanelOpen: (id, open) =>
     set((state) => {
@@ -173,6 +178,10 @@ export const useUiStore = create<UiState>((set) => ({
     })),
 
   clearMeasurePoints: () => set({ measurePoints: [] }),
+
+  setTerrain3d: (terrain3d) => set({ terrain3d }),
+
+  toggleTerrain3d: () => set((state) => ({ terrain3d: !state.terrain3d })),
 }));
 
 export function resolveRailMode(width: number): RailMode {

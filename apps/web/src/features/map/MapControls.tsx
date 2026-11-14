@@ -1,4 +1,4 @@
-import { Compass, Focus, Layers, Minus, Plus } from "lucide-react";
+import { Compass, Focus, Layers, Minus, Mountain, Plus } from "lucide-react";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { Popover } from "@/shared/ui/Popover";
 import { SARANGANI_DAVOCC_BOUNDS } from "@/shared/utils/geo";
 import { useDatasetStore } from "@/stores/datasetStore";
 import { useLayerStore } from "@/stores/layerStore";
+import { useUiStore } from "@/stores/uiStore";
 import { REDUCED_MOTION, SPRING_UI } from "@/styles/tokens";
 
 export interface MapControlsProps {
@@ -21,6 +22,8 @@ export function MapControls({ map }: MapControlsProps) {
 
   const layers = useLayerStore((state) => state.layers);
   const toggleVisibility = useLayerStore((state) => state.toggleVisibility);
+  const terrain3d = useUiStore((state) => state.terrain3d);
+  const toggleTerrain3d = useUiStore((state) => state.toggleTerrain3d);
   const bounds = useDatasetStore(
     (state) => state.manifest?.bounds ?? SARANGANI_DAVOCC_BOUNDS,
   );
@@ -48,7 +51,7 @@ export function MapControls({ map }: MapControlsProps) {
         [bounds[0], bounds[1]],
         [bounds[2], bounds[3]],
       ],
-      { padding: 36, duration: 750 },
+      { padding: 36, duration: 750, pitch: map.getPitch() },
     );
   };
 
@@ -85,7 +88,9 @@ export function MapControls({ map }: MapControlsProps) {
         label="Reset north"
         size="md"
         disabled={!map}
-        onClick={() => map?.easeTo({ bearing: 0, pitch: 0 })}
+        onClick={() =>
+          map?.easeTo(terrain3d ? { bearing: 0 } : { bearing: 0, pitch: 0 })
+        }
       >
         <motion.span
           className="flex"
@@ -94,6 +99,18 @@ export function MapControls({ map }: MapControlsProps) {
         >
           <Compass size={18} strokeWidth={1.5} />
         </motion.span>
+      </IconButton>
+
+      <IconButton
+        label={terrain3d ? "Switch to 2D map" : "Switch to 3D terrain"}
+        title={terrain3d ? "2D map" : "3D terrain"}
+        size="md"
+        disabled={!map}
+        aria-pressed={terrain3d}
+        onClick={toggleTerrain3d}
+        className={terrain3d ? "text-[var(--color-accent)]" : undefined}
+      >
+        <Mountain size={18} strokeWidth={1.5} />
       </IconButton>
 
       <Popover

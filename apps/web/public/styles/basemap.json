@@ -19,6 +19,16 @@
       "tileSize": 256,
       "attribution": "Esri"
     },
+    "terrain-dem": {
+      "type": "raster-dem",
+      "tiles": [
+        "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"
+      ],
+      "encoding": "terrarium",
+      "tileSize": 256,
+      "maxzoom": 14,
+      "attribution": "Terrain Tiles: Mapzen, AWS Open Data"
+    },
     "reference-labels": {
       "type": "geojson",
       "data": {
@@ -118,6 +128,14 @@
         ]
       }
     }
+  },
+  "sky": {
+    "sky-color": "#0b2238",
+    "horizon-color": "#5b7c99",
+    "fog-color": "#1b3550",
+    "sky-horizon-blend": 0.6,
+    "horizon-fog-blend": 0.6,
+    "fog-ground-blend": 0.9
   },
   "layers": [
     {

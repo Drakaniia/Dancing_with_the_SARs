@@ -69,6 +69,45 @@ export function applyLayerBindings(
   }
 }
 
+export const TERRAIN_SOURCE_ID = "terrain-dem";
+export const TERRAIN_EXAGGERATION = 1.5;
+export const TERRAIN_PITCH = 60;
+export const MAX_PITCH = 75;
+
+type TerrainMap = Pick<
+  maplibregl.Map,
+  "getSource" | "getTerrain" | "setTerrain" | "easeTo"
+>;
+
+/**
+ * Switch between the flat map and 3D terrain. The NISAR rasters and GeoJSON
+ * layers stay in place: MapLibre drapes them over the DEM surface.
+ * Returns false when nothing changed (already in that mode, or no DEM source).
+ */
+export function applyTerrain(
+  map: TerrainMap,
+  enabled: boolean,
+  duration = 800,
+): boolean {
+  if (Boolean(map.getTerrain()) === enabled) return false;
+  if (enabled && !map.getSource(TERRAIN_SOURCE_ID)) return false;
+  map.setTerrain(
+    enabled
+      ? { source: TERRAIN_SOURCE_ID, exaggeration: TERRAIN_EXAGGERATION }
+      : null,
+  );
+  map.easeTo({ pitch: enabled ? TERRAIN_PITCH : 0, duration });
+  return true;
+}
+
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+}
+
 export function webglSupported(): boolean {
   return (
     typeof WebGL2RenderingContext !== "undefined" ||
@@ -87,6 +126,7 @@ export function createMap(container: HTMLElement): maplibregl.Map {
     center: SARANGANI_CENTER,
     zoom: SARANGANI_ZOOM,
     maxBounds: PHILIPPINES_BOUNDS,
+    maxPitch: MAX_PITCH,
     attributionControl: false,
     canvasContextAttributes: { preserveDrawingBuffer: true },
   });
@@ -104,6 +144,7 @@ export function useMapLibre(
   const [status, setStatus] = useState<MapStatus>("initializing");
   const layers = useLayerStore((state) => state.layers);
   const flyToTarget = useUiStore((state) => state.flyToTarget);
+  const terrain3d = useUiStore((state) => state.terrain3d);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -167,6 +208,15 @@ export function useMapLibre(
     if (!map || status !== "ready") return;
     applyLayerBindings(map, resolveLayerBindings(layers));
   }, [map, status, layers]);
+
+  useEffect(() => {
+    if (!map || status !== "ready") return;
+    try {
+      applyTerrain(map, terrain3d, prefersReducedMotion() ? 0 : 800);
+    } catch (error) {
+      console.error("Failed to toggle 3D terrain", error);
+    }
+  }, [map, status, terrain3d]);
 
   useEffect(() => {
     if (!map || status !== "ready" || !flyToTarget) return;
