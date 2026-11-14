@@ -2,7 +2,8 @@
 name = "nisar-surface-change-monitor"
 version = "0.2.0"
 description = "NISAR Surface Change Monitor"
-authors = ["you"]
+authors = ["The Cartographers"]
+license = "MIT"
 edition = "2021"
 
 [lib]

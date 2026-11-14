@@ -85,3 +85,7 @@ All map data comes from the team's data repository, [sarangani-davao-occidental-
 ## Use of AI Tools
 
 AI coding assistants (large language models) helped write and review parts of the application code, tile pipeline, tests and documentation. Team members reviewed and tested all AI-assisted work. AI tools did not create the scientific data: every map value comes from the satellite and climate products listed above. The screenshots in `docs/screenshots/` are real captures of the app.
+
+## License
+
+The source code is released under the [MIT License](LICENSE), © 2026 The Cartographers. The licence covers the code only. Third-party data shown in the app (NASA, NASA-ISRO, USGS, NOAA, Copernicus Sentinel and Esri) keeps its own terms; see [Data and Credits](#data-and-credits).
