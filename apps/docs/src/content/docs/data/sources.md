@@ -39,7 +39,7 @@ The commit is pinned in `data/.pin.json` and repeated in the manifest's `source`
 tile, legend and inspector value can therefore be traced to an exact version of the data repo.
 The app shows the same link in its provenance dialog and includes it in every JSON export. To
 move to a newer data release, run `fetch_data.py --commit <sha>`, then rebuild with the
-pipeline. See [Fetch and inventory](/pipeline/fetch-inventory/).
+pipeline. See [Fetch and inventory](/Dancing_with_the_SARs/pipeline/fetch-inventory/).
 
 ## Upstream products
 
@@ -66,6 +66,6 @@ It is display context only and is not part of the analysis.
 
 ## Related pages
 
-- [The NISAR release](/data/release/): the measured contents and raster contract of the data repo.
-- [Layer catalogue](/data/catalogue/): every layer derived from it.
-- [Provenance and limitations](/data/limitations/): what the data can and cannot show.
+- [The NISAR release](/Dancing_with_the_SARs/data/release/): the measured contents and raster contract of the data repo.
+- [Layer catalogue](/Dancing_with_the_SARs/data/catalogue/): every layer derived from it.
+- [Provenance and limitations](/Dancing_with_the_SARs/data/limitations/): what the data can and cannot show.

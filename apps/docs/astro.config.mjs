@@ -4,7 +4,14 @@ import { defineConfig } from "astro/config";
 
 const REPO = "https://github.com/Drakaniia/Dancing_with_the_SARs";
 
+// Served from GitHub Pages as a project site: https://drakaniia.github.io/Dancing_with_the_SARs/
+// Internal links in content must include BASE (Starlight does not prefix Markdown links).
+const SITE = "https://drakaniia.github.io";
+const BASE = "/Dancing_with_the_SARs";
+
 export default defineConfig({
+  site: SITE,
+  base: BASE,
   integrations: [
     starlight({
       title: "NISAR Surface Change Monitor",
@@ -25,6 +32,7 @@ export default defineConfig({
           label: "Getting Started",
           items: [
             { label: "Introduction", slug: "getting-started/introduction" },
+            { label: "Download", slug: "getting-started/download" },
             { label: "Installation", slug: "getting-started/installation" },
             { label: "Project commands", slug: "getting-started/commands" },
           ],

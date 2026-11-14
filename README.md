@@ -28,6 +28,10 @@ Representative desktop views of the running app, captured at 1600 × 1000. Click
 
 To refresh these images, start `pnpm dev --host 127.0.0.1 --port 5173`, then run `python scripts/capture_screenshots.py` in another terminal. The capture script requires Python Playwright and Microsoft Edge; it does not add frontend dependencies.
 
+## Download
+
+Installers for Windows, macOS and Linux are on the [Download page](https://drakaniia.github.io/Dancing_with_the_SARs/getting-started/download/) and the [GitHub Releases page](https://github.com/Drakaniia/Dancing_with_the_SARs/releases/latest).
+
 ## Getting Started
 
 ```bash
@@ -43,10 +47,10 @@ pnpm run tauri build
 
 ## Documentation
 
-Full documentation (user guide, data catalogue, tile pipeline, architecture) is an Astro Starlight site in `apps/docs`:
+Full documentation (user guide, data catalogue, tile pipeline, architecture) is published at [drakaniia.github.io/Dancing_with_the_SARs](https://drakaniia.github.io/Dancing_with_the_SARs/). It is an Astro Starlight site in `apps/docs`, deployed to GitHub Pages on every push to `main`:
 
 ```bash
-pnpm docs:dev     # http://localhost:4321
+pnpm docs:dev     # http://localhost:4321/Dancing_with_the_SARs/
 pnpm docs:build   # static site in apps/docs/dist/
 ```
 

@@ -25,7 +25,7 @@ The **Tools** panel in the left rail has four buttons:
 | Tool | Behaviour |
 | --- | --- |
 | **Measure** | Toggle on, then click two points. A badge over the map shows the great-circle (haversine) distance in km and m. A third click starts a new measurement, and **×** clears it. |
-| **Inspect** | Toggle the inspect mode. Clicking the map inspects in every mode; see [Inspecting locations](/guide/inspecting/). |
+| **Inspect** | Toggle the inspect mode. Clicking the map inspects in every mode; see [Inspecting locations](/Dancing_with_the_SARs/guide/inspecting/). |
 | **Bookmark** | Saves the last inspected point as a viewpoint at zoom 11. |
 | **Export** | Downloads `nisar-export-<period>.json` with the active layer, current period and selected point. |
 
@@ -67,7 +67,7 @@ all open the **Dataset Provenance & Scientific Caveats** dialog. It shows:
 - Attribution, and a link to the upstream release.
 
 Press **Esc** to close it. The full list of limits is on
-[Provenance and limitations](/data/limitations/).
+[Provenance and limitations](/Dancing_with_the_SARs/data/limitations/).
 
 ![The provenance dialog](../../../../../../docs/screenshots/data-provenance.png)
 

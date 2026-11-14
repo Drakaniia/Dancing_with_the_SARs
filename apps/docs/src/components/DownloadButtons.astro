@@ -1,0 +1,164 @@
+---
+// Per-OS download buttons for the latest desktop release. The links start on the GitHub
+// Releases page and are upgraded in the browser to the matching installer from the
+// GitHub API, so the page never needs rebuilding when a new version ships.
+const REPO = "Drakaniia/Dancing_with_the_SARs";
+const releasesUrl = `https://github.com/${REPO}/releases/latest`;
+
+const platforms = [
+  { id: "windows-exe", os: "windows", label: "Windows", detail: "64-bit installer (.exe)" },
+  { id: "windows-msi", os: "windows", label: "Windows (MSI)", detail: "64-bit MSI package" },
+  { id: "macos-arm", os: "macos", label: "macOS (Apple Silicon)", detail: "M1 and later (.dmg)" },
+  { id: "macos-intel", os: "macos", label: "macOS (Intel)", detail: "Intel Macs (.dmg)" },
+  { id: "linux-appimage", os: "linux", label: "Linux (AppImage)", detail: "Any x86_64 distro" },
+  { id: "linux-deb", os: "linux", label: "Linux (.deb)", detail: "Debian, Ubuntu" },
+  { id: "linux-rpm", os: "linux", label: "Linux (.rpm)", detail: "Fedora, openSUSE" },
+];
+---
+
+<div class="nisar-downloads not-content" data-repo={REPO}>
+  <p class="nisar-downloads__status" data-status aria-live="polite">
+    Checking GitHub for the latest release…
+  </p>
+  <div class="nisar-downloads__grid">
+    {
+      platforms.map((p) => (
+        <a class="nisar-downloads__card" href={releasesUrl} data-platform={p.id} data-os={p.os}>
+          <span class="nisar-downloads__label">{p.label}</span>
+          <span class="nisar-downloads__detail" data-detail>
+            {p.detail}
+          </span>
+        </a>
+      ))
+    }
+  </div>
+  <p class="nisar-downloads__all">
+    <a href={releasesUrl}>All files and release notes on GitHub →</a>
+  </p>
+</div>
+
+<script>
+  const MATCHERS: Record<string, RegExp> = {
+    "windows-exe": /_x64-setup\.exe$/i,
+    "windows-msi": /_x64_[a-z-]+\.msi$/i,
+    "macos-arm": /_aarch64\.dmg$/i,
+    "macos-intel": /_x64\.dmg$/i,
+    "linux-appimage": /\.AppImage$/i,
+    "linux-deb": /\.deb$/i,
+    "linux-rpm": /\.rpm$/i,
+  };
+
+  type Asset = { name: string; size: number; browser_download_url: string };
+  type Release = { tag_name: string; published_at: string; html_url: string; assets: Asset[] };
+
+  function detectOs(): string | null {
+    const ua = navigator.userAgent;
+    if (/Windows/i.test(ua)) return "windows";
+    if (/Macintosh|Mac OS X/i.test(ua) && !/iPhone|iPad/i.test(ua)) return "macos";
+    if (/Linux/i.test(ua) && !/Android/i.test(ua)) return "linux";
+    return null;
+  }
+
+  async function hydrate(root: HTMLElement) {
+    const status = root.querySelector<HTMLElement>("[data-status]");
+    const os = detectOs();
+    for (const card of root.querySelectorAll<HTMLAnchorElement>("[data-platform]")) {
+      if (os && card.dataset.os === os) card.classList.add("is-recommended");
+    }
+
+    try {
+      const res = await fetch(`https://api.github.com/repos/${root.dataset.repo}/releases/latest`, {
+        headers: { Accept: "application/vnd.github+json" },
+      });
+      if (!res.ok) throw new Error(`GitHub responded ${res.status}`);
+      const release = (await res.json()) as Release;
+
+      const date = new Date(release.published_at).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      if (status) status.textContent = `Latest release: ${release.tag_name}, published ${date}.`;
+
+      for (const card of root.querySelectorAll<HTMLAnchorElement>("[data-platform]")) {
+        const matcher = MATCHERS[card.dataset.platform ?? ""];
+        const asset = release.assets.find((a) => matcher?.test(a.name));
+        const detail = card.querySelector<HTMLElement>("[data-detail]");
+        if (asset) {
+          card.href = asset.browser_download_url;
+          card.setAttribute("download", "");
+          if (detail) detail.textContent += ` · ${(asset.size / 1e6).toFixed(1)} MB`;
+        } else {
+          card.href = release.html_url;
+          card.classList.add("is-missing");
+          if (detail) detail.textContent = "Not in this release, see GitHub";
+        }
+      }
+    } catch {
+      if (status) {
+        status.textContent =
+          "Couldn't load the release list from GitHub. The buttons open the Releases page instead.";
+      }
+    }
+  }
+
+  for (const root of document.querySelectorAll<HTMLElement>(".nisar-downloads")) {
+    void hydrate(root);
+  }
+</script>
+
+<style>
+  .nisar-downloads {
+    margin-block: 1.5rem;
+  }
+  .nisar-downloads__status {
+    color: var(--sl-color-gray-2);
+    font-size: var(--sl-text-sm);
+    margin-bottom: 0.75rem;
+  }
+  .nisar-downloads__grid {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  }
+  .nisar-downloads__card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background: var(--sl-color-black);
+    color: var(--sl-color-white);
+    text-decoration: none;
+    transition:
+      border-color 120ms ease,
+      background-color 120ms ease;
+  }
+  .nisar-downloads__card:hover,
+  .nisar-downloads__card:focus-visible {
+    border-color: var(--sl-color-accent);
+    background: var(--sl-color-accent-low);
+  }
+  .nisar-downloads__card.is-recommended {
+    border-color: var(--sl-color-accent);
+    border-width: 2px;
+  }
+  .nisar-downloads__card.is-missing {
+    opacity: 0.6;
+  }
+  .nisar-downloads__label {
+    font-weight: 600;
+  }
+  .nisar-downloads__detail {
+    color: var(--sl-color-gray-2);
+    font-size: var(--sl-text-sm);
+  }
+  .nisar-downloads__all {
+    margin-top: 1rem;
+    font-size: var(--sl-text-sm);
+  }
+  .nisar-downloads__all a {
+    color: var(--sl-color-text-accent);
+  }
+</style>

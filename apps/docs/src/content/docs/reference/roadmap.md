@@ -27,7 +27,7 @@ When the team's real GeoTIFF release arrived, two facts reshaped the app:
 2. **The calendars clash.** Daily NISAR passes, quarterly Landsat, monthly MODIS and a
    forecast range cannot share one tick list.
 
-The [real-data integration spec](/reference/decisions/) replaced change types with seven
+The [real-data integration spec](/Dancing_with_the_SARs/reference/decisions/) replaced change types with seven
 data-native families, a generated manifest, a global timeline with per-layer snapping, and real
 pixel sampling.
 
@@ -48,7 +48,7 @@ pixel sampling.
 ## Open work
 
 - **Comparison rendering:** draw the baseline period's tiles on the "before" side of the split
-  curtain. Today only the UI state and curtain exist. See [Comparison view](/guide/comparison/).
+  curtain. Today only the UI state and curtain exist. See [Comparison view](/Dancing_with_the_SARs/guide/comparison/).
 - **Tile-error reporting:** hook MapLibre source `error` events into
   `datasetStore.recordTileError()` so the data status warning works.
 - **Faster sampling:** cache decoded bands across clicks, or decode only the block that contains

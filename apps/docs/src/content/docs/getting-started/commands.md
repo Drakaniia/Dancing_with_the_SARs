@@ -24,11 +24,15 @@ forward to the workspace packages with `pnpm --filter`.
 
 | Command | What it does |
 | --- | --- |
-| `pnpm docs:dev` | Starlight dev server at `http://localhost:4321` |
+| `pnpm docs:dev` | Starlight dev server at `http://localhost:4321/Dancing_with_the_SARs/` |
 | `pnpm docs:build` | Build the static docs into `apps/docs/dist/` |
 | `pnpm docs:preview` | Serve the built docs |
 
-These are shortcuts for `pnpm --filter docs <script>`.
+These are shortcuts for `pnpm --filter docs <script>`. The site is served under the
+`/Dancing_with_the_SARs/` base path (as on GitHub Pages), so internal links in content must
+include it, for example `[Download](/Dancing_with_the_SARs/getting-started/download/)`.
+`.github/workflows/docs.yml` deploys it to GitHub Pages on every push to `main` that touches
+the docs.
 
 ## Rust
 

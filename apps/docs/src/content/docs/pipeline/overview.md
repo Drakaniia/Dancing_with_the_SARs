@@ -69,4 +69,4 @@ comma-separated subset to `--families`.
 A fresh clone therefore runs and lists every layer, but the raster overlays stay blank until the
 pipeline has run once.
 
-Continue with [Fetch and inventory](/pipeline/fetch-inventory/).
+Continue with [Fetch and inventory](/Dancing_with_the_SARs/pipeline/fetch-inventory/).

@@ -126,7 +126,7 @@ into `Jun%202024` and fell through to the SPA's HTML fallback.
 - **Continuous domains** are fixed per product where a fixed range is scientifically meaningful:
   dB change ±3, EVI 0–0.85, temperature anomaly ±3 °C, elevation 0–2,200 m, and so on.
   Absolute backscatter has no fixed domain; it uses the 2nd–98th percentile of valid pixels.
-  See [Colour ramps](/pipeline/ramps/).
+  See [Colour ramps](/Dancing_with_the_SARs/pipeline/ramps/).
 
 ## Companion files
 

@@ -33,7 +33,7 @@ pnpm run tauri dev
 ```
 
 This starts the Vite dev server and opens the Tauri window. Pixel sampling in the
-[inspector](/guide/inspecting/) and persisted bookmarks need this desktop shell.
+[inspector](/Dancing_with_the_SARs/guide/inspecting/) and persisted bookmarks need this desktop shell.
 
 To run only the web frontend in a browser:
 
@@ -50,7 +50,7 @@ the persisted store) are unavailable there.
 layer. The **raster tiles are not committed**: `apps/web/public/tiles/` is ~507 MB and gitignored. Until
 you generate them, the overlays stay blank.
 
-Generate them once on a build machine (details in [Tile pipeline](/pipeline/overview/)):
+Generate them once on a build machine (details in [Tile pipeline](/Dancing_with_the_SARs/pipeline/overview/)):
 
 ```bash
 python -m pip install rasterio numpy shapely pyproj pillow
@@ -82,7 +82,7 @@ in `apps/desktop/src-tauri/tauri.conf.json` first; installer file names use that
 ## Run this documentation
 
 ```bash
-pnpm docs:dev       # http://localhost:4321
+pnpm docs:dev       # http://localhost:4321/Dancing_with_the_SARs/
 pnpm docs:build     # static site in apps/docs/dist/
 pnpm docs:preview   # serve the built site
 ```

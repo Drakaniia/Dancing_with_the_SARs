@@ -37,4 +37,4 @@ If the layer count or button labels change, update the selectors in
 :::
 
 For overlays to appear in the screenshots, generate the tiles first; see
-[Pipeline overview](/pipeline/overview/).
+[Pipeline overview](/Dancing_with_the_SARs/pipeline/overview/).

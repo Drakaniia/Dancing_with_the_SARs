@@ -3,8 +3,8 @@ title: Datasets and layers
 description: Turn data layers on and off, adjust opacity and draw order, and read the legend.
 ---
 
-Every data layer in the app comes from the [manifest](/data/manifest/). There are **57 layers**
-in **seven families**. The full list is in the [layer catalogue](/data/catalogue/).
+Every data layer in the app comes from the [manifest](/Dancing_with_the_SARs/data/manifest/). There are **57 layers**
+in **seven families**. The full list is in the [layer catalogue](/Dancing_with_the_SARs/data/catalogue/).
 
 ## Surface Change Types (left rail)
 
@@ -58,7 +58,7 @@ The legend is built from the active layer's manifest entry:
   cover classes, the five change-vs-2020 codes, and the landslide candidate states.
 
 Because the pipeline builds tiles and legends from the same ramp definitions, legend colours
-match tile colours. See [Colour ramps](/pipeline/ramps/).
+match tile colours. See [Colour ramps](/Dancing_with_the_SARs/pipeline/ramps/).
 
 ## Coverage
 

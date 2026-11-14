@@ -18,13 +18,13 @@ database icon, or **Settings → Release Provenance**. It reports:
 - **Native grid and CRS:** EPSG:32651, 30 m.
 - **Tile health:** a confirmation that all 81 periods and 318 pyramids are listed in the
   manifest. A warning panel with failing layers is built in, but no tile errors are reported to
-  it yet (see [Frontend](/architecture/frontend/#map-and-overlays)).
+  it yet (see [Frontend](/Dancing_with_the_SARs/architecture/frontend/#map-and-overlays)).
 - **Per-family breakdown:** layer and tile counts per family.
 - **Attribution:** NISAR L2 GCOV (NASA-ISRO, provisional) · Landsat HLS L30 v2.0 · MODIS
   MOD13Q1/MOD11A2 · GPM IMERG V07 · SRTMGL1 · NOAA CPC.
 
 Exports carry the same `source` block, so a shared reading stays traceable. See
-[Export snapshot](/guide/tools/#export-snapshot).
+[Export snapshot](/Dancing_with_the_SARs/guide/tools/#export-snapshot).
 
 ## Known data limits
 
@@ -62,4 +62,4 @@ sampled value. For example, the default radar change layer carries:
 - **Outlook and MODIS grids are not pixel-aligned.** This is fine for display; resample before
   any pixel-wise comparison.
 - **Browser inspection uses placeholders.** Outside the desktop app, inspector values are
-  placeholders, not measurements. See [Inspecting locations](/guide/inspecting/).
+  placeholders, not measurements. See [Inspecting locations](/Dancing_with_the_SARs/guide/inspecting/).

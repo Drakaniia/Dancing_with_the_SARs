@@ -21,7 +21,7 @@ The layers sampled are the visible data layers and the active layer, plus
 ### Desktop: real values from the GeoTIFFs
 
 In the Tauri app, a click calls the Rust command
-[`sample_layers`](/architecture/backend/#sample_layers). The command:
+[`sample_layers`](/Dancing_with_the_SARs/architecture/backend/#sample_layers). The command:
 
 1. Projects the WGS84 click to UTM 51N (EPSG:32651).
 2. Picks each layer's entry for the current period, or the nearest earlier one.

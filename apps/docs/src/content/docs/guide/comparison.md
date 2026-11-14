@@ -37,4 +37,4 @@ current period. Until it is, use the pair products, which are real computed diff
 - `landcover-change-2020-2026`.
 :::
 
-See [Roadmap and history](/reference/roadmap/) for the outstanding work.
+See [Roadmap and history](/Dancing_with_the_SARs/reference/roadmap/) for the outstanding work.

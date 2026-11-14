@@ -12,19 +12,19 @@ controls, the map fills the centre, and a right rail shows what you are looking 
 
 - **Title and data status.** The status pill reads the manifest (for example `57 layers`).
   It has a tile-warning state (`57 layers · N tile warning(s)`), but tile failures are not
-  reported to it yet. Click the pill to open the [provenance dialog](/data/limitations/).
+  reported to it yet. Click the pill to open the [provenance dialog](/Dancing_with_the_SARs/data/limitations/).
 - **Global search.** Jump to the epicentre, landslide clusters, municipalities and other places.
-  See [Search, bookmarks and tools](/guide/tools/).
+  See [Search, bookmarks and tools](/Dancing_with_the_SARs/guide/tools/).
 - **Actions.** Theme toggle, data provenance, bookmarks, export and settings.
 
 ## Left rail: controls
 
 | Panel | Purpose |
 | --- | --- |
-| **Surface Change Types** | Every data layer, grouped into seven collapsible families. See [Datasets and layers](/guide/layers/). |
-| **Time Series** | The global timeline, current period, and playback. See [Timeline and playback](/guide/timeline/). |
+| **Surface Change Types** | Every data layer, grouped into seven collapsible families. See [Datasets and layers](/Dancing_with_the_SARs/guide/layers/). |
+| **Time Series** | The global timeline, current period, and playback. See [Timeline and playback](/Dancing_with_the_SARs/guide/timeline/). |
 | **Map Layers** | Visible and pinned layers, opacity, and draw order. |
-| **Comparison View** | Before/after split curtain or difference mode. See [Comparison view](/guide/comparison/). |
+| **Comparison View** | Before/after split curtain or difference mode. See [Comparison view](/Dancing_with_the_SARs/guide/comparison/). |
 | **Tools** | Measure, Inspect, Bookmark and Export. |
 
 ## Centre: the map

@@ -18,7 +18,7 @@ python scripts/tiles/pipeline.py --check                 # validate only
 | `--data` | `data` | Where the release and `inventory.json` live |
 
 The pipeline requires `data/inventory.json` with a pinned source commit. Run
-[`fetch_data.py` and `inventory.py`](/pipeline/fetch-inventory/) first.
+[`fetch_data.py` and `inventory.py`](/Dancing_with_the_SARs/pipeline/fetch-inventory/) first.
 
 ## Per layer-date
 
@@ -50,7 +50,7 @@ For each layer-date (one band of one source raster):
 - **Vectors and tables.** The boundary and landslide polygons are written as GeoJSON
   (coordinates rounded to five decimals). The CSV tables are folded into `tables.json`.
 - **Manifest.** One entry per layer-date, plus the `dates` union, `bounds`, `source` (from the
-  pin), and `totals` by family. See [Manifest format](/data/manifest/).
+  pin), and `totals` by family. See [Manifest format](/Dancing_with_the_SARs/data/manifest/).
 - **Schema check.** The new manifest is validated by `manifest_schema.py`. If it fails, it is
   **not written**.
 - **Report.** A table per product: layer-dates, tiles, bytes, average bytes per tile, and zoom

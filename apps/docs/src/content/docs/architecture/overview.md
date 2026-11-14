@@ -91,5 +91,5 @@ upstream GeoTIFF release ──► scripts/tiles (Python, build time)
 - **No runtime GIS dependencies.** All heavy geoprocessing happens at build time in Python.
   The app only reads PNGs, JSON and, for sampling, GeoTIFF pixels.
 
-More detail: [Frontend](/architecture/frontend/) · [Tauri backend](/architecture/backend/) ·
-[Testing and quality](/architecture/testing/).
+More detail: [Frontend](/Dancing_with_the_SARs/architecture/frontend/) · [Tauri backend](/Dancing_with_the_SARs/architecture/backend/) ·
+[Testing and quality](/Dancing_with_the_SARs/architecture/testing/).

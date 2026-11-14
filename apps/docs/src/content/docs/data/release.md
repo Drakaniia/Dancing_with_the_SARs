@@ -7,7 +7,7 @@ Every layer in the app is derived from one data release in the team's separate d
 repository,
 [monteropeterdominic-arch/sarangani-davao-occidental-nisar](https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar).
 This page describes what that release contains, as measured by the inventory. For how the two
-repositories connect and which upstream products feed them, see [Data sources](/data/sources/).
+repositories connect and which upstream products feed them, see [Data sources](/Dancing_with_the_SARs/data/sources/).
 
 :::caution
 The older `nisar-mindanao` repository is a draft. Do not use it.
@@ -85,7 +85,7 @@ so the timeline is parsed from the band descriptions rather than guessed from fi
 
 That is why the app uses its own ramps, its own warp step, and families based on the data
 itself instead of the original four "change types". See
-[Design decisions](/reference/decisions/).
+[Design decisions](/Dancing_with_the_SARs/reference/decisions/).
 
 ## Tables
 

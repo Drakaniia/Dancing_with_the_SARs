@@ -1,0 +1,45 @@
+---
+title: Download
+description: Download the NISAR Surface Change Monitor desktop app for Windows, macOS or Linux.
+---
+
+import DownloadButtons from "../../../components/DownloadButtons.astro";
+
+The desktop app bundles the dashboard, every layer in the manifest and the pixel inspector.
+Pick the installer for your system. The highlighted buttons match the system you're browsing
+from.
+
+<DownloadButtons />
+
+Every release is built by GitHub Actions from a tagged commit and published on the
+[GitHub Releases page](https://github.com/Drakaniia/Dancing_with_the_SARs/releases).
+
+## First launch
+
+The installers are **not code-signed**, so your system warns you the first time you open the
+app.
+
+- **Windows:** If SmartScreen shows "Windows protected your PC", choose **More info**, then
+  **Run anyway**.
+- **macOS:** Open the `.dmg` and drag the app into **Applications**. The first time you open
+  it, macOS blocks it. Go to **System Settings → Privacy & Security** and choose **Open
+  Anyway**. If macOS says the app "is damaged", run this once in Terminal:
+
+  ```bash
+  xattr -cr "/Applications/NISAR Surface Change Monitor.app"
+  ```
+
+- **Linux:** Make the AppImage executable (`chmod +x *.AppImage`) and run it, or install the
+  `.deb` / `.rpm` with your package manager. The app needs WebKitGTK 4.1, which current
+  Ubuntu, Debian and Fedora releases include.
+
+:::caution[Map overlays in the installers]
+The installers include the layer manifest, legends, timeline and Quick Stats tables. They
+don't include the ~500 MB of generated map tiles (they aren't committed, so the release build
+can't bundle them) or the source GeoTIFFs the inspector reads. In an installed build the
+layers are listed but the raster overlays stay blank, and inspector readings fall back to
+placeholders.
+
+To see the full map, build from source and generate the tiles. See
+[Installation](/Dancing_with_the_SARs/getting-started/installation/#load-the-map-tiles).
+:::

@@ -42,8 +42,8 @@ area:
 
 All of it comes from the team's separate data repository,
 [sarangani-davao-occidental-nisar](https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar),
-pinned to one commit. A single generated [manifest](/data/manifest/) describes it, so the dashboard
-never shows a value it cannot trace back to a source file. See [Data sources](/data/sources/).
+pinned to one commit. A single generated [manifest](/Dancing_with_the_SARs/data/manifest/) describes it, so the dashboard
+never shows a value it cannot trace back to a source file. See [Data sources](/Dancing_with_the_SARs/data/sources/).
 
 ![Dark dashboard with the Night Atlas interface](../../../../../../docs/screenshots/dashboard-dark.png)
 
@@ -62,10 +62,11 @@ never shows a value it cannot trace back to a source file. See [Data sources](/d
 
 The app shows **radar backscatter change, not ground deformation**. Uplift and subsidence need
 NISAR GUNW interferograms spanning 8 June 2026, which the release does not contain. See
-[Provenance and limitations](/data/limitations/) for this and the other caveats the app surfaces.
+[Provenance and limitations](/Dancing_with_the_SARs/data/limitations/) for this and the other caveats the app surfaces.
 
 ## Next steps
 
-- [Install and run the app](/getting-started/installation/)
-- [Take the interface tour](/guide/interface/)
-- [Browse the layer catalogue](/data/catalogue/)
+- [Download the desktop app](/Dancing_with_the_SARs/getting-started/download/)
+- [Install and run the app](/Dancing_with_the_SARs/getting-started/installation/)
+- [Take the interface tour](/Dancing_with_the_SARs/guide/interface/)
+- [Browse the layer catalogue](/Dancing_with_the_SARs/data/catalogue/)
