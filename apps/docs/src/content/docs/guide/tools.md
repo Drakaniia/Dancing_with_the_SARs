@@ -18,6 +18,8 @@ province:
 Choosing a result flies the map to it and inspects that point, as if you had clicked there. On
 narrow windows, search collapses to an icon button.
 
+![Search results for "Sarangani", listing places with their province](../../../../../../docs/screenshots/search-results.png)
+
 ## Tools panel
 
 The **Tools** panel in the left rail has four buttons:
@@ -29,6 +31,10 @@ The **Tools** panel in the left rail has four buttons:
 | **Bookmark** | Saves the last inspected point as a viewpoint at zoom 11. |
 | **Export** | Downloads `nisar-export-<period>.json` with the active layer, current period and selected point. |
 
+![The Tools panel with Measure active](../../../../../../docs/screenshots/tools-panel.png)
+
+![The measurement badge showing the distance between two clicked points](../../../../../../docs/screenshots/measure-distance.png)
+
 ## Bookmarks
 
 Open the **Bookmarks** menu in the top bar:
@@ -37,6 +43,8 @@ Open the **Bookmarks** menu in the top bar:
   Sarangani.
 - Click a saved viewpoint to fly to it.
 - Use the trash icon to remove it.
+
+![The Bookmarks menu with a saved viewpoint and the + Save Current button](../../../../../../docs/screenshots/bookmarks-menu.png)
 
 In the desktop app, bookmarks persist through the Tauri store plugin. In the browser they stay in
 memory for the session.

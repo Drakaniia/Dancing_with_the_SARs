@@ -23,6 +23,8 @@ Layers are grouped into collapsible family sections:
 Each row shows a swatch generated from the layer's colour ramp, or from its classes for
 categorical layers, plus a toggle.
 
+![The Surface Change Types panel with the seven family groups folded](../../../../../../docs/screenshots/layers-change-types.png)
+
 - Turning a layer **on** makes it the **active layer**. The legend, Current View card and
   opacity control follow the active layer.
 - Turning a layer on also **pins** it to the Map Layers list.
@@ -38,6 +40,8 @@ The Map Layers panel lists only layers that are visible or pinned, so it never b
 - **Sarangani & Davao Occidental Boundary:** the area-of-interest outline.
 - **M7.8 Landslide Candidate Polygons (305):** vector polygons from the release.
 - **Municipalities & Reference Labels.**
+
+![The Map Layers panel with the opacity slider, pinned layers and layer order control](../../../../../../docs/screenshots/layers-map-layers.png)
 
 ### Opacity
 
@@ -56,6 +60,8 @@ The legend is built from the active layer's manifest entry:
 - **Continuous layers** show the ramp across the layer's `domain`, with its `units`.
 - **Categorical layers** print class **labels**, not numeric codes. Examples are the eight land
   cover classes, the five change-vs-2020 codes, and the landslide candidate states.
+
+![The legend for HH Backscatter Change, with its dB ramp and caveats](../../../../../../docs/screenshots/layers-legend.png)
 
 Because the pipeline builds tiles and legends from the same ramp definitions, legend colours
 match tile colours. See [Colour ramps](/Dancing_with_the_SARs/pipeline/ramps/).

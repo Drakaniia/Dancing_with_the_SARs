@@ -16,9 +16,13 @@ The **Comparison View** panel in the left rail sets up a before/after comparison
 4. Choose a **Baseline Period** from the drop-down. It lists every period in `manifest.dates`.
    The default is `2026-09`.
 
+![The Comparison View panel with Before / After mode, baseline period and curtain position](../../../../../../docs/screenshots/comparison-panel.png)
+
 A badge in the top-left of the map summarises the comparison, for example
 `Before: 2026-09 vs Current: 2026-10 (vs 2026-09)`. The current side shows the active layer's
 **resolved** period, so snapping is visible here too.
+
+![The map split by the comparison curtain, with the Before vs Current badge in the top-left](../../../../../../docs/screenshots/comparison-view.png)
 
 ## The split curtain
 

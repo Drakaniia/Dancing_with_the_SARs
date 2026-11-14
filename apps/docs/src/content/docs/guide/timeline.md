@@ -30,6 +30,10 @@ radar change layer.
 - **Animation bar (over the map):** a compact scrubber with ticks. Dragging pauses playback and
   resumes it when you let go, if it was playing.
 
+![The Time Series panel with the period range, speed selector, scrubber and Observed tag](../../../../../../docs/screenshots/timeline-panel.png)
+
+![The animation bar over the map, with period ticks and forecast periods underlined](../../../../../../docs/screenshots/timeline-animation-bar.png)
+
 ## Period snapping
 
 When the global date is not one of a layer's periods, the layer **snaps** to the nearest
