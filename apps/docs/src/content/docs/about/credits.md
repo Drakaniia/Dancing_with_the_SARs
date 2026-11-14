@@ -68,7 +68,8 @@ repository's application code, tile pipeline scripts, tests and documentation. A
 helped write and run the data-processing scripts in the
 [data release](https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar):
 the NISAR monthly composites and change maps, the NISAR machine-learning vegetation and land-cover
-estimates, the 12-month El Niño outlook model and the Sentinel-1 cross-check. Team members chose the
+estimates, the 12-month El Niño outlook model, the Sentinel-1 cross-check, and the app's NISAR
+landslide check and "watch first" map. Team members chose the
 methods, reviewed, tested and edited all AI-assisted work before including it.
 
 AI tools did not create the scientific data. Every map value comes from the satellite and
