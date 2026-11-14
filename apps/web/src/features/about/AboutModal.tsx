@@ -13,6 +13,7 @@ import {
   COPERNICUS_CREDIT,
   CREDITS_DOCS_URL,
   DATA_CREDITS,
+  DESKTOP_DOWNLOAD_URL,
   LICENSE_URL,
 } from "./credits";
 
@@ -139,11 +140,21 @@ export function AboutModal() {
               Built by The Cartographers for the NASA Space Apps Challenge
               2026.
             </p>
-            {desktop ? (
-              <div className="pt-1">
+            <div className="pt-1">
+              {desktop ? (
                 <UpdateCheck />
-              </div>
-            ) : null}
+              ) : (
+                <a
+                  href={DESKTOP_DOWNLOAD_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`${LINK} text-caption`}
+                >
+                  Get the desktop app
+                  <ExternalLink size={13} />
+                </a>
+              )}
+            </div>
           </div>
 
           <p className="flex items-start gap-2 rounded-[var(--radius-md)] border border-[var(--color-panel-border)] bg-[var(--color-fill-1)] px-3 py-2 text-body text-[var(--color-text)]">

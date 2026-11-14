@@ -26,7 +26,8 @@ if (offlineTilesAvailable()) {
   maplibregl.addProtocol(TILE_PROTOCOL, createTileProtocolHandler());
 }
 
-export const BASEMAP_STYLE_URL = "/styles/basemap.json";
+// BASE_URL is `/` on desktop and the sub-path on GitHub Pages.
+export const BASEMAP_STYLE_URL = `${import.meta.env.BASE_URL}styles/basemap.json`;
 
 export type MapStatus = "initializing" | "ready" | "unsupported" | "error";
 

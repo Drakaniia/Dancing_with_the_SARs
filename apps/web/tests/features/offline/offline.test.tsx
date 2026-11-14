@@ -249,9 +249,21 @@ describe("offline download", () => {
 });
 
 describe("OfflineTilesSection", () => {
-  it("renders nothing outside the desktop app", () => {
-    const { container } = render(<OfflineTilesSection available={false} />);
+  it("renders nothing on desktop without a remote tile host", () => {
+    const { container } = render(
+      <OfflineTilesSection available={false} desktop />,
+    );
     expect(container).toBeEmptyDOMElement();
+  });
+
+  it("links to the desktop app in the browser build", () => {
+    render(<OfflineTilesSection available={false} desktop={false} />);
+    expect(
+      screen.getByRole("link", { name: /Get the desktop app/ }),
+    ).toHaveAttribute(
+      "href",
+      expect.stringContaining("/getting-started/download/"),
+    );
   });
 
   it("offers the download in the desktop app", () => {

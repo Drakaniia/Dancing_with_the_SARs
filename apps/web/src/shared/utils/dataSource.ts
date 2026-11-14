@@ -34,5 +34,5 @@ export async function fetchDataFile(
       // Offline or blocked: use the bundled copy below.
     }
   }
-  return fetch(`/data/${file}`);
+  return fetch(`${import.meta.env.BASE_URL}data/${file}`);
 }

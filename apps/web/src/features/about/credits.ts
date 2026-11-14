@@ -15,6 +15,10 @@ export const LICENSE_URL =
 export const CREDITS_DOCS_URL =
   "https://drakaniia.github.io/Dancing_with_the_SARs/about/credits/";
 
+/** Desktop installers, linked from the browser build. */
+export const DESKTOP_DOWNLOAD_URL =
+  "https://drakaniia.github.io/Dancing_with_the_SARs/getting-started/download/";
+
 /** Short form for the map corner, where space is tight. */
 export const MAP_ATTRIBUTION = [
   "NASA-ISRO NISAR",

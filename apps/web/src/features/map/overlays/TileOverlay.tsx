@@ -34,13 +34,17 @@ function sourceIdFor(id: string): string {
   return `${layerIdFor(id)}${SOURCE_SUFFIX}`;
 }
 
+/** Origin plus the Vite base path (e.g. `/Dancing_with_the_SARs/app` on GitHub Pages). */
 function resolveOriginPrefix(): string {
   if (
     typeof window !== "undefined" &&
     window.location?.origin &&
     window.location.origin.startsWith("http")
   ) {
-    return window.location.origin;
+    return `${window.location.origin}${import.meta.env.BASE_URL}`.replace(
+      /\/+$/,
+      "",
+    );
   }
   return "";
 }
