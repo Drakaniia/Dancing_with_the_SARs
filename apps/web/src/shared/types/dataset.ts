@@ -57,7 +57,7 @@ export const LAYER_FAMILIES: readonly FamilyMeta[] = [
   },
   {
     family: "climate",
-    label: "El Nino Time Series",
+    label: "El Niño Time Series",
     shortLabel: "Climate",
     description:
       "Landsat HLS quarterly indices (30 m) and MODIS monthly NDVI & land temperature",
@@ -65,7 +65,7 @@ export const LAYER_FAMILIES: readonly FamilyMeta[] = [
   },
   {
     family: "outlook",
-    label: "12-Month El Nino Scenario",
+    label: "12-Month El Niño Scenario",
     shortLabel: "Outlook",
     description:
       "Projected greenness, temperature anomaly, drought probability, and ONI sensitivity",
