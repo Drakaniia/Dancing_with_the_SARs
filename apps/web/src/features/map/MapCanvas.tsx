@@ -6,6 +6,7 @@ import { resolveManifestEntry, useDatasetStore } from "@/stores/datasetStore";
 import { useActiveLayer } from "@/stores/layerStore";
 import { useSelectionStore } from "@/stores/selectionStore";
 import { useUiStore } from "@/stores/uiStore";
+import { MapAttribution } from "./MapAttribution";
 import { MapControls } from "./MapControls";
 import { NorthIndicator } from "./NorthIndicator";
 import { TileOverlay } from "./overlays/TileOverlay";
@@ -209,6 +210,9 @@ export function MapCanvas() {
         <div className="pointer-events-auto absolute bottom-3 left-3 flex flex-col items-start gap-2">
           <NorthIndicator map={map} />
           <ScaleBar map={map} />
+        </div>
+        <div className="pointer-events-auto absolute right-1 bottom-1">
+          <MapAttribution />
         </div>
       </div>
 

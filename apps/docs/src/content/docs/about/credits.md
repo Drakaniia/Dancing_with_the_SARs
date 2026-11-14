@@ -18,6 +18,16 @@ submission rules require.
 
 How each product is used is described in [Data sources](/Dancing_with_the_SARs/data/sources/).
 
+## Copernicus data
+
+**Contains modified Copernicus Sentinel data 2026.**
+
+The Sentinel-1 and Sentinel-2 data come from the European Union's
+[Copernicus](https://www.copernicus.eu/) programme. They are used under the
+[legal notice on the use of Copernicus Sentinel data](https://sentinels.copernicus.eu/documents/247904/690755/Sentinel_Data_Legal_Notice),
+which asks for this credit line wherever the data is shown. The app also shows it in the map corner,
+the **About & Credits** dialog and the **Data provenance** dialog.
+
 ## Other data and services
 
 - [NOAA CPC Oceanic Niño Index](https://www.cpc.ncep.noaa.gov/), for the El Niño outlook.
@@ -43,6 +53,10 @@ How each product is used is described in [Data sources](/Dancing_with_the_SARs/d
   [jsdom](https://github.com/jsdom/jsdom), [axe-core](https://github.com/dequelabs/axe-core) and
   [Playwright](https://playwright.dev/) (screenshot capture).
 - **Documentation:** [Astro](https://astro.build/) and [Starlight](https://starlight.astro.build/).
+
+The app's own source code is released under the
+[MIT License](https://github.com/Drakaniia/Dancing_with_the_SARs/blob/main/LICENSE),
+© 2026 The Cartographers. The licence does not cover the third-party data listed above.
 
 Each package keeps its own licence. The full dependency list is in the `package.json`,
 `Cargo.toml` and lock files in the [repository](https://github.com/Drakaniia/Dancing_with_the_SARs).

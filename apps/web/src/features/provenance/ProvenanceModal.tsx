@@ -8,6 +8,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect } from "react";
+import { COPERNICUS_CREDIT } from "@/features/about/credits";
 import { LAYER_FAMILIES } from "@/shared/types/dataset";
 import { useDatasetStore } from "@/stores/datasetStore";
 import { useLayerStore } from "@/stores/layerStore";
@@ -207,9 +208,12 @@ export function ProvenanceModal() {
 
           {/* Attribution & Upstream Link */}
           <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--color-panel-border)] pt-3 text-caption text-[var(--color-text-secondary)]">
-            <span>
-              {manifest?.source.attribution ??
-                "NISAR L2 GCOV (NASA-ISRO, provisional) · Landsat HLS L30 v2.0 · MODIS · SRTMGL1"}
+            <span className="flex flex-col gap-0.5">
+              <span>
+                {manifest?.source.attribution ??
+                  "NISAR L2 GCOV (NASA-ISRO, provisional) · Landsat HLS L30 v2.0 · MODIS · SRTMGL1"}
+              </span>
+              <span>{COPERNICUS_CREDIT}.</span>
             </span>
             <a
               href={repoUrl}

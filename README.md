@@ -80,6 +80,8 @@ See the [architecture overview](https://drakaniia.github.io/Dancing_with_the_SAR
 
 ## Data and Credits
 
+**Contains modified Copernicus Sentinel data 2026.** The Sentinel-1 and Sentinel-2 data come from the European Union's Copernicus programme and are used under the [Copernicus Sentinel data legal notice](https://sentinels.copernicus.eu/documents/247904/690755/Sentinel_Data_Legal_Notice).
+
 All map data comes from the team's data repository, [sarangani-davao-occidental-nisar](https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar), built from NASA-ISRO NISAR L2 GCOV, Landsat HLS L30, MODIS MOD13Q1/MOD11A2, GPM IMERG and SRTMGL1, plus the NOAA CPC Oceanic Niño Index. The basemap is Esri World Imagery. The full list of data, services and open-source software is on the [Credits and AI use](https://drakaniia.github.io/Dancing_with_the_SARs/about/credits/) page.
 
 ## Use of AI Tools

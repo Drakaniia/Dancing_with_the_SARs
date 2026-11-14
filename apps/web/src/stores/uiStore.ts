@@ -54,6 +54,7 @@ export interface UiState {
   openRails: Record<RailSide, boolean>;
   panels: Record<PanelId, boolean>;
   provenanceOpen: boolean;
+  aboutOpen: boolean;
   activeTool: ToolId | null;
   analyticsTab: AnalyticsTab;
   flyToTarget: FlyToTarget | null;
@@ -65,6 +66,7 @@ export interface UiState {
   setRailMode: (mode: RailMode) => void;
   toggleRail: (side: RailSide) => void;
   setProvenanceOpen: (open: boolean) => void;
+  setAboutOpen: (open: boolean) => void;
   setActiveTool: (tool: ToolId | null) => void;
   setAnalyticsTab: (tab: AnalyticsTab) => void;
   requestFlyTo: (
@@ -128,6 +130,7 @@ export const useUiStore = create<UiState>((set) => ({
   openRails: { left: false, right: false },
   panels: { ...DEFAULT_PANELS },
   provenanceOpen: false,
+  aboutOpen: false,
   activeTool: null,
   analyticsTab: "inspector",
   flyToTarget: null,
@@ -157,6 +160,8 @@ export const useUiStore = create<UiState>((set) => ({
     })),
 
   setProvenanceOpen: (provenanceOpen) => set({ provenanceOpen }),
+
+  setAboutOpen: (aboutOpen) => set({ aboutOpen }),
 
   setActiveTool: (activeTool) =>
     set((state) => ({

@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { AboutModal } from "@/features/about/AboutModal";
 import { MapCanvas } from "@/features/map/MapCanvas";
 import { ProvenanceModal } from "@/features/provenance/ProvenanceModal";
 import { LeftRail } from "@/features/shell/LeftRail";
@@ -68,6 +69,7 @@ export function AppShell() {
       </RailSheet>
 
       <ProvenanceModal />
+      <AboutModal />
     </div>
   );
 }

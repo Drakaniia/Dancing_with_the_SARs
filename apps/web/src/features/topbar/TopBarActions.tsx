@@ -2,6 +2,7 @@ import {
   Bookmark,
   Database,
   Download,
+  Info,
   Menu,
   Moon,
   Sun,
@@ -36,6 +37,7 @@ export function TopBarActions({ className }: TopBarActionsProps) {
   const removeBookmark = useBookmarkStore((state) => state.removeBookmark);
   const requestFlyTo = useUiStore((state) => state.requestFlyTo);
   const setProvenanceOpen = useUiStore((state) => state.setProvenanceOpen);
+  const setAboutOpen = useUiStore((state) => state.setAboutOpen);
   const selected = useSelectionStore((state) => state.selected);
   const activeLayer = useActiveLayer();
   const currentDate = useDatasetStore((state) => state.currentDate);
@@ -239,6 +241,22 @@ export function TopBarActions({ className }: TopBarActionsProps) {
               className="text-caption font-medium text-[var(--color-accent)] hover:underline"
             >
               Inspect 7ea38ff
+            </button>
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-label text-[var(--color-text)]">
+              About & Credits
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                setOpenMenu(null);
+                setAboutOpen(true);
+              }}
+              className="inline-flex items-center gap-1 text-caption font-medium text-[var(--color-accent)] hover:underline"
+            >
+              <Info size={13} />
+              View
             </button>
           </div>
           <OfflineTilesSection />
