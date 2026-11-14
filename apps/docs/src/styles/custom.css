@@ -1,0 +1,22 @@
+/*
+ * Starlight theme tuned to the dashboard's own palette (src/styles/tokens.css):
+ * terracotta accent on Sand Atlas (light) and Night Atlas (dark).
+ */
+
+:root {
+  --sl-color-accent-low: #3a1d10;
+  --sl-color-accent: #e06d42;
+  --sl-color-accent-high: #f6c7b2;
+}
+
+:root[data-theme="light"] {
+  --sl-color-accent-low: #ecdccd;
+  --sl-color-accent: #a9471c;
+  --sl-color-accent-high: #5e2610;
+}
+
+.team-photo img {
+  border-radius: 0.75rem;
+  width: 100%;
+  height: auto;
+}

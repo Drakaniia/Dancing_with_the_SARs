@@ -1,0 +1,7 @@
+packages:
+  - "apps/*"
+
+# Dependencies allowed to run install scripts (replaces the old
+# package.json "pnpm.onlyBuiltDependencies" field, which pnpm no longer reads).
+allowBuilds:
+  esbuild: true

@@ -1,11 +1,6 @@
 {
   "name": "nisar-surface-change-monitor",
   "private": true,
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ]
-  },
   "version": "0.1.0",
   "type": "module",
   "scripts": {
@@ -16,7 +11,10 @@
     "test": "vitest run",
     "lint": "biome check src tests",
     "format": "biome format --write src tests",
-    "lint:fix": "biome check --write src tests"
+    "lint:fix": "biome check --write src tests",
+    "docs:dev": "pnpm --filter docs dev",
+    "docs:build": "pnpm --filter docs build",
+    "docs:preview": "pnpm --filter docs preview"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.3",

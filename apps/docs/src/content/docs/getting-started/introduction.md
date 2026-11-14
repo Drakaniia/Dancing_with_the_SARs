@@ -1,0 +1,69 @@
+---
+title: Introduction
+description: What the NISAR Surface Change Monitor is, the challenge it answers, and what data it shows.
+---
+
+The **NISAR Surface Change Monitor** is an interactive desktop application that visualizes how
+the ground surface of **Sarangani and Davao Occidental** (Mindanao, Philippines) changes over
+time, using radar data from the NASA-ISRO Synthetic Aperture Radar (NISAR) mission together with
+optical and climate products.
+
+It was built by **The Cartographers** for the
+[NASA Space Apps Challenge 2026](https://www.spaceappschallenge.org/2026/find-a-team/the-cartographers/).
+
+## The challenge: Dancing with the SARs
+
+> Earth's surface is an endless dance of natural processes and human activities, but these
+> changes are often difficult to visualize, understand, and communicate. From wetland loss to
+> forest wildfires, earthquakes, farming activities, glacier movement, and more, Earth is in a
+> constant waltz of surface changes. Your challenge is to build an interactive application that
+> uses radar remote sensing data from the NISAR mission to track and visualize one or more types
+> of surface change at locations around the world.
+
+[Dancing with the SARs](https://www.spaceappschallenge.org/2026/challenges/dancing-with-the-sars/)
+asks for a tool that turns complex radar measurements into something people can read: earthquakes,
+wetland loss, wildfires, riverbank erosion, farming activity, and similar change.
+
+## Our answer
+
+The two provinces were hit by an **M7.8 earthquake on 8 June 2026** and face an incoming
+**El Niño** season. The app brings together everything the team's processing produced for that
+area:
+
+- **Radar:** NISAR L-band HH/HV backscatter by pass and by month, plus month-to-month and
+  same-track change.
+- **Vegetation:** radar-estimated greenness (EVI) and plant moisture (NDMI).
+- **Land cover:** 2020 and 2026 classes, confidence, and change.
+- **Earthquake:** pre/post-quake EVI and NBR, seasonal baselines, and landslide candidates.
+- **El Niño time series:** Landsat HLS quarterly indices and MODIS monthly NDVI and land
+  temperature, with anomalies.
+- **Outlook:** a 12-month El Niño scenario (Nov 2026 – Oct 2027).
+- **Terrain:** SRTM elevation, slope and aspect.
+
+All of it comes from one pinned data release and is described by a single generated
+[manifest](/data/manifest/), so the dashboard never shows a value it cannot trace back to a source
+file.
+
+![Dark dashboard with the Night Atlas interface](../../../../../../docs/screenshots/dashboard-dark.png)
+
+## At a glance
+
+| | |
+| --- | --- |
+| Area of interest | Sarangani + Davao Occidental, 5,268 km², bounds 124.357–125.715 °E, 5.365–6.633 °N |
+| Native grid | EPSG:32651 (UTM 51N), 30 m |
+| Catalogue | 57 layers, 318 layer-dates, 81 timeline periods |
+| Map tiles | 28,530 PNG tiles (z5–z13), ~507 MB, generated locally |
+| Stack | Tauri v2 (Rust) + React 18 + TypeScript + MapLibre GL JS + Zustand + Tailwind v4 |
+
+## What it is not
+
+The app shows **radar backscatter change, not ground deformation**. Uplift and subsidence need
+NISAR GUNW interferograms spanning 8 June 2026, which the release does not contain. See
+[Provenance and limitations](/data/limitations/) for this and the other caveats the app surfaces.
+
+## Next steps
+
+- [Install and run the app](/getting-started/installation/)
+- [Take the interface tour](/guide/interface/)
+- [Browse the layer catalogue](/data/catalogue/)
