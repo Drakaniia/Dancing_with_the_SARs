@@ -14,6 +14,9 @@ interface TopicState {
   option: number;
   /** Index into an image option's frames (e.g. the outlook month). */
   frame: number;
+  /** True once the opening view has been applied to the real data. */
+  started: boolean;
+  applyStart: () => void;
   selectTopic: (topicId: TopicId) => void;
   selectView: (viewId: string) => void;
   selectOption: (option: number) => void;
@@ -51,12 +54,19 @@ function currentOption(
   return view.options[option] ?? view.options[0];
 }
 
-/** Starts on Space radar → What changed, which matches the layer shown when the app opens. */
+/** Opens on Space radar → Trees & plants (NISAR HV), applied once the manifest has loaded. */
 export const useTopicStore = create<TopicState>((set, get) => ({
   topicId: "radar",
-  viewId: "changed",
+  viewId: "trees",
   option: 0,
   frame: 0,
+  started: false,
+
+  applyStart: () => {
+    const { topicId, viewId, option } = get();
+    set({ started: true });
+    applyViewOption(currentOption(topicId, viewId, option));
+  },
 
   selectTopic: (topicId) => {
     const view = findTopic(topicId).views[0];
