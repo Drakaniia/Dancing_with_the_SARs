@@ -56,7 +56,7 @@ export function TopBarActions({ className }: TopBarActionsProps) {
       selectedPoint: selected,
       source: manifest?.source ?? {
         repo: "https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar",
-        commit: "7ea38ff1b5c0dd4571b1935d01c5bd71ebf72862",
+        commit: "1505baefd6f0443f80379a8979c995dc2c90bed5",
       },
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], {
@@ -240,7 +240,7 @@ export function TopBarActions({ className }: TopBarActionsProps) {
               }}
               className="text-caption font-medium text-[var(--color-accent)] hover:underline"
             >
-              Inspect 7ea38ff
+              Inspect 1505bae
             </button>
           </div>
           <div className="flex items-center justify-between gap-3">

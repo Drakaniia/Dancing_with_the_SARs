@@ -52,7 +52,7 @@ def _manifest(*layers) -> dict:
                       "generatedAt": "2026-11-02T09:14:00Z"},
         "source": {
             "repo": "https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar",
-            "commit": "7ea38ff1b5c0dd4571b1935d01c5bd71ebf72862",
+            "commit": "1505baefd6f0443f80379a8979c995dc2c90bed5",
             "crs": "EPSG:32651",
             "resolutionMeters": 30,
             "attribution": "NISAR L2 GCOV (NASA-ISRO, provisional) · Landsat HLS L30 v2.0",

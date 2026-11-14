@@ -447,7 +447,7 @@ no `.qml` in the README listing, and (from inventory) any compression/dtype surp
 
 - [x] **P0 — Inventory.** Clone `data/`, run the inventory step, confirm compression/scale/nodata,
       locate `.qml`/index/boundary format, produce the first tile-count estimate, send the §8.2 reply.
-      **Done 2026-11-02** at commit `7ea38ff` — results in `docs/inventory-p0.md`, reply in
+      **Done 2026-11-02** at commit `1505bae` — results in `docs/inventory-p0.md`, reply in
       `docs/reply-to-team.md`. Contract holds; viewport bounds and the outlook layer-date count
       need correcting, and the byte budget requires the S1 trim (outlook → 4 months).
 - [ ] **P1 — Pipeline.** Warp → ramp → tile → manifest → report, `--full`/incremental, budget gate,

@@ -45,8 +45,12 @@ export function ProvenanceModal() {
   const dataLayers = layers.filter(
     (l) => l.kind === "manifest-layer" || l.kind === "change-type",
   );
+  // The data repo history was rewritten (same files, new ids): 7ea38ff is now 1505bae.
+  const pinned = "1505baefd6f0443f80379a8979c995dc2c90bed5";
   const commit =
-    manifest?.source.commit ?? "7ea38ff1b5c0dd4571b1935d01c5bd71ebf72862";
+    !manifest?.source.commit || manifest.source.commit.startsWith("7ea38ff")
+      ? pinned
+      : manifest.source.commit;
   const repoUrl =
     manifest?.source.repo ??
     "https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar";

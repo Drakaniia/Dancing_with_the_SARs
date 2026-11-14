@@ -30,7 +30,7 @@ tree reports.
 
 `data/.pin.json` records the repository, the exact commit, and the file and byte counts. The
 manifest's `source` block cites it, so every tile and value is traceable to one commit. Today
-the pin is `7ea38ff1b5c0dd4571b1935d01c5bd71ebf72862` (212 files, 727,237,938 bytes).
+the pin is `1505baefd6f0443f80379a8979c995dc2c90bed5` (212 files, 727,237,938 bytes).
 
 ## Inventory
 
