@@ -15,6 +15,10 @@ export const LICENSE_URL =
 export const CREDITS_DOCS_URL =
   "https://drakaniia.github.io/Dancing_with_the_SARs/about/credits/";
 
+/** Documentation entry point, linked from the top bar and the settings menu. */
+export const DOCS_URL =
+  "https://drakaniia.github.io/Dancing_with_the_SARs/getting-started/introduction/";
+
 /** Desktop installers, linked from the browser build. */
 export const DESKTOP_DOWNLOAD_URL =
   "https://drakaniia.github.io/Dancing_with_the_SARs/getting-started/download/";

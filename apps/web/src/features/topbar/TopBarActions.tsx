@@ -1,4 +1,5 @@
 import {
+  BookOpen,
   Bookmark,
   Database,
   Download,
@@ -10,8 +11,9 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useTheme } from "@/app/providers/ThemeProvider";
+import { DOCS_URL } from "@/features/about/credits";
 import { OfflineTilesSection } from "@/features/offline/OfflineTilesSection";
-import { IconButton } from "@/shared/ui/IconButton";
+import { IconButton, IconLink } from "@/shared/ui/IconButton";
 import { Popover } from "@/shared/ui/Popover";
 import { useBookmarkStore } from "@/stores/bookmarkStore";
 import { useDatasetStore } from "@/stores/datasetStore";
@@ -97,6 +99,10 @@ export function TopBarActions({ className }: TopBarActionsProps) {
       >
         <Database size={18} strokeWidth={1.5} />
       </IconButton>
+
+      <IconLink label="Documentation" href={DOCS_URL}>
+        <BookOpen size={18} strokeWidth={1.5} />
+      </IconLink>
 
       <Popover
         {...menuProps("bookmarks")}
@@ -258,6 +264,21 @@ export function TopBarActions({ className }: TopBarActionsProps) {
               <Info size={13} />
               View
             </button>
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-label text-[var(--color-text)]">
+              Documentation
+            </span>
+            <a
+              href={DOCS_URL}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => setOpenMenu(null)}
+              className="inline-flex items-center gap-1 text-caption font-medium text-[var(--color-accent)] hover:underline"
+            >
+              <BookOpen size={13} />
+              Open
+            </a>
           </div>
           <OfflineTilesSection />
         </div>
