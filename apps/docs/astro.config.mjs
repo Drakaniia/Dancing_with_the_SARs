@@ -87,7 +87,10 @@ export default defineConfig({
         },
         {
           label: "About",
-          items: [{ label: "The team", slug: "about/team" }],
+          items: [
+            { label: "The team", slug: "about/team" },
+            { label: "Credits and AI use", slug: "about/credits" },
+          ],
         },
       ],
     }),

@@ -17,14 +17,14 @@ challenge.
 
 ## Members
 
-| Member | Role | Country |
-| --- | --- | --- |
-| **Peter Dominic Montero** | Team owner | Philippines |
-| **Athena Kristine G. Combalicer** | Member | Philippines |
-| **Alistair M. Ybanez** | Member | Philippines |
-| **Habi Chenna G. Garduque** | Member | Philippines |
-| **Daniel Cresino** | Member | Philippines |
-| **Alfie Pelicano** | Member | Philippines |
+| Member                            | Role       | Country     |
+| --------------------------------- | ---------- | ----------- |
+| **Peter Dominic Montero**         | Team owner | Philippines |
+| **Athena Kristine G. Combalicer** | Member     | Philippines |
+| **Alistair M. Ybanez**            | Member     | Philippines |
+| **Habi Chenna G. Garduque**       | Member     | Philippines |
+| **Daniel Cresino**                | Member     | Philippines |
+| **Alfie Pelicano**                | Member     | Philippines |
 
 The member list comes from the team's
 [Space Apps team page](https://www.spaceappschallenge.org/2026/find-a-team/the-cartographers/?tab=members).
@@ -56,3 +56,9 @@ The team's data repository is built from these upstream products (details in
 
 Basemap imagery is from Esri World Imagery. NASA Space Apps is funded by NASA's Science Mission
 Directorate.
+
+## Use of AI
+
+Where and how the team used AI tools is described on
+[Credits and AI use](/Dancing_with_the_SARs/about/credits/#use-of-ai-tools), along with the full
+list of data and software used.
