@@ -50,8 +50,8 @@ These five limits come from the release itself and appear verbatim in the proven
 Each manifest entry carries `caveats[]`. The inspector shows the first caveat next to each
 sampled value. For example, the default radar change layer carries:
 
-- *Backscatter change, not ground deformation (uplift/subsidence requires GUNW interferometry).*
-- *Does not capture the 8 June 2026 quake directly: first NISAR scene is 28 June 2026.*
+- _Backscatter change, not ground deformation (uplift/subsidence requires GUNW interferometry)._
+- _Does not capture the 8 June 2026 quake directly: first NISAR scene is 28 June 2026._
 
 ## Other things to know
 

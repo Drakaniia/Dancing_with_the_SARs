@@ -19,13 +19,13 @@ controls, the map fills the centre, and a right rail shows what you are looking 
 
 ## Left rail: controls
 
-| Panel | Purpose |
-| --- | --- |
+| Panel                    | Purpose                                                                                                                     |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
 | **Surface Change Types** | Every data layer, grouped into seven collapsible families. See [Datasets and layers](/Dancing_with_the_SARs/guide/layers/). |
-| **Time Series** | The global timeline, current period, and playback. See [Timeline and playback](/Dancing_with_the_SARs/guide/timeline/). |
-| **Map Layers** | Visible and pinned layers, opacity, and draw order. |
-| **Comparison View** | Before/after split curtain or difference mode. See [Comparison view](/Dancing_with_the_SARs/guide/comparison/). |
-| **Tools** | Measure, Inspect, Bookmark and Export. |
+| **Time Series**          | The global timeline, current period, and playback. See [Timeline and playback](/Dancing_with_the_SARs/guide/timeline/).     |
+| **Map Layers**           | Visible and pinned layers, opacity, and draw order.                                                                         |
+| **Comparison View**      | Before/after split curtain or difference mode. See [Comparison view](/Dancing_with_the_SARs/guide/comparison/).             |
+| **Tools**                | Measure, Inspect, Bookmark and Export.                                                                                      |
 
 ## Centre: the map
 
@@ -36,12 +36,12 @@ map.
 
 ## Right rail: context
 
-| Panel | Purpose |
-| --- | --- |
-| **Current View** | The active layer, its period, and whether the period was snapped. |
-| **Legend** | The ramp or class legend for the active layer, generated from the manifest. |
-| **Location Info** | Coordinates, place name and sampled pixel values at the last click. |
-| **Quick Stats** | Stats, ranked landslides, monthly series and the outlook table. |
+| Panel             | Purpose                                                                     |
+| ----------------- | --------------------------------------------------------------------------- |
+| **Current View**  | The active layer, its period, and whether the period was snapped.           |
+| **Legend**        | The ramp or class legend for the active layer, generated from the manifest. |
+| **Location Info** | Coordinates, place name and sampled pixel values at the last click.         |
+| **Quick Stats**   | Stats, ranked landslides, monthly series and the outlook table.             |
 
 Panels collapse and expand from their headers. In the desktop app, their open/closed state is
 saved with the Tauri store plugin.
@@ -60,8 +60,8 @@ saved in `localStorage`.
 
 The shell adapts to the window width (`useRailMode`):
 
-| Mode | Width | Layout |
-| --- | --- | --- |
-| `wide` | ≥ 1440 px | Left rail, map, right rail |
+| Mode      | Width        | Layout                                             |
+| --------- | ------------ | -------------------------------------------------- |
+| `wide`    | ≥ 1440 px    | Left rail, map, right rail                         |
 | `default` | 1024–1439 px | Left rail and map; the right rail opens as a sheet |
-| `compact` | < 1024 px | Map only; both rails open as sheets |
+| `compact` | < 1024 px    | Map only; both rails open as sheets                |

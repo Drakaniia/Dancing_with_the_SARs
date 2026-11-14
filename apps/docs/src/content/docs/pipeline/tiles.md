@@ -10,12 +10,12 @@ python scripts/tiles/pipeline.py --families radar --full # ignore the cache
 python scripts/tiles/pipeline.py --check                 # validate only
 ```
 
-| Option | Default | Meaning |
-| --- | --- | --- |
-| `--families` | `all` | Comma-separated families, or `all` |
-| `--full` | off | Ignore the incremental cache and rebuild |
-| `--check` | off | Validate the existing manifest and spot-check tiles, then exit |
-| `--data` | `data` | Where the release and `inventory.json` live |
+| Option       | Default | Meaning                                                        |
+| ------------ | ------- | -------------------------------------------------------------- |
+| `--families` | `all`   | Comma-separated families, or `all`                             |
+| `--full`     | off     | Ignore the incremental cache and rebuild                       |
+| `--check`    | off     | Validate the existing manifest and spot-check tiles, then exit |
+| `--data`     | `data`  | Where the release and `inventory.json` live                    |
 
 The pipeline requires `data/inventory.json` with a pinned source commit. Run
 [`fetch_data.py` and `inventory.py`](/Dancing_with_the_SARs/pipeline/fetch-inventory/) first.
@@ -40,9 +40,9 @@ For each layer-date (one band of one source raster):
 
 ### Zoom ranges
 
-| Layers | Zoom |
-| --- | --- |
-| Headline: monthly radar and vegetation, land cover, earthquake, terrain | z5–13 |
+| Layers                                                                         | Zoom  |
+| ------------------------------------------------------------------------------ | ----- |
+| Headline: monthly radar and vegetation, land cover, earthquake, terrain        | z5–13 |
 | Dense series: radar and vegetation by date, same-track pairs, climate, outlook | z5–11 |
 
 ## After tiling
@@ -70,11 +70,11 @@ Every layer-date has a **signature**, a hash of everything that changes its byte
 
 State lives in `data/.cache/state.json`. On the next run, each layer-date is handled as follows:
 
-| Situation | Action |
-| --- | --- |
-| Same signature, all tiles on disk | **Reuse**, pruning any stray tiles |
+| Situation                           | Action                                                        |
+| ----------------------------------- | ------------------------------------------------------------- |
+| Same signature, all tiles on disk   | **Reuse**, pruning any stray tiles                            |
 | No state, but tiles already on disk | **Adopt** them, taking coverage and domain from the inventory |
-| Anything else, or `--full` | Warp and tile again |
+| Anything else, or `--full`          | Warp and tile again                                           |
 
 Tiles and state for layers that a run no longer produces (within the families it was asked to
 build) are deleted.

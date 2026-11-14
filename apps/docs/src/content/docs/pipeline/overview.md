@@ -24,14 +24,14 @@ app builds or runs, so `cargo build`, `pnpm build` and CI never need GDAL, raste
 
 ## Scripts
 
-| Script | Role |
-| --- | --- |
-| `fetch_data.py` | Download the upstream release at a pinned commit, verifying sizes |
-| `inventory.py` | Read every raster's metadata and statistics, check the release contract, and estimate the tile budget |
-| `pipeline.py` | Warp, mask, colour and tile every layer-date; export vectors and tables; write and validate the manifest |
-| `ramps.py` | Colour ramps and class tables shared by tiles and legends |
-| `manifest_schema.py` | Dependency-free manifest validator, used by the pipeline and runnable on its own |
-| `test_manifest_schema.py` | `unittest` cases for the validator |
+| Script                    | Role                                                                                                     |
+| ------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `fetch_data.py`           | Download the upstream release at a pinned commit, verifying sizes                                        |
+| `inventory.py`            | Read every raster's metadata and statistics, check the release contract, and estimate the tile budget    |
+| `pipeline.py`             | Warp, mask, colour and tile every layer-date; export vectors and tables; write and validate the manifest |
+| `ramps.py`                | Colour ramps and class tables shared by tiles and legends                                                |
+| `manifest_schema.py`      | Dependency-free manifest validator, used by the pipeline and runnable on its own                         |
+| `test_manifest_schema.py` | `unittest` cases for the validator                                                                       |
 
 ## Requirements
 
@@ -58,13 +58,13 @@ comma-separated subset to `--families`.
 
 ## What is committed
 
-| Path | Committed | Why |
-| --- | --- | --- |
-| `apps/web/public/data/manifest.json` | Yes | The app's only description of layers |
-| `apps/web/public/data/tables.json` | Yes | Quick Stats tables |
-| `apps/web/public/data/*.geojson` | Yes | Boundary and landslide polygons |
-| `apps/web/public/tiles/` | **No** | About 507 MB; regenerate locally |
-| `data/` | **No** | The 727 MB upstream release |
+| Path                                 | Committed | Why                                  |
+| ------------------------------------ | --------- | ------------------------------------ |
+| `apps/web/public/data/manifest.json` | Yes       | The app's only description of layers |
+| `apps/web/public/data/tables.json`   | Yes       | Quick Stats tables                   |
+| `apps/web/public/data/*.geojson`     | Yes       | Boundary and landslide polygons      |
+| `apps/web/public/tiles/`             | **No**    | About 507 MB; regenerate locally     |
+| `data/`                              | **No**    | The 727 MB upstream release          |
 
 A fresh clone therefore runs and lists every layer, but the raster overlays stay blank until the
 pipeline has run once.

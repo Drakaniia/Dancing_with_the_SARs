@@ -19,32 +19,32 @@ to `apps/web`.
 
 ## Feature folders
 
-| Folder | Responsibility |
-| --- | --- |
-| `features/topbar` | `TopBar`, `GlobalSearch`, `DataStatus` pill, `TopBarActions` (theme, provenance, bookmarks, export, settings) |
-| `features/shell` | `LeftRail`, `RightRail`, `RailSheet`, `useRailMode` |
-| `features/map` | `MapCanvas`, `useMapLibre`, `MapControls`, `ScaleBar`, `NorthIndicator`, `overlays/TileOverlay` |
-| `features/change-types` | The family-grouped layer list (`ChangeTypeList`, `ChangeTypeRow`) |
-| `features/layers` | `MapLayersPanel`, `LayerRow`, `OpacityControl`, `LayerOrderControl` |
-| `features/timeline` | `TimeSeriesPanel`, `AnimationBar`, `PlaybackButton`, `usePlayback` |
-| `features/comparison` | `ComparisonPanel` |
-| `features/inspector` | `CurrentViewCard`, `LegendPanel`, `LocationInfoPanel`, `QuickStatsPanel` |
-| `features/tools` | `ToolsPanel`, `ToolButton` |
-| `features/bookmarks` | `BookmarkPanel` |
-| `features/provenance` | `ProvenanceModal` |
-| `features/search` | The `locations.ts` gazetteer and `findNearestPlace()` |
-| `features/data` | `FileImport`, `tileCache`, `geoTiffWorker` (stubs; see below) |
+| Folder                  | Responsibility                                                                                                |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `features/topbar`       | `TopBar`, `GlobalSearch`, `DataStatus` pill, `TopBarActions` (theme, provenance, bookmarks, export, settings) |
+| `features/shell`        | `LeftRail`, `RightRail`, `RailSheet`, `useRailMode`                                                           |
+| `features/map`          | `MapCanvas`, `useMapLibre`, `MapControls`, `ScaleBar`, `NorthIndicator`, `overlays/TileOverlay`               |
+| `features/change-types` | The family-grouped layer list (`ChangeTypeList`, `ChangeTypeRow`)                                             |
+| `features/layers`       | `MapLayersPanel`, `LayerRow`, `OpacityControl`, `LayerOrderControl`                                           |
+| `features/timeline`     | `TimeSeriesPanel`, `AnimationBar`, `PlaybackButton`, `usePlayback`                                            |
+| `features/comparison`   | `ComparisonPanel`                                                                                             |
+| `features/inspector`    | `CurrentViewCard`, `LegendPanel`, `LocationInfoPanel`, `QuickStatsPanel`                                      |
+| `features/tools`        | `ToolsPanel`, `ToolButton`                                                                                    |
+| `features/bookmarks`    | `BookmarkPanel`                                                                                               |
+| `features/provenance`   | `ProvenanceModal`                                                                                             |
+| `features/search`       | The `locations.ts` gazetteer and `findNearestPlace()`                                                         |
+| `features/data`         | `FileImport`, `tileCache`, `geoTiffWorker` (stubs; see below)                                                 |
 
 ## Stores
 
-| Store | State |
-| --- | --- |
-| `datasetStore` | `manifest`, `tables`, load status and error, `currentDate`, range, comparison settings, and the tile-error count with the failing layers. Exposes `useTimelineDates()` and `resolveManifestEntry()`. |
-| `layerStore` | The layer list (manifest layers plus basemap, boundary, landslide polygons and labels), visibility, opacity, order, and `activeLayerId`. `hydrateFromManifest()` builds it from the manifest. |
-| `selectionStore` | The selected point and its samples. `inspectCoordinate()` calls Tauri `sample_layers`, or falls back to placeholders. |
-| `uiStore` | Rail mode, open rails and panels, active tool, measure points, fly-to requests, provenance dialog. Panel state persists through the Tauri store. |
-| `bookmarkStore` | Saved viewpoints, persisted through `@tauri-apps/plugin-store` in the desktop app. |
-| `usePlaybackStore` | Playback state and speed, driven by a `requestAnimationFrame` loop. Lives in `features/timeline`. |
+| Store              | State                                                                                                                                                                                                |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `datasetStore`     | `manifest`, `tables`, load status and error, `currentDate`, range, comparison settings, and the tile-error count with the failing layers. Exposes `useTimelineDates()` and `resolveManifestEntry()`. |
+| `layerStore`       | The layer list (manifest layers plus basemap, boundary, landslide polygons and labels), visibility, opacity, order, and `activeLayerId`. `hydrateFromManifest()` builds it from the manifest.        |
+| `selectionStore`   | The selected point and its samples. `inspectCoordinate()` calls Tauri `sample_layers`, or falls back to placeholders.                                                                                |
+| `uiStore`          | Rail mode, open rails and panels, active tool, measure points, fly-to requests, provenance dialog. Panel state persists through the Tauri store.                                                     |
+| `bookmarkStore`    | Saved viewpoints, persisted through `@tauri-apps/plugin-store` in the desktop app.                                                                                                                   |
+| `usePlaybackStore` | Playback state and speed, driven by a `requestAnimationFrame` loop. Lives in `features/timeline`.                                                                                                    |
 
 The Tauri plugins are imported dynamically and only used inside Tauri, so the same bundle runs
 in a plain browser.

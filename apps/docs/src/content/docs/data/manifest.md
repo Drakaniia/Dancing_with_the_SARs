@@ -22,34 +22,36 @@ It is checked on both sides of the boundary:
   "generator": {
     "name": "nisar-tile-pipeline",
     "version": "2.1.0",
-    "generatedAt": "2026-11-13T06:52:37Z"
+    "generatedAt": "2026-11-13T06:52:37Z",
   },
   "source": {
     "repo": "https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar",
     "commit": "7ea38ff1b5c0dd4571b1935d01c5bd71ebf72862",
     "crs": "EPSG:32651",
     "resolutionMeters": 30,
-    "attribution": "NISAR L2 GCOV (NASA-ISRO, provisional) · Landsat HLS L30 v2.0 · MODIS MOD13Q1/MOD11A2 · GPM IMERG V07 · SRTMGL1 · NOAA CPC"
+    "attribution": "NISAR L2 GCOV (NASA-ISRO, provisional) · Landsat HLS L30 v2.0 · MODIS MOD13Q1/MOD11A2 · GPM IMERG V07 · SRTMGL1 · NOAA CPC",
   },
-  "bounds": [124.357, 5.3655, 125.7153, 6.633],   // [west, south, east, north], EPSG:4326
-  "dates": ["2020", "2024-12", "…", "static"],     // sorted union of every layer's periods
-  "trimmed": [],                                    // budget trims applied, if any
+  "bounds": [124.357, 5.3655, 125.7153, 6.633], // [west, south, east, north], EPSG:4326
+  "dates": ["2020", "2024-12", "…", "static"], // sorted union of every layer's periods
+  "trimmed": [], // budget trims applied, if any
   "totals": { "tiles": 28530, "bytes": 506533670, "byFamily": { "…": {} } },
-  "layers": [ /* one entry per layer-date */ ]
+  "layers": [
+    /* one entry per layer-date */
+  ],
 }
 ```
 
-| Field | Rule |
-| --- | --- |
-| `schemaVersion` | Must be `1` |
-| `generator` | `name`, `version`, `generatedAt` are non-empty strings |
-| `source.repo` | An `https://` URL |
-| `source.commit` | A 7–40 character hex SHA |
-| `source.crs` | Must be `EPSG:32651` |
-| `bounds` | `west < east`, `south < north`, inside EPSG:4326 |
-| `dates` | **Exactly** the sorted union of every layer's `periods` |
-| `totals` | Optional; integer `tiles` and `bytes` |
-| `trimmed` | Optional list of strings |
+| Field           | Rule                                                    |
+| --------------- | ------------------------------------------------------- |
+| `schemaVersion` | Must be `1`                                             |
+| `generator`     | `name`, `version`, `generatedAt` are non-empty strings  |
+| `source.repo`   | An `https://` URL                                       |
+| `source.commit` | A 7–40 character hex SHA                                |
+| `source.crs`    | Must be `EPSG:32651`                                    |
+| `bounds`        | `west < east`, `south < north`, inside EPSG:4326        |
+| `dates`         | **Exactly** the sorted union of every layer's `periods` |
+| `totals`        | Optional; integer `tiles` and `bytes`                   |
+| `trimmed`       | Optional list of strings                                |
 
 ## Layer entries
 
@@ -62,26 +64,32 @@ There is **one entry per layer-date**: 318 entries for 57 unique ids. Entries th
   "family": "radar",
   "name": "HH Backscatter Change (monthly)",
   "units": "dB",
-  "valueType": "continuous",            // continuous | categorical | count
+  "valueType": "continuous", // continuous | categorical | count
   "sourceFile": "nisar/change_by_month/NISAR_HH_Change_month_2026-09_to_2026-10_30m.tif",
   "band": 1,
   "scaleFactor": 0.01,
   "nodata": -32768,
-  "period": "2026-10 (vs 2026-09)",     // this entry's period
-  "periods": ["2026-10 (vs 2026-09)"],  // all periods of this layer, sorted
+  "period": "2026-10 (vs 2026-09)", // this entry's period
+  "periods": ["2026-10 (vs 2026-09)"], // all periods of this layer, sorted
   "tilePath": "tiles/radar-change-hh-monthly/2026-10-vs-2026-09/{z}/{x}/{y}.png",
   "minZoom": 5,
   "maxZoom": 13,
   "ramp": {
     "kind": "diverging",
-    "stops": [[-3, "#8c510a"], [-1.5, "#d8b365"], [0, "#f5f5f5"], [1.5, "#5ab4ac"], [3, "#01665e"]]
+    "stops": [
+      [-3, "#8c510a"],
+      [-1.5, "#d8b365"],
+      [0, "#f5f5f5"],
+      [1.5, "#5ab4ac"],
+      [3, "#01665e"],
+    ],
   },
   "domain": [-3, 3],
-  "coverage": 1,                         // optional: fraction of the AOI with data
+  "coverage": 1, // optional: fraction of the AOI with data
   "caveats": [
     "Backscatter change, not ground deformation (uplift/subsidence requires GUNW interferometry)",
-    "Does not capture the 8 June 2026 quake directly: first NISAR scene is 28 June 2026"
-  ]
+    "Does not capture the 8 June 2026 quake directly: first NISAR scene is 28 June 2026",
+  ],
 }
 ```
 
@@ -103,17 +111,17 @@ There is **one entry per layer-date**: 318 entries for 57 unique ids. Entries th
 
 Periods are free-form labels: `2026-10`, `2025-Q3`, `2026-06-28`, `2026-10 (vs 2026-09)`,
 `pre-quake 2026`, `static`. They are **sorted by their primary date** (the part before
-` (vs `), then by the full label. Python and TypeScript use the same key
+`(vs`), then by the full label. Python and TypeScript use the same key
 (`period_sort_key` / `periodSortKey`).
 
 The tile directory for a period is a URL-safe slug made by `tile_segment()`:
 
-| Period | Tile segment |
-| --- | --- |
-| `2026-10` | `2026-10` |
+| Period                 | Tile segment         |
+| ---------------------- | -------------------- |
+| `2026-10`              | `2026-10`            |
 | `2026-10 (vs 2026-09)` | `2026-10-vs-2026-09` |
-| `2026 vs 2020` | `2026-vs-2020` |
-| `pre-quake 2026` | `pre-quake-2026` |
+| `2026 vs 2020`         | `2026-vs-2020`       |
+| `pre-quake 2026`       | `pre-quake-2026`     |
 
 This replaced the old `tiles/{changeType}/{date}/…` template, whose `Jun 2024` dates turned
 into `Jun%202024` and fell through to the SPA's HTML fallback.
@@ -130,8 +138,8 @@ into `Jun%202024` and fell through to the SPA's HTML fallback.
 
 ## Companion files
 
-| File | Contents |
-| --- | --- |
-| `apps/web/public/data/tables.json` | Ranked landslides, monthly means for the area of interest, outlook scenario, MODIS series, epicentre (typed as `TablesPayload`) |
-| `apps/web/public/data/boundary.geojson` | Area-of-interest outline (EPSG:4326) |
-| `apps/web/public/data/landslides.geojson` | 305 landslide candidate polygons |
+| File                                      | Contents                                                                                                                        |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/web/public/data/tables.json`        | Ranked landslides, monthly means for the area of interest, outlook scenario, MODIS series, epicentre (typed as `TablesPayload`) |
+| `apps/web/public/data/boundary.geojson`   | Area-of-interest outline (EPSG:4326)                                                                                            |
+| `apps/web/public/data/landslides.geojson` | 305 landslide candidate polygons                                                                                                |

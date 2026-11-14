@@ -39,6 +39,6 @@ current period. Until it is, use the pair products, which are real computed diff
 - The same-track change layers, for example `2026-10-14 (vs 2026-09-20)`.
 - `earthquake-evi-change-2026` / `earthquake-nbr-change-2026`: post minus pre.
 - `landcover-change-2020-2026`.
-:::
+  :::
 
 See [Roadmap and history](/Dancing_with_the_SARs/reference/roadmap/) for the outstanding work.

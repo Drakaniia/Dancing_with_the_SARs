@@ -5,19 +5,19 @@ description: The tech stack, repository layout and data flow of the NISAR Surfac
 
 ## Stack
 
-| Layer | Technology |
-| --- | --- |
-| Desktop shell | [Tauri v2](https://tauri.app/) (Rust), with the dialog, fs and store plugins |
-| UI | React 18 + TypeScript, built with Vite 6 |
-| Map | [MapLibre GL JS](https://maplibre.org/) with an Esri World Imagery basemap |
-| State | [Zustand](https://zustand.docs.pmnd.rs/) stores |
-| Styling | Tailwind CSS v4 + design tokens (`apps/web/src/styles/tokens.css`) |
-| Motion | `motion` (Framer Motion), respecting reduced-motion |
-| Icons | `lucide-react` |
-| GeoTIFF reads | Pure-Rust [`tiff`](https://crates.io/crates/tiff) crate; no GDAL |
-| Tests and lint | Vitest + Testing Library + axe-core, Biome |
-| Data pipeline | Python 3.11+: rasterio, numpy, shapely, pyproj, Pillow (build time only) |
-| Docs | Astro + Starlight (`apps/docs`) |
+| Layer          | Technology                                                                   |
+| -------------- | ---------------------------------------------------------------------------- |
+| Desktop shell  | [Tauri v2](https://tauri.app/) (Rust), with the dialog, fs and store plugins |
+| UI             | React 18 + TypeScript, built with Vite 6                                     |
+| Map            | [MapLibre GL JS](https://maplibre.org/) with an Esri World Imagery basemap   |
+| State          | [Zustand](https://zustand.docs.pmnd.rs/) stores                              |
+| Styling        | Tailwind CSS v4 + design tokens (`apps/web/src/styles/tokens.css`)           |
+| Motion         | `motion` (Framer Motion), respecting reduced-motion                          |
+| Icons          | `lucide-react`                                                               |
+| GeoTIFF reads  | Pure-Rust [`tiff`](https://crates.io/crates/tiff) crate; no GDAL             |
+| Tests and lint | Vitest + Testing Library + axe-core, Biome                                   |
+| Data pipeline  | Python 3.11+: rasterio, numpy, shapely, pyproj, Pillow (build time only)     |
+| Docs           | Astro + Starlight (`apps/docs`)                                              |
 
 ## Repository layout
 

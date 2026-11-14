@@ -10,15 +10,15 @@ in **seven families**. The full list is in the [layer catalogue](/Dancing_with_t
 
 Layers are grouped into collapsible family sections:
 
-| Family | UI label | What it shows |
-| --- | --- | --- |
-| `radar` | Radar Backscatter & Change | NISAR L-band HH/HV backscatter and change, in dB |
-| `vegetation` | Vegetation & Plant Water | Radar-estimated EVI greenness and NDMI moisture |
-| `landcover` | Land Cover & Change | 2020/2026 classes, confidence, change |
-| `earthquake` | 8 June 2026 Earthquake | Pre/post EVI and NBR, landslide candidates |
-| `climate` | El Nino Time Series | Landsat HLS quarterly and MODIS monthly indices and temperature |
-| `outlook` | 12-Month El Nino Scenario | Expected values, anomalies, chances and sensitivities, Nov 2026–Oct 2027 |
-| `terrain` | SRTM Terrain | Elevation, slope, aspect |
+| Family       | UI label                   | What it shows                                                            |
+| ------------ | -------------------------- | ------------------------------------------------------------------------ |
+| `radar`      | Radar Backscatter & Change | NISAR L-band HH/HV backscatter and change, in dB                         |
+| `vegetation` | Vegetation & Plant Water   | Radar-estimated EVI greenness and NDMI moisture                          |
+| `landcover`  | Land Cover & Change        | 2020/2026 classes, confidence, change                                    |
+| `earthquake` | 8 June 2026 Earthquake     | Pre/post EVI and NBR, landslide candidates                               |
+| `climate`    | El Nino Time Series        | Landsat HLS quarterly and MODIS monthly indices and temperature          |
+| `outlook`    | 12-Month El Nino Scenario  | Expected values, anomalies, chances and sensitivities, Nov 2026–Oct 2027 |
+| `terrain`    | SRTM Terrain               | Elevation, slope, aspect                                                 |
 
 Each row shows a swatch generated from the layer's colour ramp, or from its classes for
 categorical layers, plus a toggle.

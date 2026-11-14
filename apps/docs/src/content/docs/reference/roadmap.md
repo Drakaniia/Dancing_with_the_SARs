@@ -33,17 +33,17 @@ pixel sampling.
 
 ## Build order (P0–P8)
 
-| Phase | Scope | Status |
-| --- | --- | --- |
-| P0 | Inventory: fetch, contract checks, tile estimate | Done, at commit `7ea38ff` |
-| P1 | Pipeline: warp → ramp → tile → manifest → report, incremental, budget gate, schema test | Done (pipeline 2.1.0) |
-| P2 | App data model: manifest types and validator, stores, timeline union and snapping, families, legends | Done |
-| P3 | Map: manifest-driven `TileOverlay`, boundary GeoJSON, fit to the area of interest | Done; tile-error reporting not wired |
-| P4 | Inspector: Rust decoder, `sample_layers`, scale/nodata/class handling | Done |
-| P5 | Provenance: status pill and provenance dialog with limits | Done |
-| P6 | Catalogue: all families tiled | Done: 318 layer-dates |
-| P7 | Plain data: ranked landslides, monthly chart, outlook table | Done (Quick Stats) |
-| P8 | Verification: lint, test, build, `cargo check`, pipeline check, manual spot checks against QGIS | Ongoing |
+| Phase | Scope                                                                                                | Status                               |
+| ----- | ---------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| P0    | Inventory: fetch, contract checks, tile estimate                                                     | Done, at commit `7ea38ff`            |
+| P1    | Pipeline: warp → ramp → tile → manifest → report, incremental, budget gate, schema test              | Done (pipeline 2.1.0)                |
+| P2    | App data model: manifest types and validator, stores, timeline union and snapping, families, legends | Done                                 |
+| P3    | Map: manifest-driven `TileOverlay`, boundary GeoJSON, fit to the area of interest                    | Done; tile-error reporting not wired |
+| P4    | Inspector: Rust decoder, `sample_layers`, scale/nodata/class handling                                | Done                                 |
+| P5    | Provenance: status pill and provenance dialog with limits                                            | Done                                 |
+| P6    | Catalogue: all families tiled                                                                        | Done: 318 layer-dates                |
+| P7    | Plain data: ranked landslides, monthly chart, outlook table                                          | Done (Quick Stats)                   |
+| P8    | Verification: lint, test, build, `cargo check`, pipeline check, manual spot checks against QGIS      | Ongoing                              |
 
 ## Open work
 

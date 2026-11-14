@@ -11,13 +11,13 @@ python scripts/tiles/fetch_data.py --commit <sha>  # fetch a specific commit (bu
 python scripts/tiles/fetch_data.py --verify        # re-check local sizes against the pin
 ```
 
-| Option | Default | Meaning |
-| --- | --- | --- |
-| `--repo` | the upstream release repo | Source repository |
-| `--commit` | `main` | Commit SHA or ref to pin |
-| `--dest` | `data` | Destination folder (gitignored) |
-| `--jobs` | `16` | Parallel downloads |
-| `--verify` | off | Check file sizes against `data/.pin.json` without downloading |
+| Option     | Default                   | Meaning                                                       |
+| ---------- | ------------------------- | ------------------------------------------------------------- |
+| `--repo`   | the upstream release repo | Source repository                                             |
+| `--commit` | `main`                    | Commit SHA or ref to pin                                      |
+| `--dest`   | `data`                    | Destination folder (gitignored)                               |
+| `--jobs`   | `16`                      | Parallel downloads                                            |
+| `--verify` | off                       | Check file sizes against `data/.pin.json` without downloading |
 
 ### Why not `git clone`?
 
@@ -69,9 +69,9 @@ The run exits non-zero if any **fail** assertion stands:
 
 ### Tiles per full-coverage layer-date
 
-| z | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| tiles | 1 | 2 | 2 | 3 | 6 | 13 | 34 | 98 | 301 |
+| z     | 5   | 6   | 7   | 8   | 9   | 10  | 11  | 12  | 13  |
+| ----- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| tiles | 1   | 2   | 2   | 3   | 6   | 13  | 34  | 98  | 301 |
 
 That is 460 tiles per layer-date at z5–13, and 61 at z5–11. This is why dense time series stop
 at z11.

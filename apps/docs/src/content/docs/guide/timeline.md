@@ -51,12 +51,12 @@ Layers whose only period is `static` (terrain) never snap.
 Press **Play** to step through `manifest.dates` in order. Playback loops back to the first
 period after the last one.
 
-| Speed | Step interval |
-| --- | --- |
-| 0.5× | 1.4 s |
-| 1× (default) | 0.7 s |
-| 2× | 0.35 s |
-| 4× | 0.175 s |
+| Speed        | Step interval |
+| ------------ | ------------- |
+| 0.5×         | 1.4 s         |
+| 1× (default) | 0.7 s         |
+| 2×           | 0.35 s        |
+| 4×           | 0.175 s       |
 
 Stepping uses `requestAnimationFrame`, so playback pauses while the window is hidden.
 

@@ -8,12 +8,12 @@ that wraps it in `apps/desktop`, and this documentation site in `apps/docs`.
 
 ## Prerequisites
 
-| Tool | Needed for | Notes |
-| --- | --- | --- |
-| [Node.js](https://nodejs.org/) | Frontend, docs | A current LTS release |
-| [pnpm](https://pnpm.io/) | Package manager | Workspace defined in `pnpm-workspace.yaml` |
-| [Rust](https://www.rust-lang.org/tools/install) + [Tauri v2 prerequisites](https://tauri.app/start/prerequisites/) | Desktop build | On Windows: Microsoft C++ Build Tools and WebView2 |
-| Python 3.11+ | Tile pipeline, screenshots only | Build machine only; never needed at runtime |
+| Tool                                                                                                               | Needed for                      | Notes                                              |
+| ------------------------------------------------------------------------------------------------------------------ | ------------------------------- | -------------------------------------------------- |
+| [Node.js](https://nodejs.org/)                                                                                     | Frontend, docs                  | A current LTS release                              |
+| [pnpm](https://pnpm.io/)                                                                                           | Package manager                 | Workspace defined in `pnpm-workspace.yaml`         |
+| [Rust](https://www.rust-lang.org/tools/install) + [Tauri v2 prerequisites](https://tauri.app/start/prerequisites/) | Desktop build                   | On Windows: Microsoft C++ Build Tools and WebView2 |
+| Python 3.11+                                                                                                       | Tile pipeline, screenshots only | Build machine only; never needed at runtime        |
 
 ## Clone and install
 

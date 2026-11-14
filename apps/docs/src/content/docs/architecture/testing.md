@@ -14,17 +14,17 @@ the `jsdom` environment, the `tests/setup.ts` setup file, and runs `tests/**/*.t
 (paths relative to `apps/web`). Component tests use Testing Library. `axe-core` is available
 for accessibility assertions.
 
-| Suite | Covers |
-| --- | --- |
-| `tests/features/map/map.test.tsx` | Map layer bindings, scale and tile-path helpers |
-| `tests/features/panels/panels.test.tsx` | Panel content and the manifest contract |
-| `tests/features/shell/shell.test.tsx` | `AppShell` layout |
-| `tests/features/timeline/playback.test.ts` | `nextDate` and the playback store |
-| `tests/shared/utils/dates.test.ts` | Period resolution and sorting helpers |
-| `tests/shared/utils/colorScales.test.ts` | Gradients from ramps and classes |
-| `tests/shared/utils/geo.test.ts` | Geo helpers |
-| `tests/shared-ui/primitives-states.test.tsx` | States of every primitive: Button, IconButton, Checkbox, Slider, Switch, SegmentedControl, Panel, StatusPill, Badge, Progress, Tooltip, Popover |
-| `tests/shared-ui/panel.test.tsx`, `slider.test.tsx`, `switch.test.tsx` | Focused behaviour of those primitives |
+| Suite                                                                  | Covers                                                                                                                                          |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tests/features/map/map.test.tsx`                                      | Map layer bindings, scale and tile-path helpers                                                                                                 |
+| `tests/features/panels/panels.test.tsx`                                | Panel content and the manifest contract                                                                                                         |
+| `tests/features/shell/shell.test.tsx`                                  | `AppShell` layout                                                                                                                               |
+| `tests/features/timeline/playback.test.ts`                             | `nextDate` and the playback store                                                                                                               |
+| `tests/shared/utils/dates.test.ts`                                     | Period resolution and sorting helpers                                                                                                           |
+| `tests/shared/utils/colorScales.test.ts`                               | Gradients from ramps and classes                                                                                                                |
+| `tests/shared/utils/geo.test.ts`                                       | Geo helpers                                                                                                                                     |
+| `tests/shared-ui/primitives-states.test.tsx`                           | States of every primitive: Button, IconButton, Checkbox, Slider, Switch, SegmentedControl, Panel, StatusPill, Badge, Progress, Tooltip, Popover |
+| `tests/shared-ui/panel.test.tsx`, `slider.test.tsx`, `switch.test.tsx` | Focused behaviour of those primitives                                                                                                           |
 
 ## Lint and format (Biome)
 

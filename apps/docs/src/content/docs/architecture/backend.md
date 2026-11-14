@@ -92,12 +92,12 @@ frontend falls back to placeholder readings.
 
 ## Other commands
 
-| Command | Signature | Behaviour |
-| --- | --- | --- |
-| `import_file` | `() -> ImportedFile { name, path, size }` | Opens a file picker filtered to GeoTIFF and GeoJSON, and returns metadata. Not yet used by the UI. |
-| `export_screenshot` | `(data_url: String) -> String` | Saves a `data:image/png;base64,…` URL through a save dialog and returns the path. Not yet used by the UI. |
-| `read_tile_cache` | `(key: String) -> Option<Vec<u8>>` | Reads `<app cache dir>/tiles/<key>`. |
-| `write_tile_cache` | `(key: String, data: Vec<u8>)` | Writes `<app cache dir>/tiles/<key>`. |
+| Command             | Signature                                 | Behaviour                                                                                                 |
+| ------------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `import_file`       | `() -> ImportedFile { name, path, size }` | Opens a file picker filtered to GeoTIFF and GeoJSON, and returns metadata. Not yet used by the UI.        |
+| `export_screenshot` | `(data_url: String) -> String`            | Saves a `data:image/png;base64,…` URL through a save dialog and returns the path. Not yet used by the UI. |
+| `read_tile_cache`   | `(key: String) -> Option<Vec<u8>>`        | Reads `<app cache dir>/tiles/<key>`.                                                                      |
+| `write_tile_cache`  | `(key: String, data: Vec<u8>)`            | Writes `<app cache dir>/tiles/<key>`.                                                                     |
 
 ## Store plugin
 

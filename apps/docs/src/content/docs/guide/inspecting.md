@@ -49,12 +49,12 @@ coverage of the area of interest where known. When the layer snaps to another pe
 
 The **Quick Stats** panel has four tabs, all driven by `apps/web/public/data/tables.json`:
 
-| Tab | Contents |
-| --- | --- |
-| **Stats** | Area of interest (5,268.4 km²), 305 landslide candidate polygons, 318 layer-dates in the catalogue |
-| **Slides** | The top 25 of **152 ranked landslide clusters** after the 8 June M7.8 quake (barangay, municipality, area) |
-| **Series** | Monthly NDVI and daytime land temperature for the area of interest (2025–2026): a two-line SVG chart and a table |
-| **Outlook** | The 12-month El Niño scenario: rainfall, EVI anomaly and land temperature anomaly per month |
+| Tab         | Contents                                                                                                         |
+| ----------- | ---------------------------------------------------------------------------------------------------------------- |
+| **Stats**   | Area of interest (5,268.4 km²), 305 landslide candidate polygons, 318 layer-dates in the catalogue               |
+| **Slides**  | The top 25 of **152 ranked landslide clusters** after the 8 June M7.8 quake (barangay, municipality, area)       |
+| **Series**  | Monthly NDVI and daytime land temperature for the area of interest (2025–2026): a two-line SVG chart and a table |
+| **Outlook** | The 12-month El Niño scenario: rainfall, EVI anomaly and land temperature anomaly per month                      |
 
 Rows in these tabs are interactive:
 

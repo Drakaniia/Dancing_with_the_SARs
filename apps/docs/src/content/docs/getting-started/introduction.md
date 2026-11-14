@@ -49,14 +49,14 @@ never shows a value it cannot trace back to a source file. See [Data sources](/D
 
 ## At a glance
 
-| | |
-| --- | --- |
-| Data | [sarangani-davao-occidental-nisar](https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar) @ `7ea38ff` |
-| Area of interest | Sarangani + Davao Occidental, 5,268 km², bounds 124.357–125.715 °E, 5.365–6.633 °N |
-| Native grid | EPSG:32651 (UTM 51N), 30 m |
-| Catalogue | 57 layers, 318 layer-dates, 81 timeline periods |
-| Map tiles | 28,530 PNG tiles (z5–z13), ~507 MB, generated locally |
-| Stack | Tauri v2 (Rust) + React 18 + TypeScript + MapLibre GL JS + Zustand + Tailwind v4 |
+|                  |                                                                                                                              |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Data             | [sarangani-davao-occidental-nisar](https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar) @ `7ea38ff` |
+| Area of interest | Sarangani + Davao Occidental, 5,268 km², bounds 124.357–125.715 °E, 5.365–6.633 °N                                           |
+| Native grid      | EPSG:32651 (UTM 51N), 30 m                                                                                                   |
+| Catalogue        | 57 layers, 318 layer-dates, 81 timeline periods                                                                              |
+| Map tiles        | 28,530 PNG tiles (z5–z13), ~507 MB, generated locally                                                                        |
+| Stack            | Tauri v2 (Rust) + React 18 + TypeScript + MapLibre GL JS + Zustand + Tailwind v4                                             |
 
 ## What it is not
 
