@@ -140,7 +140,8 @@ export function MapCanvas() {
       {/* Top-left HUD badge: active dataset period snap + measure/inspect readout */}
       <div className="pointer-events-none absolute inset-0 z-[var(--z-map-chrome)]">
         <div className="pointer-events-auto absolute top-3 left-3 flex flex-col gap-2">
-          {active && !exact && resolvedPeriod ? (
+          {/* only when that layer is on the map (image views in Explore hide all tile layers) */}
+          {active?.visible && !exact && resolvedPeriod ? (
             <div className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-chrome-border)] bg-[var(--color-panel)] px-3 py-1.5 text-caption text-[var(--color-text)] shadow-[var(--shadow-1)]">
               <span className="h-2 w-2 rounded-full bg-[var(--color-warning)]" />
               <span>
