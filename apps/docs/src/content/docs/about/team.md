@@ -20,10 +20,8 @@ challenge.
 | Member                            | Role       | Country     |
 | --------------------------------- | ---------- | ----------- |
 | **Peter Dominic Montero**         | Team owner | Philippines |
-| **Athena Kristine G. Combalicer** | Member     | Philippines |
 | **Alistair M. Ybanez**            | Member     | Philippines |
 | **Habi Chenna G. Garduque**       | Member     | Philippines |
-| **Daniel Cresino**                | Member     | Philippines |
 | **Alfie Pelicano**                | Member     | Philippines |
 
 The member list comes from the team's
