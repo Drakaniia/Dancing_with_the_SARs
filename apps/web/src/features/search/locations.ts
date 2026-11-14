@@ -9,9 +9,9 @@ export interface LocationEntry {
 export const PHILIPPINES_LOCATIONS: LocationEntry[] = [
   {
     name: "M7.8 Quake Epicentre (8 Jun 2026)",
-    province: "Sarangani Strait",
+    province: "Celebes Sea, off Maasim, Sarangani",
     category: "epicentre",
-    center: [125.147, 6.0215],
+    center: [125.056, 5.599],
     zoom: 10.5,
   },
   {

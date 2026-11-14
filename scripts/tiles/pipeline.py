@@ -114,11 +114,11 @@ CAVEATS = {
         "Provisional NISAR calibration; backscatter intensity, not ground deformation",
     ],
     "backscatter_daily": [
-        "Single pass swath, not province-wide: coverage varies from 4% to 100% by date",
+        "Single pass swath, not province-wide: coverage within the two provinces varies from 19% to 89% by date",
         "Provisional NISAR calibration; backscatter intensity, not ground deformation",
     ],
     "change_monthly": [
-        "Backscatter change, not ground deformation (uplift/subsidence requires GUNW interferometry)",
+        "Backscatter change, not ground deformation: no public NISAR data exists before 19 June 2026, so NISAR cannot measure the quake's uplift",
         "Does not capture the 8 June 2026 quake directly: first NISAR scene is 28 June 2026",
     ],
     "change_pair": [
@@ -145,7 +145,7 @@ CAVEATS = {
     ],
     "landslides": [
         "~30% of the post-quake optical window was cloud-obscured (class 4)",
-        "No elevation data south of 5.9°N in the candidate check (class 5)",
+
     ],
     "quake_change_2026": [
         "Optical HLS difference (9 Jun-25 Sep minus 1 Mar-7 Jun 2026) around the 8 June M7.8 earthquake",
@@ -922,9 +922,9 @@ def export_vectors_and_tables(data_dir: str) -> None:
 
     tables_payload = {
         "epicentre": {
-            "lng": 125.14699,
-            "lat": 6.02153,
-            "label": "M7.8 Epicentre · 8 Jun 2026, 07:37 PST · 33 km depth",
+            "lng": 125.056,
+            "lat": 5.599,
+            "label": "M7.8 Epicentre · 8 Jun 2026, 07:37 PHT · 57 km depth (USGS) / 33 km (PHIVOLCS)",
         },
         "landslidesRanked": ranked_rows,
         "aoiMonthlyMeans": aoi_rows,

@@ -38,7 +38,7 @@
             "type": "Feature",
             "geometry": {
               "type": "Point",
-              "coordinates": [125.14699, 6.02153]
+              "coordinates": [125.056, 5.599]
             },
             "properties": {
               "name": "M7.8 Epicentre (8 Jun 2026)",

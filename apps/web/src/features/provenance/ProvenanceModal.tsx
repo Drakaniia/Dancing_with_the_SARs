@@ -14,10 +14,10 @@ import { useLayerStore } from "@/stores/layerStore";
 import { useUiStore } from "@/stores/uiStore";
 
 const KNOWN_LIMITATIONS = [
-  "Radar change is L-band backscatter intensity (dB), not InSAR ground uplift or subsidence. Deformation requires NISAR GUNW interferograms spanning 8 June 2026.",
-  "NISAR daily pass layers are single-pass swaths (coverage ranges from 4.3% on 30 Sep to 100% on 23 Sep / 17 Oct). Monthly composites cover 98-100% of the two provinces.",
+  "Radar change is L-band backscatter, not ground deformation. No public NISAR data exists before 19 June 2026, so NISAR cannot measure the quake's uplift; the team tested Sentinel-1 InSAR (sentinel1_quake/ in the data repo) and it could not measure it either.",
+  "NISAR daily pass layers are single-pass swaths. Inside the two provinces, coverage ranges from 19% on 30 Sep to 89% on 23 Sep / 17 Oct. Monthly composites cover 98-100% of the two provinces.",
   "NISAR ML vegetation (EVI) and plant moisture (NDMI) explain roughly one-third of optical variance and should be read as structural canopy estimates.",
-  "Around 30% of the post-quake optical landslide window (9 Jun-25 Sep 2026) was obscured by cloud cover (Class 4), and SRTM elevation checks were unavailable south of 5.9°N (Class 5).",
+  "Around 30% of the post-quake optical landslide window (9 Jun-25 Sep 2026) was obscured by cloud cover (Class 4) and was not checked.",
   "The 12-month El Nino Outlook (Nov 2026-Oct 2027) is a conditional climate scenario (+1 °C ONI sensitivity), not a deterministic weather forecast.",
 ] as const;
 
