@@ -1,9 +1,9 @@
 ---
 title: Manifest format
-description: The schema of public/data/manifest.json, the single contract between the tile pipeline and the app.
+description: The schema of apps/web/public/data/manifest.json, the single contract between the tile pipeline and the app.
 ---
 
-`public/data/manifest.json` is the **only contract** between the pipeline and the app. The
+`apps/web/public/data/manifest.json` is the **only contract** between the pipeline and the app. The
 pipeline generates it, and the app reads nothing else to learn about layers. There is no fixture
 layer list, no guessed file names, and no globbing.
 
@@ -11,7 +11,7 @@ It is checked on both sides of the boundary:
 
 - **Python:** `scripts/tiles/manifest_schema.py`. The pipeline refuses to write a manifest that
   fails it.
-- **TypeScript:** `validateManifest()` in `src/shared/types/manifest.ts`. The app rejects an
+- **TypeScript:** `validateManifest()` in `apps/web/src/shared/types/manifest.ts`. The app rejects an
   invalid manifest at startup and shows the error state.
 
 ## Top level
@@ -132,6 +132,6 @@ into `Jun%202024` and fell through to the SPA's HTML fallback.
 
 | File | Contents |
 | --- | --- |
-| `public/data/tables.json` | Ranked landslides, monthly means for the area of interest, outlook scenario, MODIS series, epicentre (typed as `TablesPayload`) |
-| `public/data/boundary.geojson` | Area-of-interest outline (EPSG:4326) |
-| `public/data/landslides.geojson` | 305 landslide candidate polygons |
+| `apps/web/public/data/tables.json` | Ranked landslides, monthly means for the area of interest, outlook scenario, MODIS series, epicentre (typed as `TablesPayload`) |
+| `apps/web/public/data/boundary.geojson` | Area-of-interest outline (EPSG:4326) |
+| `apps/web/public/data/landslides.geojson` | 305 landslide candidate polygons |

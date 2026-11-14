@@ -3,21 +3,22 @@ title: Project commands
 description: Every script in the workspace, and what it does.
 ---
 
-All commands run from the repository root.
+All commands run from the repository root. The root `package.json` only holds shortcuts that
+forward to the workspace packages with `pnpm --filter`.
 
-## App (root package)
+## App (`apps/web` and `apps/desktop`)
 
 | Command | What it does |
 | --- | --- |
-| `pnpm dev` | Vite dev server for the frontend only |
-| `pnpm build` | Type-check (`tsc`) and build the frontend into `dist/` |
+| `pnpm dev` | Vite dev server for the frontend only (`apps/web`) |
+| `pnpm build` | Type-check (`tsc`) and build the frontend into `apps/web/dist/` |
 | `pnpm preview` | Serve the built frontend |
-| `pnpm tauri dev` | Run the desktop app with hot reload |
+| `pnpm tauri dev` | Run the desktop app (`apps/desktop`) with hot reload |
 | `pnpm tauri build` | Build desktop installers |
 | `pnpm test` | Run the Vitest suite once |
-| `pnpm lint` | Biome check of `src` and `tests` |
+| `pnpm lint` | Biome check of `apps/web/src` and `apps/web/tests` |
 | `pnpm lint:fix` | Biome check with safe fixes applied |
-| `pnpm format` | Biome format of `src` and `tests` |
+| `pnpm format` | Biome format of `apps/web/src` and `apps/web/tests` |
 
 ## Documentation (`apps/docs`)
 
@@ -32,7 +33,7 @@ These are shortcuts for `pnpm --filter docs <script>`.
 ## Rust
 
 ```bash
-cargo check --manifest-path src-tauri/Cargo.toml
+cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
 ```
 
 ## Python (build machine only)
@@ -48,6 +49,6 @@ cargo check --manifest-path src-tauri/Cargo.toml
 | `python scripts/tiles/pipeline.py --families radar,terrain` | Rebuild only some families |
 | `python scripts/tiles/pipeline.py --full` | Rebuild without the incremental cache |
 | `python scripts/tiles/pipeline.py --check` | Validate the manifest and spot-check tiles |
-| `python scripts/tiles/manifest_schema.py public/data/manifest.json` | Schema check alone |
+| `python scripts/tiles/manifest_schema.py apps/web/public/data/manifest.json` | Schema check alone |
 | `python -m unittest discover -s scripts/tiles -p "test_*.py"` | Pipeline schema tests (unittest) |
 | `python scripts/capture_screenshots.py` | Regenerate `docs/screenshots/*.png` |

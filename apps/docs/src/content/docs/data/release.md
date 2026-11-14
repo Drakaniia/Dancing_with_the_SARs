@@ -73,7 +73,7 @@ so the timeline is parsed from the band descriptions rather than guessed from fi
 - Two features, Sarangani and Davao Occidental: 34 polygon parts, **5,268.4 km²**.
 - Extent: **124.357–125.715 °E, 5.365–6.633 °N**. This is the manifest `bounds`, and the map
   fits to it on load.
-- The pipeline converts the GeoPackage once to `public/data/boundary.geojson` for MapLibre.
+- The pipeline converts the GeoPackage once to `apps/web/public/data/boundary.geojson` for MapLibre.
 
 ## What the release does not contain
 
@@ -89,7 +89,7 @@ itself instead of the original four "change types". See
 
 ## Tables
 
-The CSVs are folded into `public/data/tables.json` at pipeline time, so the app never parses
+The CSVs are folded into `apps/web/public/data/tables.json` at pipeline time, so the app never parses
 CSV:
 
 - **Ranked landslides:** 152 clusters with rank, barangay, municipality, province, area,

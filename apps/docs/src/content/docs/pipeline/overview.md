@@ -16,10 +16,10 @@ app builds or runs, so `cargo build`, `pnpm build` and CI never need GDAL, raste
  data/inventory.json
         │  pipeline.py          warp → mask → ramp → tile → manifest
         ▼
- public/tiles/<id>/<period>/{z}/{x}/{y}.png   (gitignored, ~507 MB)
- public/data/manifest.json                     (committed)
- public/data/tables.json                       (committed)
- public/data/boundary.geojson, landslides.geojson (committed)
+ apps/web/public/tiles/<id>/<period>/{z}/{x}/{y}.png   (gitignored, ~507 MB)
+ apps/web/public/data/manifest.json                     (committed)
+ apps/web/public/data/tables.json                       (committed)
+ apps/web/public/data/boundary.geojson, landslides.geojson (committed)
 ```
 
 ## Scripts
@@ -49,7 +49,7 @@ checked anywhere Python runs.
 ```bash
 python scripts/tiles/fetch_data.py                 # ~727 MB -> data/, pinned in data/.pin.json
 python scripts/tiles/inventory.py                  # -> data/inventory.json
-python scripts/tiles/pipeline.py --families all    # -> public/tiles/, public/data/*
+python scripts/tiles/pipeline.py --families all    # -> apps/web/public/tiles/, apps/web/public/data/*
 python scripts/tiles/pipeline.py --check           # validate manifest + spot-check tiles
 ```
 
@@ -60,10 +60,10 @@ comma-separated subset to `--families`.
 
 | Path | Committed | Why |
 | --- | --- | --- |
-| `public/data/manifest.json` | Yes | The app's only description of layers |
-| `public/data/tables.json` | Yes | Quick Stats tables |
-| `public/data/*.geojson` | Yes | Boundary and landslide polygons |
-| `public/tiles/` | **No** | About 507 MB; regenerate locally |
+| `apps/web/public/data/manifest.json` | Yes | The app's only description of layers |
+| `apps/web/public/data/tables.json` | Yes | Quick Stats tables |
+| `apps/web/public/data/*.geojson` | Yes | Boundary and landslide polygons |
+| `apps/web/public/tiles/` | **No** | About 507 MB; regenerate locally |
 | `data/` | **No** | The 727 MB upstream release |
 
 A fresh clone therefore runs and lists every layer, but the raster overlays stay blank until the

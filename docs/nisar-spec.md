@@ -211,7 +211,7 @@ External Data Sources
 
 ### Main Interface Layout
 
-![NISAR Philippines Surface Change Dashboard](../public/images/NISAR%20Philippines%20Surface%20Change%20Dashboard.png)
+![NISAR Philippines Surface Change Dashboard](../apps/web/public/images/NISAR%20Philippines%20Surface%20Change%20Dashboard.png)
 
 ### Component Specifications
 

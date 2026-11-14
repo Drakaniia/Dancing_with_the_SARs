@@ -3,8 +3,8 @@ title: Installation
 description: Install the toolchain, run the desktop app, and load the map tiles.
 ---
 
-The repository is a **pnpm workspace**. The desktop app lives at the root, and this
-documentation site lives in `apps/docs`.
+The repository is a **pnpm workspace**. The React frontend lives in `apps/web`, the Tauri shell
+that wraps it in `apps/desktop`, and this documentation site in `apps/docs`.
 
 ## Prerequisites
 
@@ -23,7 +23,7 @@ cd Dancing_with_the_SARs
 pnpm install
 ```
 
-`pnpm install` installs both workspace projects (the app and `apps/docs`). Install scripts are
+`pnpm install` installs every workspace package (`apps/web`, `apps/desktop`, `apps/docs`). Install scripts are
 allowed only for the packages listed under `allowBuilds` in `pnpm-workspace.yaml`.
 
 ## Run the desktop app
@@ -46,8 +46,8 @@ the persisted store) are unavailable there.
 
 ## Load the map tiles
 
-`public/data/` (manifest, GeoJSON, tables) is committed, so a fresh clone starts and lists every
-layer. The **raster tiles are not committed**: `public/tiles/` is ~507 MB and gitignored. Until
+`apps/web/public/data/` (manifest, GeoJSON, tables) is committed, so a fresh clone starts and lists every
+layer. The **raster tiles are not committed**: `apps/web/public/tiles/` is ~507 MB and gitignored. Until
 you generate them, the overlays stay blank.
 
 Generate them once on a build machine (details in [Tile pipeline](/pipeline/overview/)):
@@ -56,7 +56,7 @@ Generate them once on a build machine (details in [Tile pipeline](/pipeline/over
 python -m pip install rasterio numpy shapely pyproj pillow
 python scripts/tiles/fetch_data.py               # ~727 MB upstream release -> data/
 python scripts/tiles/inventory.py                # check the release contract
-python scripts/tiles/pipeline.py --families all  # -> public/tiles/, public/data/
+python scripts/tiles/pipeline.py --families all  # -> apps/web/public/tiles/, apps/web/public/data/
 python scripts/tiles/pipeline.py --check         # validate the manifest and tiles
 ```
 
@@ -72,8 +72,12 @@ populated `data/`.
 pnpm run tauri build
 ```
 
-This runs `tsc && vite build` and then bundles the Rust shell. Installers are written under
-`src-tauri/target/release/bundle/`.
+This runs `tsc && vite build` in `apps/web` and then bundles the Rust shell. Installers are
+written under `apps/desktop/src-tauri/target/release/bundle/`.
+
+Pushing a `v*` tag (for example `v0.2.0`) runs `.github/workflows/release.yml`, which builds
+Windows, macOS and Linux installers and attaches them to a draft GitHub Release. Bump `version`
+in `apps/desktop/src-tauri/tauri.conf.json` first; installer file names use that version.
 
 ## Run this documentation
 

@@ -11,7 +11,7 @@ description: The tech stack, repository layout and data flow of the NISAR Surfac
 | UI | React 18 + TypeScript, built with Vite 6 |
 | Map | [MapLibre GL JS](https://maplibre.org/) with an Esri World Imagery basemap |
 | State | [Zustand](https://zustand.docs.pmnd.rs/) stores |
-| Styling | Tailwind CSS v4 + design tokens (`src/styles/tokens.css`) |
+| Styling | Tailwind CSS v4 + design tokens (`apps/web/src/styles/tokens.css`) |
 | Motion | `motion` (Framer Motion), respecting reduced-motion |
 | Icons | `lucide-react` |
 | GeoTIFF reads | Pure-Rust [`tiff`](https://crates.io/crates/tiff) crate; no GDAL |
@@ -23,27 +23,32 @@ description: The tech stack, repository layout and data flow of the NISAR Surfac
 
 ```text
 .
-├── apps/docs/            # this documentation (Astro Starlight, pnpm workspace package)
+├── apps/
+│   ├── web/              # React frontend (pnpm package "web")
+│   │   ├── public/
+│   │   │   ├── data/     # manifest.json, tables.json, *.geojson   (committed)
+│   │   │   ├── tiles/    # generated XYZ PNG tiles                  (gitignored)
+│   │   │   ├── styles/basemap.json
+│   │   │   └── images/
+│   │   ├── src/
+│   │   │   ├── app/      # App shell, ThemeProvider, entry point
+│   │   │   ├── features/ # one folder per UI feature
+│   │   │   ├── shared/   # ui primitives, types, utils
+│   │   │   ├── stores/   # Zustand stores
+│   │   │   ├── styles/   # tokens.css / tokens.ts
+│   │   │   └── fixtures/ # chrome-only fixtures (labels, tools, defaults)
+│   │   ├── tests/        # Vitest suites
+│   │   └── vite.config.ts
+│   ├── desktop/          # Tauri shell (pnpm package "desktop")
+│   │   └── src-tauri/    # Rust shell and commands
+│   └── docs/             # this documentation (Astro Starlight)
 ├── docs/                 # specs, inventory notes, screenshots
-├── public/
-│   ├── data/             # manifest.json, tables.json, *.geojson   (committed)
-│   ├── tiles/            # generated XYZ PNG tiles                  (gitignored)
-│   ├── styles/basemap.json
-│   └── images/
 ├── scripts/
 │   ├── tiles/            # fetch, inventory, pipeline, ramps, manifest schema
 │   └── capture_screenshots.py
-├── src/                  # React frontend
-│   ├── app/              # App shell, ThemeProvider, entry point
-│   ├── features/         # one folder per UI feature
-│   ├── shared/           # ui primitives, types, utils
-│   ├── stores/           # Zustand stores
-│   ├── styles/           # tokens.css / tokens.ts
-│   └── fixtures/         # chrome-only fixtures (labels, tools, defaults)
-├── src-tauri/            # Rust shell and commands
-├── tests/                # Vitest suites
+├── biome.jsonc
 ├── pnpm-workspace.yaml
-└── package.json
+└── package.json          # root shortcuts that forward to the packages
 ```
 
 ## Data flow
@@ -53,7 +58,7 @@ upstream GeoTIFF release ──► scripts/tiles (Python, build time)
                                  │
               ┌──────────────────┴──────────────────┐
               ▼                                     ▼
-   public/tiles/**.png                public/data/manifest.json + tables.json
+   apps/web/public/tiles/**.png       apps/web/public/data/manifest.json + tables.json
               │                                     │
               │                      datasetStore.loadManifestAndTables()
               │                       ├─ validateManifest()

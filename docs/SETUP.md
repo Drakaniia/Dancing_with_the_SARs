@@ -1,7 +1,7 @@
 # Regenerating data, tiles and screenshots
 
-`public/data/` (manifest, GeoJSON, tables) and `docs/screenshots/` are generated and committed.
-`public/tiles/` (~480 MB of map PNGs) is generated but gitignored to keep clones small: a fresh
+`apps/web/public/data/` (manifest, GeoJSON, tables) and `docs/screenshots/` are generated and committed.
+`apps/web/public/tiles/` (~480 MB of map PNGs) is generated but gitignored to keep clones small: a fresh
 clone runs and lists every layer, but the map overlays stay blank until you run step 2 once.
 
 ## 1. Python tools (build machine only)
@@ -22,7 +22,7 @@ Details and failure rules live in [scripts/tiles/README.md](../scripts/tiles/REA
 ```bash
 python scripts/tiles/fetch_data.py                 # ~727 MB upstream release -> data/ (gitignored), pinned in data/.pin.json
 python scripts/tiles/inventory.py                  # check the release contract and tile budget -> data/inventory.json
-python scripts/tiles/pipeline.py --families all    # -> public/tiles/, public/data/*.geojson, tables.json, manifest.json
+python scripts/tiles/pipeline.py --families all    # -> apps/web/public/tiles/, apps/web/public/data/*.geojson, tables.json, manifest.json
 python scripts/tiles/pipeline.py --check           # validate the manifest and the local tiles
 ```
 

@@ -10,7 +10,7 @@ description: Click the map to read real pixel values, and use the Quick Stats ta
 Click anywhere on the map. The **Location Info** panel in the right rail then shows:
 
 - **Coordinates** to four decimals, for example `6.0215° N, 125.1470° E`.
-- The **nearest place name** from the built-in gazetteer (`src/features/search/locations.ts`).
+- The **nearest place name** from the built-in gazetteer (`apps/web/src/features/search/locations.ts`).
 - A **primary reading** for the active layer.
 - **Sampled Raster Values:** one row per sampled layer, with the value and units (or the class
   name for categorical layers), the period actually sampled, and the layer's first caveat.
@@ -47,7 +47,7 @@ coverage of the area of interest where known. When the layer snaps to another pe
 
 ## Quick Stats
 
-The **Quick Stats** panel has four tabs, all driven by `public/data/tables.json`:
+The **Quick Stats** panel has four tabs, all driven by `apps/web/public/data/tables.json`:
 
 | Tab | Contents |
 | --- | --- |

@@ -6,7 +6,7 @@ vegetation, water) rendering anything on the map · **Added:** 2026-10-14
 ## The gap
 
 `TileOverlay` builds one raster source per `change-type` layer and points it at the template
-in [`src/shared/utils/geo.ts`](../src/shared/utils/geo.ts):
+in [`src/shared/utils/geo.ts`](../apps/web/src/shared/utils/geo.ts):
 
 ```
 tiles/{changeType}/{date}/{z}/{x}/{y}.png
@@ -48,7 +48,7 @@ date) rather than reverting to the spec's shorter path.
 
 ## Exact inputs the UI asks for
 
-- **Change types** (`SAMPLE_LAYERS` in [`src/fixtures/sample-dashboard.ts`](../src/fixtures/sample-dashboard.ts)):
+- **Change types** (`SAMPLE_LAYERS` in [`src/fixtures/sample-dashboard.ts`](../apps/web/src/fixtures/sample-dashboard.ts)):
   `elevation`, `subsidence`, `vegetation`, `water`.
 - **Dates** (`TIME_SERIES.ticks`): `Jan 2023`, `Apr 2023`, `Jul 2023`, `Oct 2023`, `Jan 2024`,
   `Apr 2024`, `Jun 2024`, `Oct 2024`, `Dec 2024`.
@@ -69,8 +69,8 @@ date) rather than reverting to the spec's shorter path.
 
 ## Where the code lives
 
-- Request template: [`tileTemplate`](../src/shared/utils/geo.ts) in `src/shared/utils/geo.ts`.
-- Source/layer reconciliation: [`src/features/map/overlays/TileOverlay.tsx`](../src/features/map/overlays/TileOverlay.tsx).
+- Request template: [`tileTemplate`](../apps/web/src/shared/utils/geo.ts) in `src/shared/utils/geo.ts`.
+- Source/layer reconciliation: [`src/features/map/overlays/TileOverlay.tsx`](../apps/web/src/features/map/overlays/TileOverlay.tsx).
 - Only tiles for the **current** date are fetched at a time — a generator does not need every
   date present upfront, but every date the user can scrub to must exist.
 

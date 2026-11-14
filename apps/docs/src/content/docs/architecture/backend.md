@@ -3,7 +3,7 @@ title: Tauri backend
 description: The Rust shell, its plugins, and every Tauri command including sample_layers.
 ---
 
-The desktop shell is in `src-tauri/`. `src/lib.rs` registers three plugins and five commands:
+The desktop shell is in `apps/desktop/src-tauri/`. `src/lib.rs` registers three plugins and five commands:
 
 ```rust
 tauri::Builder::default()
@@ -29,8 +29,9 @@ From `tauri.conf.json`:
 
 - **Product:** "NISAR Surface Change Monitor", identifier `com.nisar.surface-change-monitor`.
 - **Window:** 1400 × 900 by default, minimum 900 × 600.
-- **Dev:** runs `pnpm run dev` and loads `http://localhost:5173`.
-- **Build:** runs `pnpm run build` and bundles `../dist` for all targets.
+- **Dev:** runs `pnpm --filter web dev` and loads `http://localhost:5173`.
+- **Build:** runs `pnpm --filter web build` and bundles `../../web/dist` (that is,
+  `apps/web/dist`) for all targets.
 
 ## `sample_layers`
 
@@ -48,8 +49,9 @@ async fn sample_layers(
 The frontend calls it on every map click (`selectionStore.inspectCoordinate`). It works as
 follows:
 
-1. **Find the workspace.** It looks for `public/data/manifest.json` in the current directory
-   or its parent, then falls back to the resource directory.
+1. **Find the workspace.** It walks up from the current directory (`apps/desktop/src-tauri`
+   under `tauri dev`) until it finds `apps/web/public/data/manifest.json`, then falls back to
+   the resource directory.
 2. **Read the manifest** and group entries by layer id, keeping only `layer_ids` when given.
 3. **Project** WGS84 to **UTM zone 51N** (EPSG:32651, central meridian 123 °E) with a
    closed-form transverse Mercator in `wgs84_to_utm51n()`. No projection crate is needed.

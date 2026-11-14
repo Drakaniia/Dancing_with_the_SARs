@@ -5,7 +5,7 @@
 ## About the Challenge
 
 <div style="display: flex; align-items: center; gap: 24px;">
-  <img src="public/images/team-image.jpg" alt="The Cartographers" style="width: 300px; height: 250px; object-fit: cover; flex-shrink: 0;" />
+  <img src="apps/web/public/images/team-image.jpg" alt="The Cartographers" style="width: 300px; height: 250px; object-fit: cover; flex-shrink: 0;" />
   <div style="flex: 1;">
     <h3>Dancing with the SARs</h3>
     <p>Earth's surface is an endless dance of natural processes and human activities, but these changes are often difficult to visualize, understand, and communicate. From wetland loss to forest wildfires, earthquakes, farming activities, glacier movement, and more, Earth is in a constant waltz of surface changes. Your challenge is to build an interactive application that uses radar remote sensing data from the NASA-ISRO Synthetic Aperture Radar (NISAR) mission to track and visualize one or more types of surface change at locations around the world.</p>
@@ -51,6 +51,15 @@ pnpm docs:build   # static site in apps/docs/dist/
 ```
 
 ## Project Structure
+
+The repository is a pnpm workspace:
+
+- `apps/web`: the React + Vite frontend (`src/`, `public/`, `tests/`).
+- `apps/desktop`: the Tauri v2 shell (`src-tauri/`), which wraps the `apps/web` build.
+- `apps/docs`: the Astro Starlight documentation site.
+- `scripts/`: the Python tile pipeline (writes into `apps/web/public/`) and screenshot capture.
+
+Root scripts (`pnpm dev`, `pnpm build`, `pnpm test`, `pnpm lint`, `pnpm tauri dev`) forward to the right package.
 
 See `docs/superpowers/specs/2026-10-10-project-structure-design.md` for the full architecture spec.
 

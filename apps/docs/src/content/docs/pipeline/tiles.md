@@ -36,7 +36,7 @@ For each layer-date (one band of one source raster):
 5. **Colour.** Map values through the layer's ramp, or its class table, to a **PNG8 palette**:
    64 ramp levels, with index 255 transparent. nodata and transparent classes become alpha 0.
 6. **Tile.** Cut 256 × 256 XYZ tiles from `minZoom` to `maxZoom`, and **skip fully transparent
-   tiles**. Output goes to `public/tiles/<id>/<segment>/{z}/{x}/{y}.png`.
+   tiles**. Output goes to `apps/web/public/tiles/<id>/<segment>/{z}/{x}/{y}.png`.
 
 ### Zoom ranges
 
@@ -83,7 +83,7 @@ build) are deleted.
 
 ```bash
 python scripts/tiles/pipeline.py --check
-# public/data/manifest.json: valid (318 layers, 81 dates, 28,530 tiles / 506.5 MB)
+# apps/web/public/data/manifest.json: valid (318 layers, 81 dates, 28,530 tiles / 506.5 MB)
 ```
 
 This runs the schema validator plus the tile spot check against the existing manifest, without

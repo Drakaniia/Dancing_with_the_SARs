@@ -42,7 +42,7 @@ transmit and vertical receive (cross-pol), and is more sensitive to vegetation v
 
 **LST.** Land surface temperature (MODIS MOD11A2, daytime).
 
-**Manifest.** `public/data/manifest.json`, the generated contract between the pipeline and the
+**Manifest.** `apps/web/public/data/manifest.json`, the generated contract between the pipeline and the
 app.
 
 **NBR.** Normalized Burn Ratio, sensitive to vegetation loss and disturbance.

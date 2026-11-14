@@ -9,9 +9,10 @@ description: The Vitest suites, Biome lint and format, Rust checks, and pipeline
 pnpm test           # vitest run
 ```
 
-Configuration lives in `vite.config.ts`. It uses the `jsdom` environment, the
-`tests/setup.ts` setup file, and runs `tests/**/*.test.{ts,tsx}`. Component tests use Testing
-Library. `axe-core` is available for accessibility assertions.
+The suites live in the `web` package. Configuration is in `apps/web/vite.config.ts`. It uses
+the `jsdom` environment, the `tests/setup.ts` setup file, and runs `tests/**/*.test.{ts,tsx}`
+(paths relative to `apps/web`). Component tests use Testing Library. `axe-core` is available
+for accessibility assertions.
 
 | Suite | Covers |
 | --- | --- |
@@ -28,18 +29,18 @@ Library. `axe-core` is available for accessibility assertions.
 ## Lint and format (Biome)
 
 ```bash
-pnpm lint           # biome check src tests
+pnpm lint           # biome check apps/web/src apps/web/tests
 pnpm lint:fix       # apply safe fixes
-pnpm format         # biome format --write src tests
+pnpm format         # biome format --write apps/web/src apps/web/tests
 ```
 
-Rules live in `biome.jsonc`.
+Rules live in the root `biome.jsonc`.
 
 ## Type-check and build
 
 ```bash
-pnpm build          # tsc && vite build
-cargo check --manifest-path src-tauri/Cargo.toml
+pnpm build          # tsc && vite build (apps/web)
+cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
 ```
 
 ## Pipeline validation

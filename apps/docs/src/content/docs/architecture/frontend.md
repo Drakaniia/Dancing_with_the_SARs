@@ -3,7 +3,9 @@ title: Frontend
 description: Feature folders, Zustand stores, the map overlay, shared UI primitives and design tokens.
 ---
 
-The frontend lives in `src/` and uses the `@` alias for `src` (`vite.config.ts`).
+The frontend is the `web` workspace package in `apps/web`. Its code lives in `apps/web/src/`,
+and the `@` alias points at that folder (`apps/web/vite.config.ts`). Paths below are relative
+to `apps/web`.
 
 ## App shell
 

@@ -1,7 +1,8 @@
 # Tile pipeline (build time only)
 
-Turns the upstream GeoTIFF release into PNG tiles (`public/tiles/`, gitignored, regenerate
-locally) plus the committed `public/data/manifest.json`. See `docs/real-data-integration-spec.md` §5.
+Turns the upstream GeoTIFF release into PNG tiles (`apps/web/public/tiles/`, gitignored,
+regenerate locally) plus the committed `apps/web/public/data/manifest.json`. See
+`docs/real-data-integration-spec.md` §5.
 
 Nothing here runs at app build or runtime, so `cargo build` and CI never need GDAL, rasterio
 or Python. Full regeneration steps: `docs/SETUP.md`.
