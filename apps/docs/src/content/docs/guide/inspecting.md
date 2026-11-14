@@ -9,7 +9,7 @@ description: Click the map to read real pixel values, and use the Quick Stats ta
 
 Click anywhere on the map. The **Location Info** panel in the right rail then shows:
 
-- **Coordinates** to four decimals, for example `6.0215° N, 125.1470° E`.
+- **Coordinates** to four decimals, for example `5.7760° N, 125.5013° E` (Malalan, Jose Abad Santos).
 - The **nearest place name** from the built-in gazetteer (`apps/web/src/features/search/locations.ts`).
 - A **primary reading** for the active layer.
 - **Sampled Raster Values:** one row per sampled layer, with the value and units (or the class

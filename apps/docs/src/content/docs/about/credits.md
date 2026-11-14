@@ -63,9 +63,13 @@ Each package keeps its own licence. The full dependency list is in the `package.
 
 ## Use of AI tools
 
-The team used AI coding assistants (large language models) to help write and review parts of
-this repository's application code, tile pipeline scripts, tests and documentation. Team members
-reviewed, tested and edited all AI-assisted work before including it.
+The team used AI assistants (large language models) to help write and review parts of this
+repository's application code, tile pipeline scripts, tests and documentation. AI assistants also
+helped write and run the data-processing scripts in the
+[data release](https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar):
+the NISAR monthly composites and change maps, the NISAR machine-learning vegetation and land-cover
+estimates, the 12-month El Niño outlook model and the Sentinel-1 cross-check. Team members chose the
+methods, reviewed, tested and edited all AI-assisted work before including it.
 
 AI tools did not create the scientific data. Every map value comes from the satellite and
 climate products listed above, through the pinned data release and the tile pipeline. The
