@@ -9,7 +9,7 @@ import {
 } from "@/stores/uiStore";
 
 const LEFT_PANELS = [
-  "Surface Change Types",
+  "Explore",
   "Time Series",
   "Map Layers",
   "Comparison View",

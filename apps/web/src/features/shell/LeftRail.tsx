@@ -1,27 +1,28 @@
 import {
   CalendarRange,
   Columns2,
-  Layers,
+  Compass,
   Map as MapIcon,
   Wrench,
 } from "lucide-react";
-import { ChangeTypeList } from "@/features/change-types/ChangeTypeList";
 import { ComparisonPanel } from "@/features/comparison/ComparisonPanel";
 import { MapLayersPanel } from "@/features/layers/MapLayersPanel";
 import { TimeSeriesPanel } from "@/features/timeline/TimeSeriesPanel";
 import { ToolsPanel } from "@/features/tools/ToolsPanel";
+import { TopicsPanel } from "@/features/topics/TopicsPanel";
 import { Rail, type RailPanelDef, type RailPresentation } from "./Rail";
 
 /**
  * Panel order is locked to the reference:
- * Surface Change Types → Time Series → Map Layers → Comparison View → Tools.
+ * Explore (topics) → Time Series → Map Layers → Comparison View → Tools.
+ * The full grouped layer list lives under "All maps" inside Explore.
  */
 const LEFT_PANELS: readonly RailPanelDef[] = [
   {
     id: "change-types",
-    title: "Surface Change Types",
-    icon: Layers,
-    Content: ChangeTypeList,
+    title: "Explore",
+    icon: Compass,
+    Content: TopicsPanel,
   },
   {
     id: "time-series",
