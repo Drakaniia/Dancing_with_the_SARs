@@ -7,6 +7,7 @@ import {
   type TablesPayload,
   validateManifest,
 } from "@/shared/types/manifest";
+import { fetchDataFile } from "@/shared/utils/dataSource";
 import { resolvePeriod } from "@/shared/utils/dates";
 import { useLayerStore } from "./layerStore";
 
@@ -136,12 +137,12 @@ export const useDatasetStore = create<DatasetState>((set, get) => ({
     set({ manifestStatus: "loading", manifestError: null });
     try {
       const [manifestRes, tablesRes] = await Promise.all([
-        fetch("/data/manifest.json"),
-        fetch("/data/tables.json").catch(() => null),
+        fetchDataFile("manifest.json"),
+        fetchDataFile("tables.json").catch(() => null),
       ]);
       if (!manifestRes.ok) {
         throw new Error(
-          `HTTP ${manifestRes.status} loading /data/manifest.json`,
+          `HTTP ${manifestRes.status} loading data/manifest.json`,
         );
       }
       const doc: unknown = await manifestRes.json();

@@ -1,9 +1,10 @@
-import type { Map as MapLibreMap } from "maplibre-gl";
+import type { GeoJSONSource, Map as MapLibreMap } from "maplibre-gl";
 import { useEffect, useRef } from "react";
 import {
   offlineTilesAvailable,
   tileProtocolUrl,
 } from "@/features/offline/tileCache";
+import { fetchDataFile } from "@/shared/utils/dataSource";
 import {
   resolveTileUrl,
   SARANGANI_DAVOCC_BOUNDS,
@@ -44,6 +45,31 @@ function resolveOriginPrefix(): string {
   return "";
 }
 
+/**
+ * Adds an empty GeoJSON source, then fills it from the remote data host (bundled copy as the
+ * fallback). Features appear as soon as the file arrives.
+ */
+function addDataGeojson(
+  map: MapLibreMap,
+  sourceId: string,
+  file: string,
+): void {
+  map.addSource(sourceId, {
+    type: "geojson",
+    data: { type: "FeatureCollection", features: [] },
+  });
+  void fetchDataFile(file)
+    .then((res) => (res.ok ? res.json() : null))
+    .then((data) => {
+      if (!data) return;
+      const source = map.getSource(sourceId);
+      if (source && "setData" in source) {
+        (source as GeoJSONSource).setData(data);
+      }
+    })
+    .catch(() => undefined);
+}
+
 function removeOverlays(map: MapLibreMap, ids: string[]): void {
   for (const id of ids) {
     const layerId = layerIdFor(id);
@@ -70,10 +96,7 @@ export function TileOverlay({ map, ready }: TileOverlayProps) {
       : undefined;
 
     if (!map.getSource("aoi-boundary-source")) {
-      map.addSource("aoi-boundary-source", {
-        type: "geojson",
-        data: `${origin}/data/boundary.geojson`,
-      });
+      addDataGeojson(map, "aoi-boundary-source", "boundary.geojson");
     }
     if (!map.getLayer("aoi-boundary-casing")) {
       map.addLayer(
@@ -118,10 +141,7 @@ export function TileOverlay({ map, ready }: TileOverlayProps) {
     }
 
     if (!map.getSource("landslide-polygons-source")) {
-      map.addSource("landslide-polygons-source", {
-        type: "geojson",
-        data: `${origin}/data/landslides.geojson`,
-      });
+      addDataGeojson(map, "landslide-polygons-source", "landslides.geojson");
     }
     if (!map.getLayer("landslide-polygons")) {
       map.addLayer(
