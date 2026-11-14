@@ -1,6 +1,7 @@
 import {Audio} from '@remotion/media';
 import {AbsoluteFill, Sequence, staticFile} from 'remotion';
 import {AppChrome} from './components/AppChrome';
+import {CreditsCard} from './components/CreditsCard';
 import {Hud} from './components/Hud';
 import {MapStory} from './components/MapStory';
 import {PaperBackground} from './components/PaperBackground';
@@ -16,6 +17,15 @@ export const DemoVideo = () => (
       <Hud />
       <Sequence from={T.title} premountFor={30}>
         <TitleCard />
+      </Sequence>
+      <Sequence
+        from={T.credits}
+        premountFor={30}
+        style={{
+          translate: '-1px 0px'
+        }}
+      >
+        <CreditsCard />
       </Sequence>
     </AbsoluteFill>
     <Audio

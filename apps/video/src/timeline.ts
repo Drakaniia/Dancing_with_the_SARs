@@ -1,4 +1,4 @@
-// Scene start frames at 30 fps. Total 870 frames = 29 s (under the 30 s demo limit).
+// Scene start frames at 30 fps. Total 897 frames = 29.9 s (under the 30 s demo limit).
 // Matches the beats in VOICEOVER.md.
 export const FPS = 30;
 
@@ -10,5 +10,6 @@ export const T = {
   slides: 510, // clouds clear, 305 possible landslides bloom outward
   app: 675, // map docks into the app UI, data families cycle
   title: 780, // closing title card
-  end: 870,
+  credits: 840, // challenge and team members
+  end: 897,
 } as const;
