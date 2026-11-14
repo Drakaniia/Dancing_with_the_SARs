@@ -98,6 +98,7 @@ export function TopBarActions({ className }: TopBarActionsProps) {
       <Popover
         {...menuProps("bookmarks")}
         label="Bookmarks"
+        align="end"
         trigger={
           <IconButton label="Bookmarks">
             <Bookmark size={18} strokeWidth={1.5} />
@@ -172,6 +173,7 @@ export function TopBarActions({ className }: TopBarActionsProps) {
       <Popover
         {...menuProps("export")}
         label="Export"
+        align="end"
         trigger={
           <IconButton label="Export">
             <Download size={18} strokeWidth={1.5} />
