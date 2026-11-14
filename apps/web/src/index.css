@@ -80,6 +80,15 @@
     color-scheme: dark;
   }
 
+  /* App is a fixed viewport shell: the page itself never scrolls or rubber-bands */
+  html,
+  body,
+  #root {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
   body {
     background-color: var(--color-bg);
     color: var(--color-text);

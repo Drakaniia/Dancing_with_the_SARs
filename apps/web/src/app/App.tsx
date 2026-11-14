@@ -50,7 +50,7 @@ export function AppShell() {
   const rightIsSheet = railMode !== "wide";
 
   return (
-    <div className="flex h-screen w-screen flex-col overflow-hidden bg-[var(--color-bg)] text-[var(--color-text)]">
+    <div className="flex h-full w-full flex-col overflow-hidden bg-[var(--color-bg)] text-[var(--color-text)]">
       <TopBar />
 
       <div
