@@ -28,6 +28,9 @@ const VARIANT_CLASS: Record<IconButtonVariant, string> = {
   ghost: "bg-transparent hover:bg-[var(--color-fill-2)]",
 };
 
+const BASE_CLASS =
+  "inline-flex shrink-0 items-center justify-center rounded-[var(--radius-md)] text-[var(--color-text-secondary)] transition-[filter,background-color,color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]";
+
 /** Icon-only action: map controls, top-bar actions, panel headers. */
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
   function IconButton(
@@ -53,7 +56,42 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         disabled={disabled}
         whileTap={disabled || reducedMotion ? undefined : { scale: 0.97 }}
         transition={reducedMotion ? REDUCED_MOTION : SPRING_UI}
-        className={`inline-flex shrink-0 items-center justify-center rounded-[var(--radius-md)] text-[var(--color-text-secondary)] transition-[filter,background-color,color] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)] disabled:pointer-events-none disabled:opacity-40 ${SIZE_CLASS[size]} ${VARIANT_CLASS[variant]} ${className ?? ""}`}
+        className={`${BASE_CLASS} disabled:pointer-events-none disabled:opacity-40 ${SIZE_CLASS[size]} ${VARIANT_CLASS[variant]} ${className ?? ""}`}
+        {...rest}
+      />
+    );
+  },
+);
+
+export interface IconLinkProps extends Omit<
+  HTMLMotionProps<"a">,
+  "ref" | "children"
+> {
+  /** Accessible name — required, icon-only controls have no visible text. */
+  label: string;
+  href: string;
+  size?: IconButtonSize;
+  variant?: IconButtonVariant;
+  children: ReactNode;
+}
+
+/** IconButton's look for an external link; opens in a new tab (the system browser on desktop). */
+export const IconLink = forwardRef<HTMLAnchorElement, IconLinkProps>(
+  function IconLink(
+    { label, size = "sm", variant = "glass", className, ...rest },
+    ref,
+  ) {
+    const reducedMotion = useReducedMotion();
+
+    return (
+      <motion.a
+        ref={ref}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={label}
+        whileTap={reducedMotion ? undefined : { scale: 0.97 }}
+        transition={reducedMotion ? REDUCED_MOTION : SPRING_UI}
+        className={`${BASE_CLASS} ${SIZE_CLASS[size]} ${VARIANT_CLASS[variant]} ${className ?? ""}`}
         {...rest}
       />
     );
