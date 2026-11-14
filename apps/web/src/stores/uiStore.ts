@@ -1,6 +1,6 @@
-import { isTauri } from "@tauri-apps/api/core";
 import { create } from "zustand";
 import type { ToolId } from "@/fixtures/sample-dashboard";
+import { readSetting, writeSetting } from "@/shared/utils/settings";
 
 export type PanelId =
   | "change-types"
@@ -94,16 +94,11 @@ export interface UiState {
   toggleTerrain3d: () => void;
 }
 
-const SETTINGS_STORE = "settings.json";
 const PANELS_KEY = "ui.panels";
 const RAILS_KEY = "ui.rails";
 
 const BREAKPOINT_DEFAULT = 1024;
 const BREAKPOINT_WIDE = 1440;
-
-function canPersist(): boolean {
-  return typeof window !== "undefined" && isTauri();
-}
 
 function isPanelId(value: string): value is PanelId {
   return (PANEL_IDS as readonly string[]).includes(value);
@@ -118,34 +113,20 @@ async function readPersistedFlags<K extends string>(
   key: string,
   isKey: (value: string) => value is K,
 ): Promise<Partial<Record<K, boolean>> | null> {
-  if (!canPersist()) return null;
-  try {
-    const { load } = await import("@tauri-apps/plugin-store");
-    const store = await load(SETTINGS_STORE, { autoSave: true });
-    const value = await store.get<Record<string, boolean>>(key);
-    if (!value || typeof value !== "object") return null;
-    const flags: Partial<Record<K, boolean>> = {};
-    for (const [id, on] of Object.entries(value)) {
-      if (isKey(id) && typeof on === "boolean") flags[id] = on;
-    }
-    return flags;
-  } catch {
-    return null;
+  const value = await readSetting(key);
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const flags: Partial<Record<K, boolean>> = {};
+  for (const [id, on] of Object.entries(value)) {
+    if (isKey(id) && typeof on === "boolean") flags[id] = on;
   }
+  return flags;
 }
 
 async function persistFlags(
   key: string,
   flags: Record<string, boolean>,
 ): Promise<void> {
-  if (!canPersist()) return;
-  try {
-    const { load } = await import("@tauri-apps/plugin-store");
-    const store = await load(SETTINGS_STORE, { autoSave: true });
-    await store.set(key, flags);
-  } catch {
-    // Best-effort persistence.
-  }
+  await writeSetting(key, flags);
 }
 
 export const useUiStore = create<UiState>((set) => ({

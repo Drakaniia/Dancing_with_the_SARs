@@ -1,5 +1,5 @@
-import { isTauri } from "@tauri-apps/api/core";
 import { create } from "zustand";
+import { readSetting, writeSetting } from "@/shared/utils/settings";
 
 export interface Bookmark {
   id: string;
@@ -14,13 +14,8 @@ interface BookmarkState {
   removeBookmark: (id: string) => void;
 }
 
-const SETTINGS_STORE = "settings.json";
+/** Tauri store on desktop, localStorage in the browser (see `shared/utils/settings`). */
 const BOOKMARKS_KEY = "ui.bookmarks";
-
-/** Tauri is absent in the web build; persistence is skipped there and state stays in memory. */
-function canPersist(): boolean {
-  return typeof window !== "undefined" && isTauri();
-}
 
 function isBookmark(value: unknown): value is Bookmark {
   if (!value || typeof value !== "object") return false;
@@ -36,27 +31,13 @@ function isBookmark(value: unknown): value is Bookmark {
 }
 
 async function readPersistedBookmarks(): Promise<Bookmark[] | null> {
-  if (!canPersist()) return null;
-  try {
-    const { load } = await import("@tauri-apps/plugin-store");
-    const store = await load(SETTINGS_STORE, { autoSave: true });
-    const value = await store.get<unknown>(BOOKMARKS_KEY);
-    if (!Array.isArray(value)) return null;
-    return value.filter(isBookmark);
-  } catch {
-    return null;
-  }
+  const value = await readSetting(BOOKMARKS_KEY);
+  if (!Array.isArray(value)) return null;
+  return value.filter(isBookmark);
 }
 
 async function persistBookmarks(bookmarks: Bookmark[]): Promise<void> {
-  if (!canPersist()) return;
-  try {
-    const { load } = await import("@tauri-apps/plugin-store");
-    const store = await load(SETTINGS_STORE, { autoSave: true });
-    await store.set(BOOKMARKS_KEY, bookmarks);
-  } catch {
-    // Persistence is best-effort; the in-memory state is still correct.
-  }
+  await writeSetting(BOOKMARKS_KEY, bookmarks);
 }
 
 export const useBookmarkStore = create<BookmarkState>((set) => ({
@@ -80,8 +61,8 @@ export const useBookmarkStore = create<BookmarkState>((set) => ({
 }));
 
 /**
- * Loads persisted bookmarks. Safe to call more than once; resolves to the in-memory state when the
- * store is unavailable (web build, tests).
+ * Loads persisted bookmarks. Safe to call more than once; keeps the in-memory state when nothing is
+ * stored or storage is unavailable.
  */
 export async function hydrateBookmarkStore(): Promise<void> {
   const persisted = await readPersistedBookmarks();
