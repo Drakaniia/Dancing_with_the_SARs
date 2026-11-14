@@ -3,6 +3,8 @@ title: Introduction
 description: What the NISAR Surface Change Monitor is, the challenge it answers, and what data it shows.
 ---
 
+import VideoModal from "../../../components/VideoModal.astro";
+
 The **NISAR Surface Change Monitor** is an interactive desktop application that visualizes how
 the ground surface of **Sarangani and Davao Occidental** (Mindanao, Philippines) changes over
 time, using radar data from the NASA-ISRO Synthetic Aperture Radar (NISAR) mission together with
@@ -45,7 +47,11 @@ All of it comes from the team's separate data repository,
 pinned to one commit. A single generated [manifest](/Dancing_with_the_SARs/data/manifest/) describes it, so the dashboard
 never shows a value it cannot trace back to a source file. See [Data sources](/Dancing_with_the_SARs/data/sources/).
 
-![Dark dashboard with the Night Atlas interface](../../../../../../docs/screenshots/dashboard-dark.png)
+<VideoModal
+  src="video/demo.mp4"
+  poster="video/demo-poster.jpg"
+  title="NISAR Surface Change Monitor demo"
+/>
 
 ## At a glance
 

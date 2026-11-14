@@ -1,0 +1,288 @@
+---
+// A poster with a play button. Clicking it opens the video in a centered modal
+// (native <dialog>: Esc, the close button or a backdrop click closes it and pauses playback).
+// Visiting the page with #<id> in the URL opens the modal straight away, paused, so a shared
+// link lands on the video and one click starts it.
+interface Props {
+  /** Anchor for direct links: /page/#<id> opens the modal on load. */
+  id?: string;
+  /** Path under public/, e.g. "video/demo.mp4". The site base is prefixed automatically. */
+  src: string;
+  /** Path under public/ for the still shown before playback. */
+  poster: string;
+  /** Accessible title, also shown above the video in the modal. */
+  title: string;
+  width?: number;
+  height?: number;
+}
+
+const { id = "demo", src, poster, title, width = 1920, height = 1080 } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const withBase = (path: string) => `${base}/${path.replace(/^\//, "")}`;
+const videoSrc = withBase(src);
+const posterSrc = withBase(poster);
+---
+
+<div class="nisar-video not-content" id={id}>
+  <button
+    type="button"
+    class="nisar-video__trigger"
+    data-open
+    aria-haspopup="dialog"
+    aria-label={`Play video: ${title}`}
+  >
+    <img src={posterSrc} alt="" width={width} height={height} loading="lazy" decoding="async" />
+    <span class="nisar-video__play" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="28" height="28"><path d="M8 5.5v13l11-6.5z" fill="currentColor"
+        ></path></svg>
+    </span>
+  </button>
+
+  <dialog class="nisar-video__dialog" aria-label={title}>
+    <div class="nisar-video__frame">
+      <div class="nisar-video__header">
+        <span class="nisar-video__title">{title}</span>
+        <button type="button" class="nisar-video__close" data-close aria-label="Close video">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"
+            ><path
+              d="M6 6l12 12M18 6L6 18"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"></path></svg
+          >
+        </button>
+      </div>
+      <div class="nisar-video__stage">
+      <video
+        controls
+        playsinline
+        preload="metadata"
+        poster={posterSrc}
+        width={width}
+        height={height}
+      >
+        <source src={videoSrc} type="video/mp4" />
+        <a href={videoSrc}>Download the video</a>.
+      </video>
+      <button type="button" class="nisar-video__start" data-start aria-label="Play video">
+        <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"
+          ><path d="M8 5.5v13l11-6.5z" fill="currentColor"></path></svg
+        >
+      </button>
+      </div>
+    </div>
+  </dialog>
+</div>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>(".nisar-video")) {
+    const dialog = root.querySelector("dialog");
+    const video = root.querySelector("video");
+    const open = root.querySelector<HTMLButtonElement>("[data-open]");
+    const close = root.querySelector<HTMLButtonElement>("[data-close]");
+    const start = root.querySelector<HTMLButtonElement>("[data-start]");
+    if (!dialog || !video || !open || !close || !start) continue;
+
+    const play = () => {
+      void video.play().catch(() => {
+        // Playback can be refused; the native controls are still there.
+      });
+    };
+    // The big play button only shows while the video is paused at the start or has ended.
+    const syncStart = () => {
+      start.hidden = !(video.paused && (video.currentTime === 0 || video.ended));
+    };
+    video.addEventListener("play", syncStart);
+    video.addEventListener("pause", syncStart);
+    video.addEventListener("ended", syncStart);
+    video.addEventListener("seeked", syncStart);
+    start.addEventListener("click", play);
+
+    open.addEventListener("click", () => {
+      dialog.showModal();
+      play();
+    });
+    close.addEventListener("click", () => dialog.close());
+    // A click on the backdrop lands on the <dialog> element itself.
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+    dialog.addEventListener("close", () => {
+      video.pause();
+      open.focus();
+      // Drop the #anchor so a reload doesn't reopen the modal.
+      if (location.hash === `#${root.id}`) {
+        history.replaceState(null, "", location.pathname + location.search);
+      }
+    });
+
+    // Direct link: open paused and wait for a click on the play button.
+    const openFromHash = () => {
+      if (root.id && location.hash === `#${root.id}` && !dialog.open) {
+        dialog.showModal();
+        start.focus();
+      }
+    };
+    openFromHash();
+    window.addEventListener("hashchange", openFromHash);
+  }
+</script>
+
+<style>
+  .nisar-video {
+    margin-block: 1.5rem;
+  }
+  .nisar-video__trigger {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: var(--sl-color-black);
+    cursor: pointer;
+  }
+  .nisar-video__trigger img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 200ms ease;
+  }
+  .nisar-video__trigger:hover img {
+    transform: scale(1.015);
+  }
+  .nisar-video__trigger:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 2px;
+  }
+  .nisar-video__play {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    translate: -50% -50%;
+    background: rgb(0 0 0 / 0.6);
+    color: #fff;
+    box-shadow: 0 4px 24px rgb(0 0 0 / 0.3);
+    transition:
+      background-color 150ms ease,
+      scale 150ms ease;
+  }
+  .nisar-video__play svg {
+    margin-left: 0.2rem;
+  }
+  .nisar-video__trigger:hover .nisar-video__play,
+  .nisar-video__trigger:focus-visible .nisar-video__play {
+    background: var(--sl-color-accent);
+    scale: 1.08;
+  }
+
+  /* Starlight's reset zeroes every margin, which removes <dialog>'s built-in centring,
+     so pin it to the viewport centre explicitly. The width keeps the 16:9 video plus its
+     header inside the window height. */
+  .nisar-video__dialog {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(92vw, calc((100dvh - 7rem) * 16 / 9), 1600px);
+    height: fit-content;
+    max-width: none;
+    max-height: calc(100dvh - 2rem);
+    padding: 0;
+    border: none;
+    background: transparent;
+    overflow: visible;
+  }
+  .nisar-video__dialog::backdrop {
+    background: rgb(0 0 0 / 0.8);
+  }
+  .nisar-video__dialog[open] {
+    animation: nisar-video-in 180ms ease-out;
+  }
+  .nisar-video__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    color: #fff;
+  }
+  .nisar-video__title {
+    font-weight: 600;
+  }
+  .nisar-video__close {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: none;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.12);
+    color: #fff;
+    cursor: pointer;
+  }
+  .nisar-video__close:hover,
+  .nisar-video__close:focus-visible {
+    background: rgb(255 255 255 / 0.25);
+  }
+  .nisar-video__stage {
+    position: relative;
+  }
+  .nisar-video__start {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    display: grid;
+    place-items: center;
+    width: 6rem;
+    height: 6rem;
+    border: none;
+    border-radius: 50%;
+    translate: -50% -50%;
+    background: rgb(0 0 0 / 0.6);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 32px rgb(0 0 0 / 0.35);
+    transition:
+      background-color 150ms ease,
+      scale 150ms ease;
+  }
+  .nisar-video__start[hidden] {
+    display: none;
+  }
+  .nisar-video__start svg {
+    margin-left: 0.25rem;
+  }
+  .nisar-video__start:hover,
+  .nisar-video__start:focus-visible {
+    background: var(--sl-color-accent);
+    scale: 1.08;
+    outline: none;
+  }
+  .nisar-video__dialog video {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    background: #000;
+  }
+  @keyframes nisar-video-in {
+    from {
+      opacity: 0;
+      scale: 0.96;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nisar-video__dialog[open] {
+      animation: none;
+    }
+    .nisar-video__trigger img,
+    .nisar-video__play,
+    .nisar-video__start {
+      transition: none;
+    }
+  }
+</style>
