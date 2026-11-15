@@ -1,9 +1,10 @@
 import type { GeoJSONSource, Map as MapLibreMap } from "maplibre-gl";
 import { useEffect, useRef } from "react";
-import {
-  offlineTilesAvailable,
-  tileProtocolUrl,
-} from "@/features/offline/tileCache";
+import { offlineTilesAvailable, tileProtocolUrl } from "@/features/offline/tileCache";
+import { isFramePending, setFramePending } from "@/features/timeline/frameLoading";
+import { layerTimelineSteps, stepIndexFor } from "@/features/timeline/timelineSteps";
+import type { LayerConfig } from "@/shared/types/layer";
+import type { Manifest, ManifestLayer } from "@/shared/types/manifest";
 import { fetchDataFile } from "@/shared/utils/dataSource";
 import {
   resolveTileUrl,
@@ -11,17 +12,6 @@ import {
   tileSegment,
   tileTemplate,
 } from "@/shared/utils/geo";
-import {
-  layerTimelineSteps,
-  stepIndexFor,
-} from "@/features/timeline/timelineSteps";
-import {
-  isFramePending,
-  setFramePending,
-} from "@/features/timeline/frameLoading";
-
-import type { LayerConfig } from "@/shared/types/layer";
-import type { Manifest, ManifestLayer } from "@/shared/types/manifest";
 import { resolveManifestEntry, useDatasetStore } from "@/stores/datasetStore";
 import { useLayerStore } from "@/stores/layerStore";
 
@@ -48,10 +38,7 @@ function resolveOriginPrefix(): string {
     window.location?.origin &&
     window.location.origin.startsWith("http")
   ) {
-    return `${window.location.origin}${import.meta.env.BASE_URL}`.replace(
-      /\/+$/,
-      "",
-    );
+    return `${window.location.origin}${import.meta.env.BASE_URL}`.replace(/\/+$/, "");
   }
   return "";
 }
@@ -60,11 +47,7 @@ function resolveOriginPrefix(): string {
  * Adds an empty GeoJSON source, then fills it from the remote data host (bundled copy as the
  * fallback). Features appear as soon as the file arrives.
  */
-function addDataGeojson(
-  map: MapLibreMap,
-  sourceId: string,
-  file: string,
-): void {
+function addDataGeojson(map: MapLibreMap, sourceId: string, file: string): void {
   map.addSource(sourceId, {
     type: "geojson",
     data: { type: "FeatureCollection", features: [] },
@@ -87,6 +70,8 @@ interface Slot {
   sourceId: string;
   layerId: string;
   addedAt: number;
+  /** While > now, this date is fading out under the date that replaced it; 0 otherwise. */
+  hideAt: number;
   /** A tile of this source has arrived (guards against "loaded" before any tile was asked for). */
   sawTile: boolean;
   ready: boolean;
@@ -99,6 +84,34 @@ type SlotPool = Record<string, Slot[]>;
 const SLOT_READY_TIMEOUT_MS = 5000;
 /** A source with no tiles in view counts as loaded once it has had this long to ask for them. */
 const SLOT_SETTLE_MS = 500;
+/**
+ * A loaded date fades in on top of the one it replaces, which stays drawn underneath until the
+ * fade ends: a soft change instead of a hard cut, and never a gap showing the basemap.
+ */
+const FADE_MS = 240;
+const FADE_TRANSITION = { duration: FADE_MS, delay: 0 };
+const NO_TRANSITION = { duration: 0, delay: 0 };
+let fadeTimer: number | null = null;
+
+function fadeEnabled(): boolean {
+  return !(
+    typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+  );
+}
+
+/** Sync once more when the fade is over, to drop the date that faded out. */
+function scheduleFadeEnd(map: MapLibreMap, pool: SlotPool): void {
+  if (fadeTimer !== null) window.clearTimeout(fadeTimer);
+  fadeTimer = window.setTimeout(() => {
+    fadeTimer = null;
+    syncFrames(map, pool);
+  }, FADE_MS + 32);
+}
+
+function cancelFadeEnd(): void {
+  if (fadeTimer !== null) window.clearTimeout(fadeTimer);
+  fadeTimer = null;
+}
 let slotSeq = 0;
 
 /** Style layer ids bottom to top (cheap: does not serialise the whole style). */
@@ -120,15 +133,9 @@ function tilePathFor(
   manifest: Manifest | null,
   date: string | null,
 ): { tilePath: string; entry: ManifestLayer | null } {
-  const { entry, resolvedPeriod } = resolveManifestEntry(
-    manifest,
-    layer.id,
-    date,
-  );
+  const { entry, resolvedPeriod } = resolveManifestEntry(manifest, layer.id, date);
   const period = resolvedPeriod ?? layer.periods?.[0] ?? date ?? "static";
-  const relPath = entry?.tilePath
-    ? entry.tilePath
-    : tileTemplate(layer.id, tileSegment(period));
+  const relPath = entry?.tilePath ? entry.tilePath : tileTemplate(layer.id, tileSegment(period));
   const tilePath = offlineTilesAvailable()
     ? tileProtocolUrl(relPath)
     : resolveTileUrl(relPath, TILE_BASE_URL, resolveOriginPrefix());
@@ -184,9 +191,7 @@ function syncFramesOnce(map: MapLibreMap, pool: SlotPool): void {
   const dataLayers = layers.filter(
     (layer) => layer.kind === "manifest-layer" || layer.kind === "change-type",
   );
-  const visible = new Map(
-    dataLayers.filter((l) => l.visible).map((l) => [l.id, l]),
-  );
+  const visible = new Map(dataLayers.filter((l) => l.visible).map((l) => [l.id, l]));
 
   // Layers switched off: drop all their dates.
   for (const id of Object.keys(pool)) {
@@ -216,6 +221,7 @@ function syncFramesOnce(map: MapLibreMap, pool: SlotPool): void {
           addedAt: now,
           sawTile: false,
           ready: false,
+          hideAt: 0,
         };
         const kept = slot;
         const index = slots.findIndex((s) => s.path === tilePath);
@@ -242,9 +248,7 @@ function syncFramesOnce(map: MapLibreMap, pool: SlotPool): void {
               "raster-contrast": 0.12,
               "raster-saturation": 0.15,
               "raster-resampling":
-                (entry?.valueType ?? layer.valueType) === "categorical"
-                  ? "nearest"
-                  : "linear",
+                (entry?.valueType ?? layer.valueType) === "categorical" ? "nearest" : "linear",
             },
             layout: { visibility: "visible" },
           },
@@ -272,13 +276,32 @@ function syncFramesOnce(map: MapLibreMap, pool: SlotPool): void {
         s !== want &&
         s !== ahead &&
         map.getLayer(s.layerId) &&
-        map.getPaintProperty(s.layerId, "raster-opacity") !== 0,
+        map.getPaintProperty(s.layerId, "raster-opacity") !== 0 &&
+        s.hideAt === 0,
     );
     const show = want.ready || !shownBefore ? want : shownBefore;
     if (!want.ready) pending = true;
 
+    // A different date takes over: fade it in over the outgoing one (only the latest outgoing
+    // date is kept; rapid scrubbing drops the older ones at once).
+    const outgoing = slots.find(
+      (s) =>
+        s !== show &&
+        s.hideAt === 0 &&
+        map.getLayer(s.layerId) &&
+        map.getPaintProperty(s.layerId, "raster-opacity") !== 0,
+    );
+    if (outgoing && fadeEnabled() && map.getLayer(show.layerId)) {
+      for (const s of slots) s.hideAt = 0;
+      outgoing.hideAt = now + FADE_MS;
+      map.setPaintProperty(show.layerId, "raster-opacity-transition", FADE_TRANSITION);
+      scheduleFadeEnd(map, pool);
+    }
+    show.hideAt = 0;
+
     for (const slot of [...slots]) {
-      const keep = slot === want || slot === ahead || slot === show;
+      const fading = slot.hideAt > now;
+      const keep = slot === want || slot === ahead || slot === show || fading;
       if (!keep) {
         removeSlot(map, slot);
         slots.splice(slots.indexOf(slot), 1);
@@ -288,25 +311,24 @@ function syncFramesOnce(map: MapLibreMap, pool: SlotPool): void {
         map.setPaintProperty(
           slot.layerId,
           "raster-opacity",
-          slot === show ? layer.opacity : 0,
+          slot === show || fading ? layer.opacity : 0,
         );
       }
+    }
+    // Fade over: opacity changes (the opacity slider) apply at once again.
+    if (!slots.some((s) => s.hideAt > now) && map.getLayer(show.layerId)) {
+      map.setPaintProperty(show.layerId, "raster-opacity-transition", NO_TRANSITION);
     }
     // The shown date sits on top of this layer's hidden dates (only moved when it is not).
     const order = layerOrder(map);
     const showAt = order.indexOf(show.layerId);
-    if (
-      showAt >= 0 &&
-      slots.some((s) => s !== show && order.indexOf(s.layerId) > showAt)
-    ) {
+    if (showAt >= 0 && slots.some((s) => s !== show && order.indexOf(s.layerId) > showAt)) {
       map.moveLayer(show.layerId, beforeId);
     }
   }
 
   // Sweep any date layer the pool no longer tracks.
-  const tracked = new Set(
-    Object.values(pool).flatMap((slots) => slots.map((s) => s.layerId)),
-  );
+  const tracked = new Set(Object.values(pool).flatMap((slots) => slots.map((s) => s.layerId)));
   for (const id of layerOrder(map)) {
     if (id.startsWith(LAYER_PREFIX) && id.includes("@") && !tracked.has(id)) {
       const source = map.getLayer(id)?.source;
@@ -323,7 +345,6 @@ export function TileOverlay({ map, ready }: TileOverlayProps) {
   const currentDate = useDatasetStore((state) => state.currentDate);
   const manifest = useDatasetStore((state) => state.manifest);
 
-
   const slotsRef = useRef<SlotPool>({});
   const syncRef = useRef<() => void>(() => undefined);
 
@@ -332,9 +353,7 @@ export function TileOverlay({ map, ready }: TileOverlayProps) {
     const origin = resolveOriginPrefix();
     if (!origin) return;
 
-    const beforeLabels = map.getLayer("cities-labels")
-      ? "cities-labels"
-      : undefined;
+    const beforeLabels = map.getLayer("cities-labels") ? "cities-labels" : undefined;
 
     if (!map.getSource("aoi-boundary-source")) {
       addDataGeojson(map, "aoi-boundary-source", "boundary.geojson");
@@ -405,6 +424,15 @@ export function TileOverlay({ map, ready }: TileOverlayProps) {
   // loading is swapped in as soon as its tiles arrive.
   useEffect(() => {
     if (!map || !ready) return;
+    // Tiles arrive in bursts (dozens per date); one sync per animation frame is enough.
+    let scheduled: number | null = null;
+    const scheduleSync = () => {
+      if (scheduled !== null) return;
+      scheduled = requestAnimationFrame(() => {
+        scheduled = null;
+        syncRef.current();
+      });
+    };
     const onData = (event: { sourceId?: string; tile?: unknown }) => {
       if (!event.sourceId?.startsWith(LAYER_PREFIX)) return;
       if (event.tile) {
@@ -413,9 +441,9 @@ export function TileOverlay({ map, ready }: TileOverlayProps) {
           if (slot) slot.sawTile = true;
         }
       }
-      syncRef.current();
+      scheduleSync();
     };
-    const onIdle = () => syncRef.current();
+    const onIdle = () => scheduleSync();
     // Re-check a slow date now and then so the timeout can swap it in.
     const timer = window.setInterval(() => {
       if (isFramePending()) syncRef.current();
@@ -423,6 +451,7 @@ export function TileOverlay({ map, ready }: TileOverlayProps) {
     map.on("sourcedata", onData);
     map.on("idle", onIdle);
     return () => {
+      if (scheduled !== null) cancelAnimationFrame(scheduled);
       window.clearInterval(timer);
       map.off("sourcedata", onData);
       map.off("idle", onIdle);
@@ -439,6 +468,7 @@ export function TileOverlay({ map, ready }: TileOverlayProps) {
   useEffect(
     () => () => {
       setFramePending(false);
+      cancelFadeEnd();
     },
     [],
   );
