@@ -1,10 +1,4 @@
-import {
-  Bookmark,
-  Download,
-  type LucideIcon,
-  Pencil,
-  Ruler,
-} from "lucide-react";
+import { Bookmark, Download, type LucideIcon, Pencil, Ruler } from "lucide-react";
 import { LOCATION_INFO, TOOLS, type ToolId } from "@/fixtures/sample-dashboard";
 import { useBookmarkStore } from "@/stores/bookmarkStore";
 import { useDatasetStore } from "@/stores/datasetStore";
@@ -26,10 +20,11 @@ export function ToolsPanel() {
   const addBookmark = useBookmarkStore((state) => state.addBookmark);
   const selected = useSelectionStore((state) => state.selected);
   const activeLayer = useActiveLayer();
-  const currentDate = useDatasetStore((state) => state.currentDate);
 
   const run = (id: ToolId) => {
     if (id === "export") {
+      // Read on click: subscribing would re-render this panel on every playback step.
+      const { currentDate } = useDatasetStore.getState();
       const payload = {
         exportedAt: new Date().toISOString(),
         layer: activeLayer?.id,

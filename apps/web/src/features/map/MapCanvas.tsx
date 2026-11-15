@@ -2,6 +2,7 @@ import { GripVertical, Ruler, X } from "lucide-react";
 import { useRef } from "react";
 import { formatCoords } from "@/features/inspector/LocationInfoPanel";
 import { AnimationBar } from "@/features/timeline/AnimationBar";
+import { TopicOverlays } from "@/features/topics/TopicOverlays";
 import { formatPeriod } from "@/shared/utils/dates";
 import { resolveManifestEntry, useDatasetStore } from "@/stores/datasetStore";
 import { useActiveLayer } from "@/stores/layerStore";
@@ -10,7 +11,6 @@ import { useUiStore } from "@/stores/uiStore";
 import { MapAttribution } from "./MapAttribution";
 import { MapControls } from "./MapControls";
 import { NorthIndicator } from "./NorthIndicator";
-import { TopicOverlays } from "@/features/topics/TopicOverlays";
 import { TileOverlay } from "./overlays/TileOverlay";
 import { ScaleBar } from "./ScaleBar";
 import { useMapLibre } from "./useMapLibre";
@@ -32,14 +32,46 @@ function haversineKm(a: [number, number], b: [number, number]): number {
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 
+/**
+ * The period the active layer resolves to at the timeline date. Only the small labels below use
+ * it, so a playback step re-renders them and not the whole map viewport.
+ */
+function useResolvedPeriod() {
+  const active = useActiveLayer();
+  const manifest = useDatasetStore((state) => state.manifest);
+  const currentDate = useDatasetStore((state) => state.currentDate);
+  const { resolvedPeriod, exact } = resolveManifestEntry(manifest, active?.id ?? "", currentDate);
+  return { active, currentDate, resolvedPeriod, exact };
+}
+
+function CurrentPeriodLabel() {
+  const { currentDate, resolvedPeriod } = useResolvedPeriod();
+  return (
+    <span className="font-display tabular-nums">{formatPeriod(resolvedPeriod ?? currentDate)}</span>
+  );
+}
+
+/** Shown when the active layer has no data at the timeline date and falls back to another. */
+function NearestPeriodBadge() {
+  const { active, resolvedPeriod, exact } = useResolvedPeriod();
+  // only when that layer is on the map (image views in Explore hide all tile layers)
+  if (!active?.visible || exact || !resolvedPeriod) return null;
+  return (
+    <div className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-chrome-border)] bg-[var(--color-panel)] px-3 py-1.5 text-caption text-[var(--color-text)] shadow-[var(--shadow-1)]">
+      <span className="h-2 w-2 rounded-full bg-[var(--color-warning)]" />
+      <span>
+        Showing nearest period for <strong className="font-medium">{active.name}</strong>:{" "}
+        <span className="font-display tabular-nums">{formatPeriod(resolvedPeriod)}</span>
+      </span>
+    </div>
+  );
+}
+
 export function MapCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { map, status } = useMapLibre(containerRef);
   const failed = status === "unsupported" || status === "error";
 
-  const active = useActiveLayer();
-  const manifest = useDatasetStore((state) => state.manifest);
-  const currentDate = useDatasetStore((state) => state.currentDate);
   const comparisonEnabled = useDatasetStore((state) => state.comparisonEnabled);
   const comparisonMode = useDatasetStore((state) => state.comparisonMode);
   const comparisonDate = useDatasetStore((state) => state.comparisonDate);
@@ -51,16 +83,8 @@ export function MapCanvas() {
   const measurePoints = useUiStore((state) => state.measurePoints);
   const clearMeasurePoints = useUiStore((state) => state.clearMeasurePoints);
 
-  const { resolvedPeriod, exact } = resolveManifestEntry(
-    manifest,
-    active?.id ?? "",
-    currentDate,
-  );
-
   const measuredKm =
-    measurePoints.length === 2
-      ? haversineKm(measurePoints[0], measurePoints[1])
-      : null;
+    measurePoints.length === 2 ? haversineKm(measurePoints[0], measurePoints[1]) : null;
 
   return (
     <div
@@ -72,9 +96,7 @@ export function MapCanvas() {
       {failed ? (
         <div className="absolute inset-0 grid place-items-center p-6">
           <p className="text-body text-[var(--color-text-muted)]">
-            {status === "unsupported"
-              ? FALLBACK_MESSAGE.unsupported
-              : FALLBACK_MESSAGE.error}
+            {status === "unsupported" ? FALLBACK_MESSAGE.unsupported : FALLBACK_MESSAGE.error}
           </p>
         </div>
       ) : null}
@@ -128,12 +150,8 @@ export function MapCanvas() {
               {formatPeriod(comparisonDate ?? "2026-09")}
             </span>
             <span className="text-[var(--color-text-muted)]">vs</span>
-            <span className="font-medium text-[var(--color-accent-cyan)]">
-              Current:
-            </span>
-            <span className="font-display tabular-nums">
-              {formatPeriod(resolvedPeriod ?? currentDate)}
-            </span>
+            <span className="font-medium text-[var(--color-accent-cyan)]">Current:</span>
+            <CurrentPeriodLabel />
           </div>
         </div>
       ) : null}
@@ -141,19 +159,7 @@ export function MapCanvas() {
       {/* Top-left HUD badge: active dataset period snap + measure/inspect readout */}
       <div className="pointer-events-none absolute inset-0 z-[var(--z-map-chrome)]">
         <div className="pointer-events-auto absolute top-3 left-3 flex flex-col gap-2">
-          {/* only when that layer is on the map (image views in Explore hide all tile layers) */}
-          {active?.visible && !exact && resolvedPeriod ? (
-            <div className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-chrome-border)] bg-[var(--color-panel)] px-3 py-1.5 text-caption text-[var(--color-text)] shadow-[var(--shadow-1)]">
-              <span className="h-2 w-2 rounded-full bg-[var(--color-warning)]" />
-              <span>
-                Showing nearest period for{" "}
-                <strong className="font-medium">{active.name}</strong>:{" "}
-                <span className="font-display tabular-nums">
-                  {formatPeriod(resolvedPeriod)}
-                </span>
-              </span>
-            </div>
-          ) : null}
+          <NearestPeriodBadge />
 
           {activeTool === "measure" ? (
             <div className="flex items-center gap-2.5 rounded-[var(--radius-md)] border border-[var(--color-chrome-border)] bg-[var(--color-panel)] px-3 py-1.5 text-caption text-[var(--color-text)] shadow-[var(--shadow-1)]">
@@ -200,9 +206,7 @@ export function MapCanvas() {
                 {formatCoords(selected)}
               </span>
               {selected.placeName ? (
-                <span className="max-w-[14rem] truncate">
-                  · {selected.placeName}
-                </span>
+                <span className="max-w-[14rem] truncate">· {selected.placeName}</span>
               ) : null}
             </div>
           ) : null}

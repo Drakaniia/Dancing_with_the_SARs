@@ -1,6 +1,6 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
-import { motion, useReducedMotion } from "motion/react";
-import { useEffect, useState } from "react";
+import { m as motion, useReducedMotion } from "motion/react";
+import { memo, useEffect, useState } from "react";
 import { REDUCED_MOTION, SPRING_UI } from "@/styles/tokens";
 
 export interface NorthIndicatorProps {
@@ -11,7 +11,8 @@ export interface NorthIndicatorProps {
  * Small north indicator above the scale bar. The rose rotates against the map bearing on the UI
  * spring, so `N` always points to true north. Decorative (`aria-hidden`).
  */
-export function NorthIndicator({ map }: NorthIndicatorProps) {
+// Memoised: the map viewport re-renders on every timeline step, this only cares about bearing.
+export const NorthIndicator = memo(function NorthIndicator({ map }: NorthIndicatorProps) {
   const [bearing, setBearing] = useState(0);
   const reducedMotion = useReducedMotion();
 
@@ -20,10 +21,9 @@ export function NorthIndicator({ map }: NorthIndicatorProps) {
     const sync = () => setBearing(map.getBearing());
     sync();
     map.on("rotate", sync);
-    map.on("move", sync);
+
     return () => {
       map.off("rotate", sync);
-      map.off("move", sync);
     };
   }, [map]);
 
@@ -38,18 +38,10 @@ export function NorthIndicator({ map }: NorthIndicatorProps) {
         transition={reducedMotion ? REDUCED_MOTION : SPRING_UI}
       >
         <svg viewBox="0 0 24 24" width={18} height={18} aria-hidden="true">
-          <path
-            d="M12 1.5 15.5 13 12 11 8.5 13Z"
-            fill="currentColor"
-            opacity="0.9"
-          />
-          <path
-            d="M12 22.5 8.5 13 12 15 15.5 13Z"
-            fill="currentColor"
-            opacity="0.55"
-          />
+          <path d="M12 1.5 15.5 13 12 11 8.5 13Z" fill="currentColor" opacity="0.9" />
+          <path d="M12 22.5 8.5 13 12 15 15.5 13Z" fill="currentColor" opacity="0.55" />
         </svg>
       </motion.span>
     </div>
   );
-}
+});

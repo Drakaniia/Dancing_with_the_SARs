@@ -1,5 +1,5 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { SCALE_BAR } from "@/fixtures/sample-dashboard";
 import { metersPerPixel } from "@/shared/utils/geo";
 
@@ -10,7 +10,8 @@ export interface ScaleBarProps {
   map: MapLibreMap | null;
 }
 
-export function ScaleBar({ map }: ScaleBarProps) {
+// Memoised: the map viewport re-renders on every timeline step; the scale only follows zoom.
+export const ScaleBar = memo(function ScaleBar({ map }: ScaleBarProps) {
   const [resolution, setResolution] = useState<number | null>(null);
   const [zoom, setZoom] = useState(0);
 
@@ -42,9 +43,7 @@ export function ScaleBar({ map }: ScaleBarProps) {
           <span
             key={label}
             className={`h-full border border-[var(--color-chrome-border)] ${
-              index % 2 === 0
-                ? "bg-[var(--color-text)]"
-                : "bg-[var(--color-bg)]"
+              index % 2 === 0 ? "bg-[var(--color-text)]" : "bg-[var(--color-bg)]"
             }`}
             style={{ width: `${segmentWidth}px` }}
           />
@@ -60,4 +59,4 @@ export function ScaleBar({ map }: ScaleBarProps) {
       </div>
     </div>
   );
-}
+});

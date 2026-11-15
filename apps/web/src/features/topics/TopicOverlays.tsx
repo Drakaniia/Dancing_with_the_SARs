@@ -1,20 +1,10 @@
-import type {
-  GeoJSONSource,
-  ImageSource,
-  Map as MapLibreMap,
-} from "maplibre-gl";
+import type { GeoJSONSource, ImageSource, Map as MapLibreMap } from "maplibre-gl";
 import { useEffect } from "react";
 import { layerOrder } from "@/features/map/overlays/TileOverlay";
 import { resolveTileUrl, SARANGANI_DAVOCC_BOUNDS } from "@/shared/utils/geo";
 import { resolveManifestEntry, useDatasetStore } from "@/stores/datasetStore";
 import { useTopicStore } from "@/stores/topicStore";
-import {
-  EPICENTRE,
-  EXTRA_IMAGE_CORNERS,
-  findTopic,
-  findView,
-  frameIndexFor,
-} from "./topicsConfig";
+import { EPICENTRE, EXTRA_IMAGE_CORNERS, findTopic, findView, frameIndexFor } from "./topicsConfig";
 
 const BELOW_ID = "aoi-boundary-casing";
 const IMAGE_SOURCE = "topic-image-source";
@@ -67,11 +57,7 @@ function beforeId(map: MapLibreMap): string | undefined {
   return map.getLayer(BELOW_ID) ? BELOW_ID : undefined;
 }
 
-function removeLayerAndSource(
-  map: MapLibreMap,
-  layerIds: string[],
-  sourceId: string,
-): void {
+function removeLayerAndSource(map: MapLibreMap, layerIds: string[], sourceId: string): void {
   for (const id of layerIds) if (map.getLayer(id)) map.removeLayer(id);
   if (map.getSource(sourceId)) map.removeSource(sourceId);
 }
@@ -170,17 +156,7 @@ function ensureLandslideDots(map: MapLibreMap): void {
     source: DOTS_SOURCE,
     layout: { visibility: "none" },
     paint: {
-      "circle-radius": [
-        "interpolate",
-        ["linear"],
-        ["zoom"],
-        7,
-        2,
-        9,
-        3.5,
-        12,
-        7,
-      ],
+      "circle-radius": ["interpolate", ["linear"], ["zoom"], 7, 2, 9, 3.5, 12, 7],
       "circle-color": ["match", ["get", "nisar"], "bare", "#a50f15", "#f39c3d"],
       "circle-stroke-color": "#fff8e8",
       "circle-stroke-width": 1,
@@ -201,14 +177,10 @@ function ensureLandslideDots(map: MapLibreMap): void {
  * (Sentinel-1 radar check, outlook months, slope, NISAR watch list), a faint 2026 land-cover
  * underlay for the change map, and the earthquake markers.
  */
-export function TopicOverlays({
-  map,
-  ready,
-}: {
-  map: MapLibreMap | null;
-  ready: boolean;
-}) {
-  const { topicId, viewId, option } = useTopicStore();
+export function TopicOverlays({ map, ready }: { map: MapLibreMap | null; ready: boolean }) {
+  const topicId = useTopicStore((s) => s.topicId);
+  const viewId = useTopicStore((s) => s.viewId);
+  const option = useTopicStore((s) => s.option);
   const currentDate = useDatasetStore((s) => s.currentDate);
   const started = useTopicStore((s) => s.started);
   const applyStart = useTopicStore((s) => s.applyStart);
@@ -268,20 +240,12 @@ export function TopicOverlays({
         opt.kind === "tiles" &&
         opt.layerId === "landcover-change-2020-2026";
       if (wantUnderlay && !map.getSource(UNDERLAY_SOURCE)) {
-        const { entry } = resolveManifestEntry(
-          manifest,
-          "landcover-classes",
-          "2026",
-        );
+        const { entry } = resolveManifestEntry(manifest, "landcover-classes", "2026");
         if (entry?.tilePath) {
           map.addSource(UNDERLAY_SOURCE, {
             type: "raster",
             tiles: [
-              resolveTileUrl(
-                entry.tilePath,
-                TILE_BASE_URL,
-                publicUrl("").replace(/\/+$/, ""),
-              ),
+              resolveTileUrl(entry.tilePath, TILE_BASE_URL, publicUrl("").replace(/\/+$/, "")),
             ],
             tileSize: 256,
             bounds: manifest?.bounds ?? SARANGANI_DAVOCC_BOUNDS,
@@ -316,9 +280,15 @@ export function TopicOverlays({
       setVisible(map, EPI_LAYERS, quake);
       if (view.landslideDots) ensureLandslideDots(map);
       setVisible(map, [DOTS_LAYER], Boolean(view.landslideDots));
-      for (const id of [DOTS_LAYER, ...EPI_LAYERS]) {
-        if (map.getLayer(id)) map.moveLayer(id);
-      }
+      // Keep the markers on top. This effect runs on every timeline step, and each moveLayer
+      // re-sorts the style, so only move them when something has been drawn above them.
+      const markers = [DOTS_LAYER, ...EPI_LAYERS].filter((id) => map.getLayer(id));
+      const order = layerOrder(map);
+      const onTop = order.slice(order.length - markers.length).every((id, i) => id === markers[i]);
+      if (!onTop)
+        for (const id of markers) {
+          map.moveLayer(id);
+        }
     } catch (error) {
       console.error("Failed to update the earthquake markers", error);
     }

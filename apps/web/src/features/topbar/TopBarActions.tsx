@@ -1,6 +1,6 @@
 import {
-  BookOpen,
   Bookmark,
+  BookOpen,
   Database,
   Download,
   Info,
@@ -27,8 +27,7 @@ export interface TopBarActionsProps {
 
 type OpenMenu = "bookmarks" | "export" | "settings" | null;
 
-const MENU_HEADER =
-  "text-panel-header text-[var(--color-text-muted)] uppercase";
+const MENU_HEADER = "text-panel-header text-[var(--color-text-muted)] uppercase";
 
 export function TopBarActions({ className }: TopBarActionsProps) {
   const [openMenu, setOpenMenu] = useState<OpenMenu>(null);
@@ -42,7 +41,7 @@ export function TopBarActions({ className }: TopBarActionsProps) {
   const setAboutOpen = useUiStore((state) => state.setAboutOpen);
   const selected = useSelectionStore((state) => state.selected);
   const activeLayer = useActiveLayer();
-  const currentDate = useDatasetStore((state) => state.currentDate);
+
   const manifest = useDatasetStore((state) => state.manifest);
 
   const menuProps = (id: Exclude<OpenMenu, null>) => ({
@@ -51,6 +50,8 @@ export function TopBarActions({ className }: TopBarActionsProps) {
   });
 
   const exportManifestSummary = () => {
+    // Read on click: subscribing would re-render the top bar on every playback step.
+    const { currentDate } = useDatasetStore.getState();
     const payload = {
       exportedAt: new Date().toISOString(),
       activeLayer: activeLayer?.id,
@@ -74,15 +75,10 @@ export function TopBarActions({ className }: TopBarActionsProps) {
   };
 
   return (
-    <nav
-      aria-label="Primary"
-      className={`flex items-center gap-1 ${className ?? ""}`}
-    >
+    <nav aria-label="Primary" className={`flex items-center gap-1 ${className ?? ""}`}>
       <IconButton
         label={
-          theme === "light"
-            ? "Switch to Night Atlas dark mode"
-            : "Switch to Sand Atlas light mode"
+          theme === "light" ? "Switch to Night Atlas dark mode" : "Switch to Sand Atlas light mode"
         }
         onClick={toggleTheme}
       >
@@ -93,10 +89,7 @@ export function TopBarActions({ className }: TopBarActionsProps) {
         )}
       </IconButton>
 
-      <IconButton
-        label="Data provenance"
-        onClick={() => setProvenanceOpen(true)}
-      >
+      <IconButton label="Data provenance" onClick={() => setProvenanceOpen(true)}>
         <Database size={18} strokeWidth={1.5} />
       </IconButton>
 
@@ -123,8 +116,7 @@ export function TopBarActions({ className }: TopBarActionsProps) {
                 const lng = selected?.lng ?? 125.2869;
                 const lat = selected?.lat ?? 6.1028;
                 const name =
-                  selected?.placeName ??
-                  `Sarangani (${lat.toFixed(3)}°N, ${lng.toFixed(3)}°E)`;
+                  selected?.placeName ?? `Sarangani (${lat.toFixed(3)}°N, ${lng.toFixed(3)}°E)`;
                 addBookmark({
                   id: `bm-${Date.now()}`,
                   name,
@@ -139,8 +131,8 @@ export function TopBarActions({ className }: TopBarActionsProps) {
           </div>
           {bookmarks.length === 0 ? (
             <p className="text-caption text-[var(--color-text-muted)]">
-              No bookmarks saved yet. Click "+ Save Current" or the Bookmark
-              tool to pin a viewpoint.
+              No bookmarks saved yet. Click "+ Save Current" or the Bookmark tool to pin a
+              viewpoint.
             </p>
           ) : (
             <ul className="flex max-h-56 flex-col gap-1 overflow-y-auto">
@@ -192,8 +184,8 @@ export function TopBarActions({ className }: TopBarActionsProps) {
         <div className="flex w-64 flex-col gap-2">
           <p className={MENU_HEADER}>Export Snapshot</p>
           <p className="text-caption text-[var(--color-text-secondary)]">
-            Download the active layer state, inspected pixel readings, and
-            manifest provenance as JSON.
+            Download the active layer state, inspected pixel readings, and manifest provenance as
+            JSON.
           </p>
           <button
             type="button"
@@ -203,9 +195,7 @@ export function TopBarActions({ className }: TopBarActionsProps) {
             Download Inspection JSON
           </button>
           {exportNote ? (
-            <p className="text-caption text-[var(--color-success)]">
-              {exportNote}
-            </p>
+            <p className="text-caption text-[var(--color-success)]">{exportNote}</p>
           ) : null}
         </div>
       </Popover>
@@ -223,9 +213,7 @@ export function TopBarActions({ className }: TopBarActionsProps) {
         <div className="flex w-64 flex-col gap-3">
           <p className={MENU_HEADER}>Settings</p>
           <div className="flex items-center justify-between gap-3">
-            <span className="text-label text-[var(--color-text)]">
-              Appearance
-            </span>
+            <span className="text-label text-[var(--color-text)]">Appearance</span>
             <button
               type="button"
               onClick={toggleTheme}
@@ -235,9 +223,7 @@ export function TopBarActions({ className }: TopBarActionsProps) {
             </button>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <span className="text-label text-[var(--color-text)]">
-              Release Provenance
-            </span>
+            <span className="text-label text-[var(--color-text)]">Release Provenance</span>
             <button
               type="button"
               onClick={() => {
@@ -250,9 +236,7 @@ export function TopBarActions({ className }: TopBarActionsProps) {
             </button>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <span className="text-label text-[var(--color-text)]">
-              About & Credits
-            </span>
+            <span className="text-label text-[var(--color-text)]">About & Credits</span>
             <button
               type="button"
               onClick={() => {
@@ -266,9 +250,7 @@ export function TopBarActions({ className }: TopBarActionsProps) {
             </button>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <span className="text-label text-[var(--color-text)]">
-              Documentation
-            </span>
+            <span className="text-label text-[var(--color-text)]">Documentation</span>
             <a
               href={DOCS_URL}
               target="_blank"

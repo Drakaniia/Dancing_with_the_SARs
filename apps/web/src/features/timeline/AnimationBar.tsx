@@ -1,11 +1,7 @@
-import { motion, useReducedMotion } from "motion/react";
+import { m as motion, useReducedMotion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Slider } from "@/shared/ui/Slider";
-import {
-  formatPeriod,
-  isDatedPeriod,
-  isForecastPeriod,
-} from "@/shared/utils/dates";
+import { formatPeriod, isDatedPeriod, isForecastPeriod } from "@/shared/utils/dates";
 import { useDatasetStore } from "@/stores/datasetStore";
 import { DUR_MED, EASE_OUT, REDUCED_MOTION } from "@/styles/tokens";
 import { PlaybackButton } from "./PlaybackButton";
@@ -27,20 +23,26 @@ export function AnimationBar() {
   const idleTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
+    // Runs on every pointer move anywhere: only touch React state when the bar actually wakes.
+    let isIdle = false;
     const wake = () => {
-      setIdle(false);
-      if (idleTimerRef.current !== null)
-        window.clearTimeout(idleTimerRef.current);
-      idleTimerRef.current = window.setTimeout(() => setIdle(true), IDLE_MS);
+      if (isIdle) {
+        isIdle = false;
+        setIdle(false);
+      }
+      if (idleTimerRef.current !== null) window.clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = window.setTimeout(() => {
+        isIdle = true;
+        setIdle(true);
+      }, IDLE_MS);
     };
     wake();
-    window.addEventListener("pointermove", wake);
-    window.addEventListener("pointerdown", wake);
+    window.addEventListener("pointermove", wake, { passive: true });
+    window.addEventListener("pointerdown", wake, { passive: true });
     return () => {
       window.removeEventListener("pointermove", wake);
       window.removeEventListener("pointerdown", wake);
-      if (idleTimerRef.current !== null)
-        window.clearTimeout(idleTimerRef.current);
+      if (idleTimerRef.current !== null) window.clearTimeout(idleTimerRef.current);
     };
   }, []);
 
@@ -58,9 +60,7 @@ export function AnimationBar() {
     if (dates.length <= MAX_VISIBLE_TICKS) return dates;
     const out: string[] = [];
     for (let i = 0; i < MAX_VISIBLE_TICKS; i++) {
-      const idx = Math.round(
-        (i * (dates.length - 1)) / (MAX_VISIBLE_TICKS - 1),
-      );
+      const idx = Math.round((i * (dates.length - 1)) / (MAX_VISIBLE_TICKS - 1));
       out.push(dates[idx]);
     }
     return Array.from(new Set(out));
@@ -75,17 +75,10 @@ export function AnimationBar() {
     <div className="pointer-events-none absolute inset-x-0 bottom-3 z-[var(--z-animation-bar)] flex justify-center px-3">
       <motion.div
         animate={{ opacity: idle ? IDLE_OPACITY : 1 }}
-        transition={
-          reducedMotion ? REDUCED_MOTION : { duration: DUR_MED, ease: EASE_OUT }
-        }
+        transition={reducedMotion ? REDUCED_MOTION : { duration: DUR_MED, ease: EASE_OUT }}
         className="glass pointer-events-auto flex h-14 w-full max-w-2xl items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--color-chrome-border)] px-4 shadow-[var(--shadow-2)]"
       >
-        <PlaybackButton
-          playing={playing}
-          onToggle={toggle}
-          size="md"
-          disabled={!canPlay}
-        />
+        <PlaybackButton playing={playing} onToggle={toggle} size="md" disabled={!canPlay} />
 
         <p
           className="w-32 shrink-0 text-center font-display text-[13px] leading-tight font-semibold text-[var(--color-text)]"

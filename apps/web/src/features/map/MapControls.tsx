@@ -1,7 +1,7 @@
 import { Compass, Focus, Layers, Minus, Mountain, Plus } from "lucide-react";
 import type { Map as MapLibreMap } from "maplibre-gl";
-import { motion, useReducedMotion } from "motion/react";
-import { useEffect, useState } from "react";
+import { m as motion, useReducedMotion } from "motion/react";
+import { memo, useEffect, useState } from "react";
 import { LayerRow, LayerSwatch } from "@/features/layers/LayerRow";
 import { IconButton } from "@/shared/ui/IconButton";
 import { Popover } from "@/shared/ui/Popover";
@@ -15,7 +15,8 @@ export interface MapControlsProps {
   map: MapLibreMap | null;
 }
 
-export function MapControls({ map }: MapControlsProps) {
+// Memoised: the map viewport re-renders on every timeline step; these controls do not depend on it.
+export const MapControls = memo(function MapControls({ map }: MapControlsProps) {
   const [bearing, setBearing] = useState(0);
   const [layersOpen, setLayersOpen] = useState(false);
   const reducedMotion = useReducedMotion();
@@ -24,25 +25,19 @@ export function MapControls({ map }: MapControlsProps) {
   const toggleVisibility = useLayerStore((state) => state.toggleVisibility);
   const terrain3d = useUiStore((state) => state.terrain3d);
   const toggleTerrain3d = useUiStore((state) => state.toggleTerrain3d);
-  const bounds = useDatasetStore(
-    (state) => state.manifest?.bounds ?? SARANGANI_DAVOCC_BOUNDS,
-  );
+  const bounds = useDatasetStore((state) => state.manifest?.bounds ?? SARANGANI_DAVOCC_BOUNDS);
 
   useEffect(() => {
     if (!map) return;
     const sync = () => setBearing(map.getBearing());
     sync();
     map.on("rotate", sync);
-    map.on("move", sync);
     return () => {
       map.off("rotate", sync);
-      map.off("move", sync);
     };
   }, [map]);
 
-  const rows = layers
-    .filter((layer) => layer.showInLayerList)
-    .sort((a, b) => a.order - b.order);
+  const rows = layers.filter((layer) => layer.showInLayerList).sort((a, b) => a.order - b.order);
 
   const fitAoi = () => {
     if (!map) return;
@@ -57,21 +52,11 @@ export function MapControls({ map }: MapControlsProps) {
 
   return (
     <div className="flex flex-col gap-2">
-      <IconButton
-        label="Zoom in"
-        size="md"
-        disabled={!map}
-        onClick={() => map?.zoomIn()}
-      >
+      <IconButton label="Zoom in" size="md" disabled={!map} onClick={() => map?.zoomIn()}>
         <Plus size={18} strokeWidth={1.5} />
       </IconButton>
 
-      <IconButton
-        label="Zoom out"
-        size="md"
-        disabled={!map}
-        onClick={() => map?.zoomOut()}
-      >
+      <IconButton label="Zoom out" size="md" disabled={!map} onClick={() => map?.zoomOut()}>
         <Minus size={18} strokeWidth={1.5} />
       </IconButton>
 
@@ -88,9 +73,7 @@ export function MapControls({ map }: MapControlsProps) {
         label="Reset north"
         size="md"
         disabled={!map}
-        onClick={() =>
-          map?.easeTo(terrain3d ? { bearing: 0 } : { bearing: 0, pitch: 0 })
-        }
+        onClick={() => map?.easeTo(terrain3d ? { bearing: 0 } : { bearing: 0, pitch: 0 })}
       >
         <motion.span
           className="flex"
@@ -146,4 +129,4 @@ export function MapControls({ map }: MapControlsProps) {
       </Popover>
     </div>
   );
-}
+});
