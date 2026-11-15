@@ -79,7 +79,9 @@ function formatOne(part: string, style: "long" | "short"): string {
     const to = monthName(String(first + 2), "short");
     return `${from}–${to} ${quarter[1]}`;
   }
-  const span = /^(\d{4})-(\d{2})\.\.(\d{2})$/.exec(part);
+  // "2026-06_09" (current key) or "2026-06..09" (older manifests). Keys avoid ".." because the
+  // Cloudflare R2 API rejects object paths containing it (403).
+  const span = /^(\d{4})-(\d{2})(?:_|\.\.)(\d{2})$/.exec(part);
   if (span) {
     return `${monthName(span[2], "short")}–${monthName(span[3], "short")} ${span[1]}`;
   }

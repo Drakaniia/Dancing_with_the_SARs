@@ -87,7 +87,7 @@ event.
 | `earthquake-nbr-change-2026`      | Quake NBR Change (Post minus Pre)        | `2026-06-09 (post minus pre)`    |
 | `earthquake-nbr-change-2025`      | Baseline 2025 Seasonal NBR Change        | `2025 seasonal change`           |
 | `earthquake-nbr-anomaly-2026`     | Quake NBR Excess Loss (vs 2025 Seasonal) | `2026 anomaly vs 2025 seasonal`  |
-| `earthquake-landslide-candidates` | Post-Quake Landslide Candidates          | `2026-06..09`                    |
+| `earthquake-landslide-candidates` | Post-Quake Landslide Candidates          | `2026-06_09`                     |
 
 **Landslide candidate classes:** 1 checked, no slide · 2 possible landslide · 4 not checked
 (cloudy) · 5 checked, no elevation data.

@@ -7,7 +7,7 @@
  },
  "source": {
   "repo": "https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar",
-  "commit": "7ea38ff1b5c0dd4571b1935d01c5bd71ebf72862",
+  "commit": "1505baefd6f0443f80379a8979c995dc2c90bed5",
   "crs": "EPSG:32651",
   "resolutionMeters": 30,
   "attribution": "NISAR L2 GCOV (NASA-ISRO, provisional) · Landsat HLS L30 v2.0 · MODIS MOD13Q1/MOD11A2 · GPM IMERG V07 · SRTMGL1 · NOAA CPC"
@@ -55,7 +55,7 @@
   "2026-06 (vs 2025-06)",
   "2026-06-09 (post minus pre)",
   "2026-06-28",
-  "2026-06..09",
+  "2026-06_09",
   "2026-07",
   "2026-07 (vs 2025-07)",
   "2026-08",
@@ -3791,11 +3791,11 @@
    "band": 1,
    "scaleFactor": 1.0,
    "nodata": 255.0,
-   "period": "2026-06..09",
+   "period": "2026-06_09",
    "periods": [
-    "2026-06..09"
+    "2026-06_09"
    ],
-   "tilePath": "tiles/earthquake-landslide-candidates/2026-06..09/{z}/{x}/{y}.png",
+   "tilePath": "tiles/earthquake-landslide-candidates/2026-06_09/{z}/{x}/{y}.png",
    "minZoom": 5,
    "maxZoom": 13,
    "ramp": {

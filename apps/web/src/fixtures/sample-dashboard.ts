@@ -147,7 +147,7 @@ export const SAMPLE_LAYERS: readonly LayerConfig[] = [
     showInLayerList: true,
     units: "class",
     valueType: "categorical",
-    periods: ["2026-06..09"],
+    periods: ["2026-06_09"],
     domain: [1, 5],
     classes: [
       { code: 1, label: "Checked, no slide", color: "#d6cfbd" },

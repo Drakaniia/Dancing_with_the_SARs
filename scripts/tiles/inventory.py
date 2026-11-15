@@ -102,7 +102,7 @@ KINDS: list[tuple[str, dict]] = [
           expected_scale=0.0001, period="static", label="{year} anomaly vs 2025 seasonal")),
     (r"^earthquake/Landslide_Candidates_after_8Jun2026_30m\.tif",
      dict(family="earthquake", product="landslides", units="class", value_type="categorical",
-          expected_scale=None, period="static", label="2026-06..09", classes="landslide")),
+          expected_scale=None, period="static", label="2026-06_09", classes="landslide")),
     # climate: Landsat HLS quarterly
     (r"^landsat_hls/HLS_(?P<var>EVI|NDMI|NDWI)_Anomaly_(?P<year1>\d{4})Q(?P<q1>\d)_minus_(?P<year2>\d{4})Q(?P<q2>\d)",
      dict(family="climate", product="hls_anomaly", units="index", value_type="continuous",
