@@ -142,10 +142,10 @@ export function TopicLegend({
   }
   if (!body) return null;
   return (
-    <div className="mt-3" aria-label="Colour scale">
-      <p className="font-display text-[11px] font-semibold tracking-[0.06em] text-[var(--color-text-muted)] uppercase">
+    <figure className="mt-3" aria-label="Colour scale">
+      <figcaption className="font-display text-[11px] font-semibold tracking-[0.06em] text-[var(--color-text-muted)] uppercase">
         Colour scale
-      </p>
+      </figcaption>
       {body}
       {view.lo && view.hi && !custom?.keys && !layer?.classes?.length ? (
         <div className="mt-1 flex justify-between text-[11px] text-[var(--color-text-secondary)]">
@@ -172,7 +172,7 @@ export function TopicLegend({
           <li className="text-[#b0221a]">★ M7.8 epicentre, 8 June 2026</li>
         </ul>
       ) : null}
-    </div>
+    </figure>
   );
 }
 
@@ -295,7 +295,7 @@ export function TopicsPanel() {
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-1.5" aria-label="Maps in this topic">
+        <fieldset className="flex min-w-0 flex-wrap gap-1.5" aria-label="Maps in this topic">
           {topic.views.map((v) => (
             <button
               key={v.id}
@@ -307,7 +307,7 @@ export function TopicsPanel() {
               {v.chip}
             </button>
           ))}
-        </div>
+        </fieldset>
 
         <div className="rounded-[var(--radius-sm)] border border-[var(--color-panel-border)] bg-[var(--color-panel)] p-3">
           <p className="font-display text-[11px] text-[var(--color-text-muted)]">
@@ -320,7 +320,7 @@ export function TopicsPanel() {
           </ul>
 
           {view.options.length > 1 ? (
-            <div className="mt-2 flex flex-wrap gap-1" aria-label="Map options">
+            <fieldset className="mt-2 flex min-w-0 flex-wrap gap-1" aria-label="Map options">
               {view.options.map((o, index) => (
                 <button
                   key={o.label}
@@ -332,11 +332,11 @@ export function TopicsPanel() {
                   {o.label}
                 </button>
               ))}
-            </div>
+            </fieldset>
           ) : null}
 
           {periods.length > 1 ? (
-            <div className="mt-2 flex flex-wrap gap-1" aria-label="Dates">
+            <fieldset className="mt-2 flex min-w-0 flex-wrap gap-1" aria-label="Dates">
               {periods.map((period) => (
                 <button
                   key={period}
@@ -353,7 +353,7 @@ export function TopicsPanel() {
                   {formatPeriod(period, "short")}
                 </button>
               ))}
-            </div>
+            </fieldset>
           ) : null}
 
           <TopicLegend
