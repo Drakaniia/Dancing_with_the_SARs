@@ -61,16 +61,9 @@ export function applyLayerBindings(
 ): void {
   for (const binding of bindings) {
     if (map.getLayer(binding.layerId)) {
-      map.setLayoutProperty(
-        binding.layerId,
-        "visibility",
-        binding.visible ? "visible" : "none",
-      );
+      map.setLayoutProperty(binding.layerId, "visibility", binding.visible ? "visible" : "none");
     }
-    if (
-      binding.layerId === "aoi-boundary" &&
-      map.getLayer("aoi-boundary-casing")
-    ) {
+    if (binding.layerId === "aoi-boundary" && map.getLayer("aoi-boundary-casing")) {
       map.setLayoutProperty(
         "aoi-boundary-casing",
         "visibility",
@@ -85,27 +78,18 @@ export const TERRAIN_EXAGGERATION = 1.5;
 export const TERRAIN_PITCH = 50;
 export const MAX_PITCH = 75;
 
-type TerrainMap = Pick<
-  maplibregl.Map,
-  "getSource" | "getTerrain" | "setTerrain" | "easeTo"
->;
+type TerrainMap = Pick<maplibregl.Map, "getSource" | "getTerrain" | "setTerrain" | "easeTo">;
 
 /**
  * Switch between the flat map and 3D terrain. The NISAR rasters and GeoJSON
  * layers stay in place: MapLibre drapes them over the DEM surface.
  * Returns false when nothing changed (already in that mode, or no DEM source).
  */
-export function applyTerrain(
-  map: TerrainMap,
-  enabled: boolean,
-  duration = 800,
-): boolean {
+export function applyTerrain(map: TerrainMap, enabled: boolean, duration = 800): boolean {
   if (Boolean(map.getTerrain()) === enabled) return false;
   if (enabled && !map.getSource(TERRAIN_SOURCE_ID)) return false;
   map.setTerrain(
-    enabled
-      ? { source: TERRAIN_SOURCE_ID, exaggeration: TERRAIN_EXAGGERATION }
-      : null,
+    enabled ? { source: TERRAIN_SOURCE_ID, exaggeration: TERRAIN_EXAGGERATION } : null,
   );
   map.easeTo({ pitch: enabled ? TERRAIN_PITCH : 0, duration });
   return true;
@@ -121,8 +105,7 @@ function prefersReducedMotion(): boolean {
 
 export function webglSupported(): boolean {
   return (
-    typeof WebGL2RenderingContext !== "undefined" ||
-    typeof WebGLRenderingContext !== "undefined"
+    typeof WebGL2RenderingContext !== "undefined" || typeof WebGLRenderingContext !== "undefined"
   );
 }
 
@@ -139,7 +122,8 @@ export function createMap(container: HTMLElement): maplibregl.Map {
     maxBounds: PHILIPPINES_BOUNDS,
     maxPitch: MAX_PITCH,
     attributionControl: false,
-    canvasContextAttributes: { preserveDrawingBuffer: true },
+    // Nothing reads the canvas back, so keep the default (no preserveDrawingBuffer): letting the
+    // GPU discard the frame buffer after each draw is cheaper, most of all with 3D terrain on.
   });
 }
 
@@ -148,9 +132,7 @@ export interface UseMapLibreResult {
   status: MapStatus;
 }
 
-export function useMapLibre(
-  containerRef: RefObject<HTMLElement | null>,
-): UseMapLibreResult {
+export function useMapLibre(containerRef: RefObject<HTMLElement | null>): UseMapLibreResult {
   const [map, setMap] = useState<maplibregl.Map | null>(null);
   const [status, setStatus] = useState<MapStatus>("initializing");
   const layers = useLayerStore((state) => state.layers);
@@ -177,8 +159,7 @@ export function useMapLibre(
 
     const handleLoad = () => {
       setStatus("ready");
-      const bounds =
-        useDatasetStore.getState().manifest?.bounds ?? SARANGANI_DAVOCC_BOUNDS;
+      const bounds = useDatasetStore.getState().manifest?.bounds ?? SARANGANI_DAVOCC_BOUNDS;
       try {
         instance.fitBounds(
           [
