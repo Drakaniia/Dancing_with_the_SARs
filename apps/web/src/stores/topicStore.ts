@@ -12,15 +12,14 @@ interface TopicState {
   viewId: string;
   /** Index into the view's options (e.g. HH vs HV). */
   option: number;
-  /** Index into an image option's frames (e.g. the outlook month). */
-  frame: number;
+
   /** True once the opening view has been applied to the real data. */
   started: boolean;
   applyStart: () => void;
   selectTopic: (topicId: TopicId) => void;
   selectView: (viewId: string) => void;
   selectOption: (option: number) => void;
-  selectFrame: (frame: number) => void;
+
 }
 
 /**
@@ -59,7 +58,6 @@ export const useTopicStore = create<TopicState>((set, get) => ({
   topicId: "radar",
   viewId: "trees",
   option: 0,
-  frame: 0,
   started: false,
 
   applyStart: () => {
@@ -70,21 +68,19 @@ export const useTopicStore = create<TopicState>((set, get) => ({
 
   selectTopic: (topicId) => {
     const view = findTopic(topicId).views[0];
-    set({ topicId, viewId: view.id, option: 0, frame: 0 });
+    set({ topicId, viewId: view.id, option: 0 });
     applyViewOption(view.options[0]);
   },
 
   selectView: (viewId) => {
     const { topicId } = get();
-    set({ viewId, option: 0, frame: 0 });
+    set({ viewId, option: 0 });
     applyViewOption(currentOption(topicId, viewId, 0));
   },
 
   selectOption: (option) => {
     const { topicId, viewId } = get();
-    set({ option, frame: 0 });
+    set({ option });
     applyViewOption(currentOption(topicId, viewId, option));
   },
-
-  selectFrame: (frame) => set({ frame }),
 }));

@@ -31,14 +31,14 @@ export const TOPICS: readonly TopicMeta[] = [
     title: "Earthquake",
     blurb:
       "Where the 8 June M7.8 quake may have caused landslides, and which hills are steep.",
-    satellites: "Landsat 8/9 + Sentinel-2 (HLS) · SRTM",
+    satellites: "Landsat 8/9 (HLS L30) · SRTM",
     families: ["earthquake", "terrain"],
   },
   {
     id: "elnino",
     title: "El Niño",
     blurb: "How plants and land heat changed through the dry months.",
-    satellites: "Landsat 8/9 + Sentinel-2 (HLS) · MODIS",
+    satellites: "Landsat 8/9 (HLS L30) · MODIS",
     families: ["climate"],
   },
   {

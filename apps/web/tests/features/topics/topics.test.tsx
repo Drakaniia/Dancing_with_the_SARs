@@ -54,7 +54,6 @@ beforeEach(() => {
     topicId: "radar",
     viewId: "changed",
     option: 0,
-    frame: 0,
     started: true,
   });
 });

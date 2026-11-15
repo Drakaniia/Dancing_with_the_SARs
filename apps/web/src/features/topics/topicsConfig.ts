@@ -4,12 +4,29 @@
  * image views use pre-rendered overlays shipped in `public/data/extra/` (same colour ramps).
  */
 
+import { resolvePeriod } from "@/shared/utils/dates";
+
 export type TopicId = "radar" | "quake" | "elnino" | "next";
 
 /** One frame of an image overlay (e.g. one month of the outlook). */
 export interface ImageFrame {
   label: string;
   file: string;
+}
+
+/**
+ * Which frame of a picture map goes with the app's date: the frame whose label is that date, or
+ * the nearest one. Pictures with one frame, or with labels that are not dates, use frame 0.
+ */
+export function frameIndexFor(
+  frames: readonly ImageFrame[],
+  currentDate: string | null,
+): number {
+  if (frames.length <= 1) return 0;
+  const labels = frames.map((f) => f.label);
+  if (!labels.every((l) => /^\d{4}-\d{2}/.test(l))) return 0;
+  const resolved = resolvePeriod(labels, currentDate).resolved;
+  return Math.max(labels.indexOf(resolved ?? ""), 0);
 }
 
 export interface CustomLegend {
@@ -201,12 +218,12 @@ export const TOPICS: readonly Topic[] = [
   {
     id: "quake",
     title: "Earthquake",
-    satellites: "Landsat · Sentinel-2 · NISAR · Sentinel-1",
+    satellites: "Landsat · NISAR · Sentinel-1",
     views: [
       {
         id: "landslides",
         chip: "⛰ Landslides + NISAR",
-        satellite: "Landsat 8/9 + Sentinel-2 (HLS) · checked by NISAR",
+        satellite: "Landsat 8/9 (HLS L30) · checked by NISAR",
         notes: [
           "8 June 2026, M7.8 quake · ★ = epicentre",
           "Landsat saw 305 possible landslides",
@@ -360,7 +377,7 @@ export const TOPICS: readonly Topic[] = [
       {
         id: "plant-water",
         chip: "🍃 Plant water",
-        satellite: "Landsat 8/9 + Sentinel-2 (HLS)",
+        satellite: "Landsat 8/9 (HLS L30)",
         notes: [
           "Water inside the leaves",
           "Brown = thirsty plants",
@@ -379,7 +396,7 @@ export const TOPICS: readonly Topic[] = [
       {
         id: "water",
         chip: "🌊 Water on land",
-        satellite: "Landsat 8/9 + Sentinel-2 (HLS)",
+        satellite: "Landsat 8/9 (HLS L30)",
         notes: ["Dark blue = water", "Sea, rivers, ponds, fishponds"],
         options: [
           {

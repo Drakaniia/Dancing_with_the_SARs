@@ -138,7 +138,9 @@ describe("panel content & manifest contract", () => {
     expect(
       screen.getByText("HH Backscatter Change (monthly)"),
     ).toBeInTheDocument();
-    expect(screen.getByText("2026-10 (vs 2026-09)")).toBeInTheDocument();
+    expect(
+      screen.getByText("October 2026 vs September 2026"),
+    ).toBeInTheDocument();
   });
 
   it("draws continuous and categorical legends from the active layer", () => {

@@ -4,6 +4,7 @@ import type {
   Map as MapLibreMap,
 } from "maplibre-gl";
 import { useEffect } from "react";
+import { layerOrder } from "@/features/map/overlays/TileOverlay";
 import { resolveTileUrl, SARANGANI_DAVOCC_BOUNDS } from "@/shared/utils/geo";
 import { resolveManifestEntry, useDatasetStore } from "@/stores/datasetStore";
 import { useTopicStore } from "@/stores/topicStore";
@@ -12,6 +13,7 @@ import {
   EXTRA_IMAGE_CORNERS,
   findTopic,
   findView,
+  frameIndexFor,
 } from "./topicsConfig";
 
 const BELOW_ID = "aoi-boundary-casing";
@@ -19,7 +21,26 @@ const IMAGE_SOURCE = "topic-image-source";
 const IMAGE_LAYER = "topic-image";
 const UNDERLAY_SOURCE = "topic-landcover-underlay-source";
 const UNDERLAY_LAYER = "topic-landcover-underlay";
-const CHANGE_LAYER = "nisar-landcover-change-2020-2026";
+const CHANGE_LAYER_PREFIX = "nisar-landcover-change-2020-2026";
+
+/** The tile overlay draws each date as its own map layer (`nisar-<id>@<n>`); find the bottom one. */
+function changeLayerId(map: MapLibreMap): string | undefined {
+  return layerOrder(map).find(
+    (id) => id === CHANGE_LAYER_PREFIX || id.startsWith(`${CHANGE_LAYER_PREFIX}@`),
+  );
+}
+
+const preloaded = new Set<string>();
+/** Warm the browser cache with every frame of a picture map so playback does not stall. */
+function preloadImages(urls: string[]): void {
+  for (const url of urls) {
+    if (preloaded.has(url) || typeof Image === "undefined") continue;
+    preloaded.add(url);
+    const img = new Image();
+    img.decoding = "async";
+    img.src = url;
+  }
+}
 const DOTS_SOURCE = "topic-landslides-source";
 const DOTS_LAYER = "topic-landslides";
 const EPI_SOURCE = "topic-epicentre-source";
@@ -187,7 +208,8 @@ export function TopicOverlays({
   map: MapLibreMap | null;
   ready: boolean;
 }) {
-  const { topicId, viewId, option, frame } = useTopicStore();
+  const { topicId, viewId, option } = useTopicStore();
+  const currentDate = useDatasetStore((s) => s.currentDate);
   const started = useTopicStore((s) => s.started);
   const applyStart = useTopicStore((s) => s.applyStart);
   const manifest = useDatasetStore((s) => s.manifest);
@@ -206,6 +228,8 @@ export function TopicOverlays({
     // 1. Image overlay (one at a time).
     try {
       if (opt.kind === "images") {
+        preloadImages(opt.frames.map((f) => publicUrl(`data/extra/${f.file}`)));
+        const frame = frameIndexFor(opt.frames, currentDate);
         const file = (opt.frames[frame] ?? opt.frames[0]).file;
         const url = publicUrl(`data/extra/${file}`);
         const source = map.getSource(IMAGE_SOURCE) as ImageSource | undefined;
@@ -275,7 +299,7 @@ export function TopicOverlays({
                 "raster-resampling": "nearest",
               },
             },
-            map.getLayer(CHANGE_LAYER) ? CHANGE_LAYER : beforeId(map),
+            changeLayerId(map) ?? beforeId(map),
           );
         }
       } else if (!wantUnderlay) {
@@ -298,16 +322,17 @@ export function TopicOverlays({
     } catch (error) {
       console.error("Failed to update the earthquake markers", error);
     }
-  }, [map, ready, topicId, viewId, option, frame, manifest]);
+  }, [map, ready, topicId, viewId, option, currentDate, manifest]);
 
   // Keep the land-cover underlay below the change tiles when TileOverlay adds them later.
   useEffect(() => {
     if (!map || !ready) return;
     const keepOrder = () => {
-      if (map.getLayer(UNDERLAY_LAYER) && map.getLayer(CHANGE_LAYER)) {
-        const ids = map.getStyle().layers.map((l) => l.id);
-        if (ids.indexOf(UNDERLAY_LAYER) > ids.indexOf(CHANGE_LAYER)) {
-          map.moveLayer(UNDERLAY_LAYER, CHANGE_LAYER);
+      const change = map.getLayer(UNDERLAY_LAYER) ? changeLayerId(map) : undefined;
+      if (change) {
+        const ids = layerOrder(map);
+        if (ids.indexOf(UNDERLAY_LAYER) > ids.indexOf(change)) {
+          map.moveLayer(UNDERLAY_LAYER, change);
         }
       }
     };

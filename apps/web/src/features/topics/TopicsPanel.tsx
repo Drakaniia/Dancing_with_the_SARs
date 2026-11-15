@@ -10,6 +10,7 @@ import {
 import { type ReactNode, useState } from "react";
 import { ChangeTypeList } from "@/features/change-types/ChangeTypeList";
 import type { LayerConfig } from "@/shared/types/layer";
+import { formatPeriod } from "@/shared/utils/dates";
 import { resolveManifestEntry, useDatasetStore } from "@/stores/datasetStore";
 import { useLayerStore } from "@/stores/layerStore";
 import { useTopicStore } from "@/stores/topicStore";
@@ -21,6 +22,7 @@ import {
   type TopicId,
   type TopicView,
   type ViewOption,
+  frameIndexFor,
 } from "./topicsConfig";
 
 const TOPIC_ICONS: Record<TopicId, LucideIcon> = {
@@ -223,11 +225,11 @@ function periodsFor(option: ViewOption, layer?: LayerConfig): string[] {
  * available under "All maps".
  */
 export function TopicsPanel() {
-  const { topicId, viewId, option, frame } = useTopicStore();
+  const { topicId, viewId, option } = useTopicStore();
   const selectTopic = useTopicStore((s) => s.selectTopic);
   const selectView = useTopicStore((s) => s.selectView);
   const selectOption = useTopicStore((s) => s.selectOption);
-  const selectFrame = useTopicStore((s) => s.selectFrame);
+
   const layers = useLayerStore((s) => s.layers);
   const manifest = useDatasetStore((s) => s.manifest);
   const currentDate = useDatasetStore((s) => s.currentDate);
@@ -242,7 +244,7 @@ export function TopicsPanel() {
   const periods = periodsFor(opt, layer);
   const activePeriod =
     opt.kind === "images"
-      ? (opt.frames[frame] ?? opt.frames[0])?.label
+      ? opt.frames[frameIndexFor(opt.frames, currentDate)]?.label
       : (resolveManifestEntry(manifest, opt.layerId, currentDate)
           .resolvedPeriod ?? periods[periods.length - 1]);
 
@@ -335,21 +337,20 @@ export function TopicsPanel() {
 
           {periods.length > 1 ? (
             <div className="mt-2 flex flex-wrap gap-1" aria-label="Dates">
-              {periods.map((period, index) => (
+              {periods.map((period) => (
                 <button
                   key={period}
                   type="button"
                   aria-pressed={period === activePeriod}
                   onClick={() => {
-                    if (opt.kind === "images") selectFrame(index);
-                    // keep the app's date in step (its "nearest period" note and the timeline)
+                    // the app's date drives the map, the picture frame and the timeline
                     if (/^\d{4}-\d{2}/.test(period)) setCurrentDate(period);
                   }}
                   className={`rounded-[var(--radius-sm)] border px-1.5 py-0.5 font-display text-[11px] tabular-nums ${
                     period === activePeriod ? pillOn : pillOff
                   }`}
                 >
-                  {period}
+                  {formatPeriod(period, "short")}
                 </button>
               ))}
             </div>
