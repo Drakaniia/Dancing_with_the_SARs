@@ -18,9 +18,10 @@ export default defineConfig({
       description:
         "Documentation for The Cartographers' NISAR Surface Change Monitor: a Tauri desktop dashboard for radar-based surface change in Sarangani and Davao Occidental, Philippines.",
       logo: {
-        src: "./src/assets/logo.svg",
+        src: "./src/assets/logo.png",
         alt: "NISAR Surface Change Monitor",
       },
+      favicon: "/favicon.ico",
       social: [{ icon: "github", label: "GitHub", href: REPO }],
       editLink: {
         baseUrl: `${REPO}/edit/main/apps/docs/`,
