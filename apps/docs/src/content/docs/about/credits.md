@@ -72,6 +72,10 @@ estimates, the 12-month El Niño outlook model, the Sentinel-1 cross-check, and 
 landslide check and "watch first" map. Team members chose the
 methods, reviewed, tested and edited all AI-assisted work before including it.
 
+The voiceover in the demo video was generated with [ElevenLabs](https://elevenlabs.io/)
+text-to-speech from the team's timed script. The video's visuals are built in code with
+[Remotion](https://www.remotion.dev/) from the app's data and interface.
+
 AI tools did not create the scientific data. Every map value comes from the satellite and
 climate products listed above, through the pinned data release and the tile pipeline. The
 screenshots in this documentation are real captures of the running app. No AI-generated content

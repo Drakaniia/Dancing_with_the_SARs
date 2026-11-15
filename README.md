@@ -61,7 +61,7 @@ In line with the NASA Space Apps Challenge rules on Super Intelligence (SI), thi
 - **Code:** The team used an AI coding assistant (Claude, by Anthropic) to help write and refactor parts of the React/TypeScript interface, the Tauri (Rust) commands, the Python tile pipeline and the test suite. All AI-assisted code was reviewed, tested and integrated by team members.
 - **Documentation:** AI assistance was used to draft and edit parts of this README and the documentation site. The team checked all technical and scientific statements against the data release.
 - **Data:** No AI-generated data is used. All map layers come from NASA, NASA-ISRO, USGS and NOAA products processed in the team's [data repository](https://github.com/monteropeterdominic-arch/sarangani-davao-occidental-nisar). The radar-estimated vegetation layers (EVI, NDMI) come from a conventional machine-learning regression model the team trained on satellite data; they are not produced by a generative AI tool.
-- **Images, video and audio:** The screenshots were captured from the running app with a script, and the team photo is a real photograph. No AI-generated images, video or audio are included in this repository.
+- **Images, video and audio:** The screenshots were captured from the running app with a script, and the team photo is a real photograph. The demo video's visuals are built in code with Remotion. Its voiceover was generated with [ElevenLabs](https://elevenlabs.io/) text-to-speech from the script in `apps/video/VOICEOVER.md`; the audio files are in `apps/video/public/`. No other AI-generated images, video or audio are included in this repository.
 
 No AI-generated content uses or modifies NASA branding or design elements.
 
@@ -86,7 +86,7 @@ All map data comes from the team's data repository, [sarangani-davao-occidental-
 
 ## Use of AI Tools
 
-AI coding assistants (large language models) helped write and review parts of the application code, tile pipeline, tests and documentation. Team members reviewed and tested all AI-assisted work. AI tools did not create the scientific data: every map value comes from the satellite and climate products listed above. The screenshots in `docs/screenshots/` are real captures of the app.
+AI coding assistants (large language models) helped write and review parts of the application code, tile pipeline, tests and documentation. Team members reviewed and tested all AI-assisted work. The demo video's voiceover was generated with [ElevenLabs](https://elevenlabs.io/) text-to-speech. AI tools did not create the scientific data: every map value comes from the satellite and climate products listed above. The screenshots in `docs/screenshots/` are real captures of the app.
 
 ## License
 

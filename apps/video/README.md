@@ -22,7 +22,7 @@ pnpm --filter video lint     # eslint + tsc
 - `src/components/map/*`: province, quake, cloud, radar, landslide and satellite layers.
 - `src/components/AppChrome.tsx`, `Hud.tsx`, `TitleCard.tsx`: app UI, margin notes and closing title card.
 - `src/components/CreditsCard.tsx`: final card with the challenge and team members.
-- `VOICEOVER.md`: timed voiceover script. The video is silent.
+- `VOICEOVER.md`: timed voiceover script. The voiceover audio was generated from it with ElevenLabs text-to-speech and is in `public/`.
 
 Remotion needs a company license for some organisations; see the
 [license terms](https://github.com/remotion-dev/remotion/blob/main/LICENSE.md).
