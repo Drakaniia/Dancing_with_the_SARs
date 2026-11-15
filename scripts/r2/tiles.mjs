@@ -28,6 +28,7 @@ import { createRequire } from "node:module";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import zlib from "node:zlib";
 
 const ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -337,8 +338,30 @@ function contentType(key) {
   return "image/png";
 }
 
+/**
+ * r2.dev does not compress responses, so JSON goes up gzipped with `Content-Encoding: gzip`
+ * (browsers decode it transparently). manifest.json drops from ~370 KB to ~14 KB on the wire.
+ * Returns the path of a temporary gzipped copy of `file`.
+ */
+function gzipCopy(file) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "nisar-r2-"));
+  const out = path.join(dir, `${path.basename(file)}.gz`);
+  fs.writeFileSync(
+    out,
+    zlib.gzipSync(fs.readFileSync(file), { level: zlib.constants.Z_BEST_COMPRESSION }),
+  );
+  return out;
+}
+
 /** `key` is relative to the bucket's `tiles/` prefix unless `prefix` says otherwise. */
-async function putObject(opts, key, file, cacheControl, prefix = "tiles") {
+async function putObject(
+  opts,
+  key,
+  file,
+  cacheControl,
+  prefix = "tiles",
+  contentEncoding = undefined,
+) {
   const args = [
     "r2",
     "object",
@@ -351,6 +374,7 @@ async function putObject(opts, key, file, cacheControl, prefix = "tiles") {
     contentType(key),
     "--cache-control",
     cacheControl,
+    ...(contentEncoding ? ["--content-encoding", contentEncoding] : []),
   ];
   if (opts.dryRun) return { code: 0, out: "" };
   let last;
@@ -440,8 +464,10 @@ async function upload(opts) {
   const indexResult = await putObject(
     opts,
     "index.json",
-    INDEX_FILE,
+    gzipCopy(INDEX_FILE),
     INDEX_CACHE_CONTROL,
+    "tiles",
+    "gzip",
   );
   if (indexResult.code !== 0)
     fail(`index.json upload failed: ${indexResult.out.trim()}`);
@@ -471,9 +497,10 @@ async function uploadData(opts) {
     const result = await putObject(
       opts,
       file,
-      path.join(DATA_DIR, file),
+      gzipCopy(path.join(DATA_DIR, file)),
       DATA_CACHE_CONTROL,
       "data",
+      "gzip",
     );
     if (result.code !== 0) {
       fail(`data/${file} upload failed: ${result.out.trim()}`);
