@@ -31,44 +31,37 @@ export const DemoVideo = () => (
     <Track
       name="ElevenLabs_2026-11-14T12_21_12_Jessica - Playful, Bright, Warm_pvc_s50_sim75_v4.mp3"
     >
+    </Track>
+    <Track
+      name="ElevenLabs_2026-11-15T12_56_41_Hope - upbeat and clear_pvc_s50_sim75_v4.mp3"
+    >
       <Audio
-        src={staticFile(
-          'ElevenLabs_2026-11-14T12_21_12_Jessica - Playful, Bright, Warm_pvc_s50_sim75_v4.mp3'
-        )}
-        from={5}
-        durationInFrames={43}
+        src={staticFile('ElevenLabs_2026-11-15T12_56_41_Hope - upbeat and clear_pvc_s50_sim75_v4.mp3')}
+        durationInFrames={121}
       />
       <Audio
-        src={staticFile(
-          'ElevenLabs_2026-11-14T12_21_12_Jessica - Playful, Bright, Warm_pvc_s50_sim75_v4.mp3'
-        )}
-        from={49}
-        durationInFrames={73}
-        trimBefore={52.4300000000001}
+        src={staticFile('ElevenLabs_2026-11-15T12_56_41_Hope - upbeat and clear_pvc_s50_sim75_v4.mp3')}
+        from={121}
+        durationInFrames={344}
+        trimBefore={203}
       />
       <Audio
-        src={staticFile(
-          'ElevenLabs_2026-11-14T12_21_12_Jessica - Playful, Bright, Warm_pvc_s50_sim75_v4.mp3'
-        )}
-        from={123}
-        durationInFrames={146}
-        trimBefore={198.43}
+        src={staticFile('ElevenLabs_2026-11-15T12_56_41_Hope - upbeat and clear_pvc_s50_sim75_v4.mp3')}
+        from={472}
+        durationInFrames={176}
+        trimBefore={551}
       />
       <Audio
-        src={staticFile(
-          'ElevenLabs_2026-11-14T12_21_12_Jessica - Playful, Bright, Warm_pvc_s50_sim75_v4.mp3'
-        )}
-        from={271}
-        durationInFrames={234}
-        trimBefore={351.43}
+        src={staticFile('ElevenLabs_2026-11-15T12_56_41_Hope - upbeat and clear_pvc_s50_sim75_v4.mp3')}
+        from={663}
+        durationInFrames={160}
+        trimBefore={733}
       />
       <Audio
-        src={staticFile(
-          'ElevenLabs_2026-11-14T12_21_12_Jessica - Playful, Bright, Warm_pvc_s50_sim75_v4.mp3'
-        )}
-        from={506}
-        durationInFrames={482.57}
-        trimBefore={642.43}
+        src={staticFile('ElevenLabs_2026-11-15T12_56_41_Hope - upbeat and clear_pvc_s50_sim75_v4.mp3')}
+        from={828}
+        durationInFrames={69}
+        trimBefore={890}
       />
     </Track>
   </>
