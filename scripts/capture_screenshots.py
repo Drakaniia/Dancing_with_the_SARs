@@ -13,6 +13,12 @@ from playwright.sync_api import sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "docs" / "screenshots"
 PAD = 12
+# File names to save; empty saves every screenshot (see --only).
+ONLY: set[str] = set()
+
+
+def wanted(name):
+    return not ONLY or name in ONLY
 
 
 def settle(page, ms=600):
@@ -30,6 +36,8 @@ def wait_for_tiles(page):
 
 
 def capture(page, name):
+    if not wanted(name):
+        return
     page.mouse.move(800, 70)
     settle(page, 0)
     page.screenshot(path=str(OUTPUT / name), animations="disabled", timeout=20000)
@@ -38,6 +46,8 @@ def capture(page, name):
 
 def crop(page, name, *locators, pad=PAD):
     """Save the viewport area covering every locator, plus padding."""
+    if not wanted(name):
+        return
     locators[0].scroll_into_view_if_needed()
     settle(page, 300)
     boxes = [loc.bounding_box() for loc in locators]
@@ -54,8 +64,21 @@ def crop(page, name, *locators, pad=PAD):
 
 
 def crop_panel(page, name, title):
-    """Crop a rail panel tightly so neighbouring panels stay out of frame."""
-    crop(page, name, panel(page, title), pad=4)
+    """Crop a rail panel tightly so neighbouring panels stay out of frame.
+
+    Right-rail panels open from their "Show <title>" button. A panel the UI no longer has is
+    skipped with a warning, so the existing file stays as it is.
+    """
+    show = page.get_by_role("button", name=f"Show {title}", exact=True)
+    if show.count():
+        show.click()
+    region = panel(page, title)
+    try:
+        region.wait_for(timeout=5000)
+    except Exception:
+        print(f"Skipped docs/screenshots/{name}: no '{title}' panel", flush=True)
+        return
+    crop(page, name, region, pad=4)
 
 
 def panel(page, title):
@@ -65,7 +88,15 @@ def panel(page, title):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--url", default="http://127.0.0.1:5173")
+    parser.add_argument(
+        "--only",
+        nargs="+",
+        default=[],
+        metavar="FILE",
+        help="save only these files (e.g. tools-panel.png); every step still runs",
+    )
     args = parser.parse_args()
+    ONLY.update(args.only)
     OUTPUT.mkdir(parents=True, exist_ok=True)
 
     with sync_playwright() as playwright:
@@ -87,10 +118,11 @@ def main():
         canvas = page.locator(".maplibregl-canvas")
         wait_for_tiles(page)
 
-        # Fold long catalogues using the same controls available to users.
+        # Fold long catalogues using the same controls available to users. They only exist
+        # while the expert layer list ("All maps") is open.
         for label in ["Radar Backscatter & Change", "8 June 2026 Earthquake"]:
             button = page.get_by_role("button", name=label)
-            if button.get_attribute("aria-expanded") == "true":
+            if button.count() and button.get_attribute("aria-expanded") == "true":
                 button.click()
         capture(page, "dashboard-light.png")
 
@@ -156,7 +188,19 @@ def main():
         canvas.wait_for()
         wait_for_tiles(page)
         page.get_by_role("switch", name="Comparison View").click()
-        page.get_by_label("Split curtain position").wait_for()
+        curtain = page.get_by_label("Split curtain position")
+        curtain.wait_for()
+        # At the default overview the AOI sits right of centre; put the curtain across it.
+        curtain.focus()
+        for _ in range(50):
+            if int(curtain.get_attribute("aria-valuenow") or 0) >= 70:
+                break
+            curtain.press("ArrowRight")
+        curtain.blur()
+        # The baseline side is a second map that loads its own tiles once comparison is on.
+        page.get_by_test_id("comparison-map").locator(".maplibregl-canvas").wait_for()
+        wait_for_tiles(page)
+        settle(page, 4000)
         crop_panel(page, "comparison-panel.png", "Comparison View")
         capture(page, "comparison-view.png")
         browser.close()
