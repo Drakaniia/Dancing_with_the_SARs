@@ -17,6 +17,7 @@ import {
   tileSegment,
   tileTemplate,
 } from "@/shared/utils/geo";
+import { useDatasetStore } from "@/stores/datasetStore";
 import { useLayerStore } from "@/stores/layerStore";
 import { useUiStore } from "@/stores/uiStore";
 
@@ -89,6 +90,20 @@ describe("map layer bindings", () => {
     expect(
       screen.getByText("Map unavailable — WebGL is required"),
     ).toBeInTheDocument();
+  });
+
+  it("moves the top-left notices below the comparison badge while comparing", () => {
+    useDatasetStore.setState({ comparisonEnabled: false });
+    const { unmount } = render(<MapCanvas />);
+    expect(screen.getByTestId("map-hud")).toHaveClass("top-3");
+    unmount();
+
+    useDatasetStore.setState({ comparisonEnabled: true });
+    render(<MapCanvas />);
+    expect(screen.getByText("Before:")).toBeInTheDocument();
+    expect(screen.getByTestId("map-hud")).toHaveClass("top-14");
+    expect(screen.getByTestId("map-hud")).not.toHaveClass("top-3");
+    useDatasetStore.setState({ comparisonEnabled: false });
   });
 });
 

@@ -162,9 +162,16 @@ export function MapCanvas() {
         </div>
       ) : null}
 
-      {/* Top-left HUD badge: active dataset period snap + measure/inspect readout */}
+      {/* Top-left HUD badge: active dataset period snap + measure/inspect readout. While
+          comparing it starts below the centred Before vs Current badge, so a wide notice never
+          runs underneath it. */}
       <div className="pointer-events-none absolute inset-0 z-[var(--z-map-chrome)]">
-        <div className="pointer-events-auto absolute top-3 left-3 flex flex-col gap-2">
+        <div
+          data-testid="map-hud"
+          className={`pointer-events-auto absolute left-3 flex flex-col gap-2 ${
+            comparisonEnabled ? "top-14" : "top-3"
+          }`}
+        >
           <NearestPeriodBadge />
 
           {activeTool === "measure" ? (
