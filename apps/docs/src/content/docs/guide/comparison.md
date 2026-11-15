@@ -41,10 +41,12 @@ curtain. It follows the main map's camera, uses the same 3D terrain, and mirrors
 Every visible data layer is drawn at the baseline period. Like the timeline, a layer with no
 data for that period snaps to its nearest one, so a one-date layer looks the same on both sides.
 
+Picture maps from the **Explore** panel are drawn on both sides too. The outlook months show the
+month nearest the baseline period. The slope map, the Sentinel-1 radar check and the NISAR watch
+list have one picture each, so they look the same on both sides.
+
 :::note
-Picture maps from the **Explore** panel (Sentinel-1 radar check, slope, outlook months, the
-NISAR watch list) are drawn on the main map only. For a computed change product rather than a
-visual comparison, use the pair layers:
+For a computed change product rather than a visual comparison, use the pair layers:
 
 - `radar-change-hh-monthly` / `radar-change-hv-monthly`: Oct vs Sep 2026.
 - The same-track change layers, for example `2026-10-14 (vs 2026-09-20)`.

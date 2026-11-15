@@ -8,11 +8,14 @@ import {
   MAX_PITCH,
   resolveLayerBindings,
 } from "@/features/map/useMapLibre";
+import { syncTopicImage } from "@/features/topics/TopicOverlays";
+import { findTopic, findView } from "@/features/topics/topicsConfig";
 import type { LayerConfig } from "@/shared/types/layer";
 import type { Manifest } from "@/shared/types/manifest";
 import { PHILIPPINES_BOUNDS, SARANGANI_DAVOCC_BOUNDS } from "@/shared/utils/geo";
 import { useDatasetStore } from "@/stores/datasetStore";
 import { useLayerStore } from "@/stores/layerStore";
+import { useTopicStore } from "@/stores/topicStore";
 import { useUiStore } from "@/stores/uiStore";
 
 const LAYER_PREFIX = "compare-";
@@ -105,8 +108,8 @@ export function syncBaselineLayers(
 /**
  * The "before" side of the comparison swipe: a second, non-interactive map stacked on the main
  * one and clipped to the left of the curtain. It follows the main map's camera and draws the same
- * basemap and data layers at the baseline period. In Difference mode it is blended with
- * `mix-blend-mode: difference`, so unchanged pixels go black and change stands out.
+ * basemap, data layers and Explore picture map at the baseline period. In Difference mode it is
+ * blended with `mix-blend-mode: difference`, so unchanged pixels go black and change stands out.
  */
 export function ComparisonMap({ main }: { main: maplibregl.Map | null }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -119,6 +122,9 @@ export function ComparisonMap({ main }: { main: maplibregl.Map | null }) {
   const manifest = useDatasetStore((state) => state.manifest);
   const layers = useLayerStore((state) => state.layers);
   const terrain3d = useUiStore((state) => state.terrain3d);
+  const topicId = useTopicStore((state) => state.topicId);
+  const viewId = useTopicStore((state) => state.viewId);
+  const option = useTopicStore((state) => state.option);
 
   // Create the baseline map once the main one exists; it lives as long as comparison is on.
   useEffect(() => {
@@ -174,6 +180,19 @@ export function ComparisonMap({ main }: { main: maplibregl.Map | null }) {
       console.error("Failed to update the comparison layers", error);
     }
   }, [compare, loaded, layers, manifest, comparisonDate]);
+
+  // The Explore panel's picture map, at the baseline date (outlook months snap to the nearest).
+  useEffect(() => {
+    if (!compare || !loaded) return;
+    try {
+      const view = findView(findTopic(topicId), viewId);
+      const opt = view.options[option] ?? view.options[0];
+      const date = comparisonDate ?? manifest?.dates[0] ?? null;
+      syncTopicImage(compare, opt, date, BELOW_IDS.find((id) => compare.getLayer(id)));
+    } catch (error) {
+      console.error("Failed to update the comparison picture map", error);
+    }
+  }, [compare, loaded, topicId, viewId, option, comparisonDate, manifest]);
 
   // Same 3D terrain as the main map, so both sides drape over the same surface.
   useEffect(() => {

@@ -4,7 +4,14 @@ import { layerOrder } from "@/features/map/overlays/TileOverlay";
 import { resolveTileUrl, SARANGANI_DAVOCC_BOUNDS } from "@/shared/utils/geo";
 import { resolveManifestEntry, useDatasetStore } from "@/stores/datasetStore";
 import { useTopicStore } from "@/stores/topicStore";
-import { EPICENTRE, EXTRA_IMAGE_CORNERS, findTopic, findView, frameIndexFor } from "./topicsConfig";
+import {
+  EPICENTRE,
+  EXTRA_IMAGE_CORNERS,
+  findTopic,
+  findView,
+  frameIndexFor,
+  type ViewOption,
+} from "./topicsConfig";
 
 const BELOW_ID = "aoi-boundary-casing";
 const IMAGE_SOURCE = "topic-image-source";
@@ -60,6 +67,52 @@ function beforeId(map: MapLibreMap): string | undefined {
 function removeLayerAndSource(map: MapLibreMap, layerIds: string[], sourceId: string): void {
   for (const id of layerIds) if (map.getLayer(id)) map.removeLayer(id);
   if (map.getSource(sourceId)) map.removeSource(sourceId);
+}
+
+/** URL of the picture-map frame that goes with `date` (the nearest month for the outlook). */
+export function topicImageUrl(
+  opt: Extract<ViewOption, { kind: "images" }>,
+  date: string | null,
+): string {
+  const frame = frameIndexFor(opt.frames, date);
+  return publicUrl(`data/extra/${(opt.frames[frame] ?? opt.frames[0]).file}`);
+}
+
+/**
+ * Draw the Explore panel's picture map (Sentinel-1 radar check, outlook months, slope, NISAR
+ * watch list) for `date`, or remove it when the view shows tiles. Used by the main map at the
+ * timeline date and by the comparison map at the baseline date.
+ */
+export function syncTopicImage(
+  map: Pick<
+    MapLibreMap,
+    "getLayer" | "getSource" | "addSource" | "addLayer" | "removeLayer" | "removeSource"
+  >,
+  opt: ViewOption,
+  date: string | null,
+  before: string | undefined,
+): void {
+  if (opt.kind !== "images") {
+    if (map.getLayer(IMAGE_LAYER)) map.removeLayer(IMAGE_LAYER);
+    if (map.getSource(IMAGE_SOURCE)) map.removeSource(IMAGE_SOURCE);
+    return;
+  }
+  const url = topicImageUrl(opt, date);
+  const source = map.getSource(IMAGE_SOURCE) as ImageSource | undefined;
+  if (source) {
+    source.updateImage({ url, coordinates: EXTRA_IMAGE_CORNERS });
+    return;
+  }
+  map.addSource(IMAGE_SOURCE, { type: "image", url, coordinates: EXTRA_IMAGE_CORNERS });
+  map.addLayer(
+    {
+      id: IMAGE_LAYER,
+      type: "raster",
+      source: IMAGE_SOURCE,
+      paint: { "raster-opacity": 0.95, "raster-resampling": "nearest" },
+    },
+    before,
+  );
 }
 
 function setVisible(map: MapLibreMap, ids: string[], visible: boolean): void {
@@ -201,34 +254,8 @@ export function TopicOverlays({ map, ready }: { map: MapLibreMap | null; ready: 
     try {
       if (opt.kind === "images") {
         preloadImages(opt.frames.map((f) => publicUrl(`data/extra/${f.file}`)));
-        const frame = frameIndexFor(opt.frames, currentDate);
-        const file = (opt.frames[frame] ?? opt.frames[0]).file;
-        const url = publicUrl(`data/extra/${file}`);
-        const source = map.getSource(IMAGE_SOURCE) as ImageSource | undefined;
-        if (source) {
-          source.updateImage({ url, coordinates: EXTRA_IMAGE_CORNERS });
-        } else {
-          map.addSource(IMAGE_SOURCE, {
-            type: "image",
-            url,
-            coordinates: EXTRA_IMAGE_CORNERS,
-          });
-          map.addLayer(
-            {
-              id: IMAGE_LAYER,
-              type: "raster",
-              source: IMAGE_SOURCE,
-              paint: {
-                "raster-opacity": 0.95,
-                "raster-resampling": "nearest",
-              },
-            },
-            beforeId(map),
-          );
-        }
-      } else {
-        removeLayerAndSource(map, [IMAGE_LAYER], IMAGE_SOURCE);
       }
+      syncTopicImage(map, opt, currentDate, beforeId(map));
     } catch (error) {
       console.error("Failed to update the topic image overlay", error);
     }

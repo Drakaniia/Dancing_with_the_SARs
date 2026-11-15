@@ -60,7 +60,9 @@ in a plain browser.
 - **`ComparisonMap`** is the baseline side of the comparison swipe: a second, non-interactive
   map clipped to the left of the curtain with `clip-path`. It copies the main camera on every
   `move`, applies the same terrain and layer switches, and draws the visible data layers at the
-  baseline period with `tilePathFor()` and `addReferenceLayers()` from `TileOverlay`. Difference
+  baseline period with `tilePathFor()` and `addReferenceLayers()` from `TileOverlay`. It draws
+  the Explore panel's picture map at the baseline period with `syncTopicImage()` from
+  `TopicOverlays`, the same helper the main map uses. Difference
   mode adds `mix-blend-mode: difference`.
 - **`TileOverlay`** reconciles MapLibre with the layer store:
   - One raster source and layer per visible manifest layer, inserted below the boundary and
