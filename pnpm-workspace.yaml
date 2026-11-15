@@ -6,3 +6,9 @@ packages:
 allowBuilds:
   esbuild: true
   workerd: true
+
+# Security pins for transitive dependencies.
+overrides:
+  # GHSA-g3hv-75wg-m249: globparts DoS in minimatch >=7 <11.0.1. No 10.x fix;
+  # @typescript-eslint/typescript-estree still asks for ^10.
+  minimatch: ^11.0.8
