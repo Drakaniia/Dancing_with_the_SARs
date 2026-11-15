@@ -11,6 +11,7 @@ import { useUiStore } from "@/stores/uiStore";
 import { MapAttribution } from "./MapAttribution";
 import { MapControls } from "./MapControls";
 import { NorthIndicator } from "./NorthIndicator";
+import { MeasureOverlay } from "./overlays/MeasureOverlay";
 import { TileOverlay } from "./overlays/TileOverlay";
 import { ScaleBar } from "./ScaleBar";
 import { useMapLibre } from "./useMapLibre";
@@ -103,6 +104,7 @@ export function MapCanvas() {
 
       <TileOverlay map={map} ready={status === "ready"} />
       <TopicOverlays map={map} ready={status === "ready"} />
+      <MeasureOverlay map={map} ready={status === "ready"} />
 
       {/* Interactive Split Curtain when Before / After Comparison is active */}
       {comparisonEnabled ? (

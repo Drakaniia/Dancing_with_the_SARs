@@ -186,9 +186,12 @@ export function useMapLibre(containerRef: RefObject<HTMLElement | null>): UseMap
       const { lng, lat } = event.lngLat;
       const activeTool = useUiStore.getState().activeTool;
       if (activeTool === "measure") {
+        // While measuring, a click only places a point (it does not move the inspected spot).
         useUiStore.getState().addMeasurePoint([lng, lat]);
+        return;
       }
       void useSelectionStore.getState().inspectCoordinate(lng, lat);
+
     };
 
     instance.on("load", handleLoad);
