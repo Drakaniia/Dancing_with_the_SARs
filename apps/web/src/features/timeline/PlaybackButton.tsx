@@ -1,5 +1,5 @@
 import { Pause, Play } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, m as motion, useReducedMotion } from "motion/react";
 import { DUR_FAST, EASE_OUT, REDUCED_MOTION } from "@/styles/tokens";
 
 export type PlaybackButtonSize = "sm" | "md";
@@ -38,9 +38,7 @@ export function PlaybackButton({
       disabled={disabled}
       onClick={onToggle}
       whileTap={disabled || reducedMotion ? undefined : { scale: 0.94 }}
-      transition={
-        reducedMotion ? REDUCED_MOTION : { duration: DUR_FAST, ease: EASE_OUT }
-      }
+      transition={reducedMotion ? REDUCED_MOTION : { duration: DUR_FAST, ease: EASE_OUT }}
       className={`relative flex shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)] text-[var(--color-on-accent)] ${SIZE_CLASS[size]} transition-[filter] duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)] disabled:pointer-events-none disabled:opacity-40`}
     >
       <AnimatePresence initial={false}>
@@ -49,12 +47,9 @@ export function PlaybackButton({
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
-          transition={
-            reducedMotion
-              ? REDUCED_MOTION
-              : { duration: DUR_FAST, ease: EASE_OUT }
-          }
-          className="flex"
+          transition={reducedMotion ? REDUCED_MOTION : { duration: DUR_FAST, ease: EASE_OUT }}
+          // Stacked: while one icon fades out and the other in, both must share the same spot.
+          className="absolute inset-0 flex items-center justify-center"
         >
           {playing ? (
             <Pause aria-hidden="true" size={16} strokeWidth={1.5} />
