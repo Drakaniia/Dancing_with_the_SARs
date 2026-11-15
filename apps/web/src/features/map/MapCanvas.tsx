@@ -2,6 +2,7 @@ import { GripVertical, Ruler, X } from "lucide-react";
 import { useRef } from "react";
 import { formatCoords } from "@/features/inspector/LocationInfoPanel";
 import { AnimationBar } from "@/features/timeline/AnimationBar";
+import { formatPeriod } from "@/shared/utils/dates";
 import { resolveManifestEntry, useDatasetStore } from "@/stores/datasetStore";
 import { useActiveLayer } from "@/stores/layerStore";
 import { useSelectionStore } from "@/stores/selectionStore";
@@ -124,14 +125,14 @@ export function MapCanvas() {
               {comparisonMode === "split" ? "Before" : "Baseline"}:
             </span>
             <span className="font-display tabular-nums">
-              {comparisonDate ?? "2026-09"}
+              {formatPeriod(comparisonDate ?? "2026-09")}
             </span>
             <span className="text-[var(--color-text-muted)]">vs</span>
             <span className="font-medium text-[var(--color-accent-cyan)]">
               Current:
             </span>
             <span className="font-display tabular-nums">
-              {resolvedPeriod ?? currentDate}
+              {formatPeriod(resolvedPeriod ?? currentDate)}
             </span>
           </div>
         </div>
@@ -148,7 +149,7 @@ export function MapCanvas() {
                 Showing nearest period for{" "}
                 <strong className="font-medium">{active.name}</strong>:{" "}
                 <span className="font-display tabular-nums">
-                  {resolvedPeriod}
+                  {formatPeriod(resolvedPeriod)}
                 </span>
               </span>
             </div>

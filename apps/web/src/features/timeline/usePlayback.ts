@@ -1,11 +1,15 @@
 import { create } from "zustand";
 import { useDatasetStore } from "@/stores/datasetStore";
+import { framePendingFor, isFramePending } from "./frameLoading";
 import { getTimelineSteps, stepIndexFor } from "./timelineSteps";
 
 export const PLAYBACK_SPEEDS = [0.5, 1, 2, 4] as const;
 export type PlaybackSpeed = (typeof PLAYBACK_SPEEDS)[number];
 
-const BASE_STEP_MS = 700;
+/** Time each date stays on screen at 1× once it has loaded. */
+export const BASE_STEP_MS = 900;
+/** Longest the loop waits for a slow frame before moving on anyway. */
+export const MAX_FRAME_WAIT_MS = 6000;
 
 export function nextDate(
   dates: string[],
@@ -30,11 +34,13 @@ function tick(now: number): void {
 
   const { playing, speed } = usePlaybackStore.getState();
   if (!playing || now - lastStep < BASE_STEP_MS / speed) return;
+  // Hold the date until its map has finished drawing (or it is clearly stuck).
+  if (isFramePending() && framePendingFor() < MAX_FRAME_WAIT_MS) return;
   lastStep = now;
 
   const { currentDate, setCurrentDate } = useDatasetStore.getState();
   const steps = getTimelineSteps();
-  if (steps.length === 0) return;
+  if (steps.length < 2) return;
   const here = steps[stepIndexFor(steps, currentDate)];
   const next = nextDate(steps, here);
   if (next) setCurrentDate(next);

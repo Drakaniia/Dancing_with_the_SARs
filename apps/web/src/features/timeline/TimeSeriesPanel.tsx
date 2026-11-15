@@ -3,7 +3,11 @@ import { useRef } from "react";
 import { TIME_SERIES } from "@/fixtures/sample-dashboard";
 import { IconButton } from "@/shared/ui/IconButton";
 import { Slider } from "@/shared/ui/Slider";
-import { isForecastPeriod, resolvePeriod } from "@/shared/utils/dates";
+import {
+  formatPeriod,
+  isForecastPeriod,
+  resolvePeriod,
+} from "@/shared/utils/dates";
 import { useDatasetStore } from "@/stores/datasetStore";
 import { useActiveLayer } from "@/stores/layerStore";
 import { PlaybackButton } from "./PlaybackButton";
@@ -71,7 +75,11 @@ export function TimeSeriesPanel() {
       </div>
 
       <div className="flex items-center gap-2">
-        <PlaybackButton playing={playing} onToggle={toggle} />
+        <PlaybackButton
+          playing={playing}
+          onToggle={toggle}
+          disabled={steps.length < 2}
+        />
         <IconButton
           label="Previous date"
           variant="ghost"
@@ -95,7 +103,7 @@ export function TimeSeriesPanel() {
               if (wasPlayingRef.current) play();
             }}
             aria-label="Timeline position"
-            ariaValueText={currentDate ?? undefined}
+            ariaValueText={currentDate ? formatPeriod(currentDate) : undefined}
           />
         </div>
         <IconButton
@@ -121,12 +129,12 @@ export function TimeSeriesPanel() {
           )}
           {!snap.exact && snap.resolved ? (
             <span className="font-display text-[11px] text-[var(--color-warning)] tabular-nums">
-              snapped: {snap.resolved}
+              snapped: {formatPeriod(snap.resolved)}
             </span>
           ) : null}
         </div>
         <p className="font-display text-caption font-medium text-[var(--color-text)] tabular-nums">
-          {currentDate}
+          {formatPeriod(currentDate)}
         </p>
       </div>
     </div>

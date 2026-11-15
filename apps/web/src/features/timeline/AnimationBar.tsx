@@ -1,7 +1,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Slider } from "@/shared/ui/Slider";
-import { isForecastPeriod } from "@/shared/utils/dates";
+import { formatPeriod, isForecastPeriod } from "@/shared/utils/dates";
 import { useDatasetStore } from "@/stores/datasetStore";
 import { DUR_MED, EASE_OUT, REDUCED_MOTION } from "@/styles/tokens";
 import { PlaybackButton } from "./PlaybackButton";
@@ -10,7 +10,7 @@ import { usePlayback } from "./usePlayback";
 
 const IDLE_MS = 3000;
 const IDLE_OPACITY = 0.55;
-const MAX_VISIBLE_TICKS = 9;
+const MAX_VISIBLE_TICKS = 6;
 
 export function AnimationBar() {
   const dates = useTimelineSteps();
@@ -41,6 +41,12 @@ export function AnimationBar() {
   }, []);
 
   const lastIndex = Math.max(dates.length - 1, 0);
+  const canPlay = dates.length > 1;
+
+  // A map with one date has nothing to play: stop rather than spin on the same frame.
+  useEffect(() => {
+    if (!canPlay && playing) pause();
+  }, [canPlay, playing, pause]);
   const index = stepIndexFor(dates, currentDate);
   const shownDate = dates[index] ?? currentDate;
 
@@ -70,7 +76,20 @@ export function AnimationBar() {
         }
         className="glass pointer-events-auto flex h-14 w-full max-w-2xl items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--color-chrome-border)] px-4 shadow-[var(--shadow-2)]"
       >
-        <PlaybackButton playing={playing} onToggle={toggle} size="md" />
+        <PlaybackButton
+          playing={playing}
+          onToggle={toggle}
+          size="md"
+          disabled={!canPlay}
+        />
+
+        <p
+          className="w-32 shrink-0 text-center font-display text-[13px] leading-tight font-semibold text-[var(--color-text)]"
+          aria-live="polite"
+          title={canPlay ? undefined : "This map has one date"}
+        >
+          {formatPeriod(shownDate)}
+        </p>
 
         <div className="min-w-0 flex-1">
           <Slider
@@ -87,7 +106,7 @@ export function AnimationBar() {
               if (wasPlayingRef.current) play();
             }}
             aria-label="Time series position"
-            ariaValueText={shownDate ?? undefined}
+            ariaValueText={shownDate ? formatPeriod(shownDate) : undefined}
           />
 
           <div className="flex justify-between pt-1 font-display text-[11px] tabular-nums">
@@ -107,7 +126,7 @@ export function AnimationBar() {
                         : "text-[var(--color-text-secondary)] hover:text-[var(--color-text)]"
                   }`}
                 >
-                  {date.split(" (vs ")[0]}
+                  {formatPeriod(date, "short")}
                 </button>
               );
             })}

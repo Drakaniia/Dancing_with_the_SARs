@@ -10,6 +10,7 @@ import {
 import { type ReactNode, useState } from "react";
 import { ChangeTypeList } from "@/features/change-types/ChangeTypeList";
 import type { LayerConfig } from "@/shared/types/layer";
+import { formatPeriod } from "@/shared/utils/dates";
 import { resolveManifestEntry, useDatasetStore } from "@/stores/datasetStore";
 import { useLayerStore } from "@/stores/layerStore";
 import { useTopicStore } from "@/stores/topicStore";
@@ -21,6 +22,7 @@ import {
   type TopicId,
   type TopicView,
   type ViewOption,
+  frameIndexFor,
 } from "./topicsConfig";
 
 const TOPIC_ICONS: Record<TopicId, LucideIcon> = {
@@ -223,7 +225,7 @@ function periodsFor(option: ViewOption, layer?: LayerConfig): string[] {
  * available under "All maps".
  */
 export function TopicsPanel() {
-  const { topicId, viewId, option, frame } = useTopicStore();
+  const { topicId, viewId, option } = useTopicStore();
   const selectTopic = useTopicStore((s) => s.selectTopic);
   const selectView = useTopicStore((s) => s.selectView);
   const selectOption = useTopicStore((s) => s.selectOption);
@@ -242,7 +244,7 @@ export function TopicsPanel() {
   const periods = periodsFor(opt, layer);
   const activePeriod =
     opt.kind === "images"
-      ? (opt.frames[frame] ?? opt.frames[0])?.label
+      ? opt.frames[frameIndexFor(opt.frames, currentDate)]?.label
       : (resolveManifestEntry(manifest, opt.layerId, currentDate)
           .resolvedPeriod ?? periods[periods.length - 1]);
 
@@ -349,7 +351,7 @@ export function TopicsPanel() {
                     period === activePeriod ? pillOn : pillOff
                   }`}
                 >
-                  {period}
+                  {formatPeriod(period, "short")}
                 </button>
               ))}
             </div>

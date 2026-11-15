@@ -1,7 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { CHANGE_TYPES } from "@/fixtures/sample-dashboard";
 import { gradientFor, gradientFromRamp } from "@/shared/utils/colorScales";
-import { resolvePeriod } from "@/shared/utils/dates";
+import { formatPeriod, resolvePeriod } from "@/shared/utils/dates";
 import { useDatasetStore } from "@/stores/datasetStore";
 import { useActiveLayer } from "@/stores/layerStore";
 import { DUR_MED, EASE_OUT, REDUCED_MOTION } from "@/styles/tokens";
@@ -72,7 +72,7 @@ export function CurrentViewCard() {
 
         <dl className="flex min-w-0 flex-1 flex-col gap-1">
           <MetaRow label="Layer" value={layerLabel} />
-          <MetaRow label="Date" value={currentDate ?? "static"} />
+          <MetaRow label="Date" value={formatPeriod(currentDate ?? "static")} />
           <MetaRow
             label="Opacity"
             value={coveragePct ? `${opacity}% · ${coveragePct}` : `${opacity}%`}
@@ -84,7 +84,7 @@ export function CurrentViewCard() {
         <div className="rounded-[var(--radius-sm)] bg-[var(--color-fill-2)] px-2 py-1 text-caption text-[var(--color-warning)]">
           Nearest available period for this layer:{" "}
           <span className="font-display font-medium tabular-nums">
-            {snap.resolved}
+            {formatPeriod(snap.resolved)}
           </span>
         </div>
       ) : null}
