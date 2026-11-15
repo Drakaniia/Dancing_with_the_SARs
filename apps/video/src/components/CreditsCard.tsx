@@ -30,7 +30,7 @@ export const CreditsCard = () => {
         <div style={{...rise(5), fontFamily: SANS, fontSize: 84, fontWeight: 600, color: C.ink, letterSpacing: '-0.02em', marginTop: 14}}>
           Dancing with the SARs
         </div>
-        <div style={{...rise(8), width: 120, height: 2, background: C.ink, opacity: 0.25, margin: '44px 0 36px'}} />
+        <div style={{...rise(8), width: 120, height: 2, background: C.ink, opacity: rise(8).opacity * 0.25, margin: '44px 0 36px'}} />
         <div style={{...rise(10), fontFamily: MONO, fontSize: 22, letterSpacing: '0.16em', color: C.ink700}}>
           THE CARTOGRAPHERS · MANILA, PHILIPPINES
         </div>

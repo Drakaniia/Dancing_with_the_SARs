@@ -41,7 +41,7 @@ export const TitleCard = () => {
         <div style={{...rise(10), fontFamily: SANS, fontSize: 36, color: C.terracotta, marginTop: 14}}>
           Seeing surface change, even through the clouds.
         </div>
-        <div style={{...rise(15), width: 120, height: 2, background: C.ink, opacity: 0.25, margin: '40px 0 30px'}} />
+        <div style={{...rise(15), width: 120, height: 2, background: C.ink, opacity: rise(15).opacity * 0.25, margin: '40px 0 30px'}} />
         <div style={{...rise(18), fontFamily: MONO, fontSize: 22, letterSpacing: '0.16em', color: C.ink700}}>
           THE CARTOGRAPHERS · NASA SPACE APPS CHALLENGE 2026
         </div>
