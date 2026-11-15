@@ -15,7 +15,14 @@ export interface CheckboxProps {
   className?: string;
 }
 
-/** 18x18 box, native input visually hidden, full-row click target. */
+/**
+ * 18x18 box, native input visually hidden, full-row click target.
+ *
+ * The label is `relative` so the absolutely positioned (sr-only) input stays inside it. Without
+ * that the input's containing block is the page, so it sits outside the rail's scroll box: it
+ * stretches the document, and focusing it on click scrolls the whole app up (top bar and rails
+ * off-screen, with no way to scroll back since the page hides its scrollbars).
+ */
 export function Checkbox({
   checked,
   onChange,
@@ -32,7 +39,7 @@ export function Checkbox({
   return (
     <label
       htmlFor={checkboxId}
-      className={`group inline-flex items-center gap-2 text-body text-[var(--color-text)] ${disabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"} ${className ?? ""}`}
+      className={`group relative inline-flex items-center gap-2 text-body text-[var(--color-text)] ${disabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"} ${className ?? ""}`}
     >
       <input
         id={checkboxId}

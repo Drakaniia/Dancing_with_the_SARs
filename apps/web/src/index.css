@@ -89,6 +89,16 @@
     overscroll-behavior: none;
   }
 
+  /*
+   * `overflow: hidden` still lets focus and scrollIntoView scroll the page. The root is the
+   * containing block for anything absolutely positioned below it and clips instead of
+   * scrolling, so a stray element can never push the app shell off-screen.
+   */
+  #root {
+    position: relative;
+    overflow: clip;
+  }
+
   body {
     background-color: var(--color-bg);
     color: var(--color-text);

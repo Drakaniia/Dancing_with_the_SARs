@@ -72,6 +72,16 @@ describe("IconButton", () => {
 });
 
 describe("Checkbox", () => {
+  it("keeps its visually hidden input inside the label (no page scroll on focus)", () => {
+    render(<Checkbox checked={false} onChange={() => {}} label="Layer" />);
+
+    const input = screen.getByRole("checkbox", { name: "Layer" });
+    // The sr-only input is absolutely positioned; a positioned label is its containing block,
+    // so focusing it can only scroll the rail it sits in, never the page.
+    expect(input).toHaveClass("sr-only");
+    expect(input.closest("label")).toHaveClass("relative");
+  });
+
   it("toggles from the keyboard", async () => {
     const onChange = vi.fn();
     render(
