@@ -3,6 +3,8 @@ dist
 apps/desktop/src-tauri/target
 *.pdf
 *.log
+# TypeScript incremental build cache (tsc -b)
+*.tsbuildinfo
 
 # pinned upstream data release (scripts/tiles/fetch_data.py) and pipeline cache
 /data/
