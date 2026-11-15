@@ -1,3 +1,4 @@
+import { domAnimation, LazyMotion } from "motion/react";
 import { useEffect } from "react";
 import { AboutModal } from "@/features/about/AboutModal";
 import { MapCanvas } from "@/features/map/MapCanvas";
@@ -15,16 +16,11 @@ const COLLAPSED_W = "var(--rail-collapsed-w)";
 const RIGHT_W = "var(--rail-right-w)";
 
 function leftWidth(railMode: RailMode): string {
-  return railMode === "wide"
-    ? "var(--rail-left-w-wide)"
-    : "var(--rail-left-w-default)";
+  return railMode === "wide" ? "var(--rail-left-w-wide)" : "var(--rail-left-w-default)";
 }
 
 /** The map is always the only flexible track; inline rails are fixed or collapsed strips. */
-function gridColumns(
-  railMode: RailMode,
-  expanded: Record<RailSide, boolean>,
-): string {
+function gridColumns(railMode: RailMode, expanded: Record<RailSide, boolean>): string {
   if (railMode === "compact") return "1fr";
   const left = expanded.left ? leftWidth(railMode) : COLLAPSED_W;
   if (railMode === "default") return `${left} 1fr`;
@@ -38,9 +34,7 @@ export function AppShell() {
   const openRails = useUiStore((state) => state.openRails);
   const expandedRails = useUiStore((state) => state.expandedRails);
   const toggleRail = useUiStore((state) => state.toggleRail);
-  const loadManifestAndTables = useDatasetStore(
-    (state) => state.loadManifestAndTables,
-  );
+  const loadManifestAndTables = useDatasetStore((state) => state.loadManifestAndTables);
 
   useEffect(() => {
     void loadManifestAndTables();
@@ -81,10 +75,7 @@ export function AppShell() {
         onClose={() => toggleRail("right")}
         label="Location and layer information"
       >
-        <RightRail
-          presentation="sheet"
-          onClose={() => toggleRail("right")}
-        />
+        <RightRail presentation="sheet" onClose={() => toggleRail("right")} />
       </RailSheet>
 
       <ProvenanceModal />
@@ -95,8 +86,13 @@ export function AppShell() {
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <AppShell />
-    </ThemeProvider>
+    // Components use `m` (imported as `motion`) with only the DOM animation features loaded:
+    // nothing animates layout or drags, so the layout-projection and drag code stays out of
+    // the bundle.
+    <LazyMotion features={domAnimation}>
+      <ThemeProvider>
+        <AppShell />
+      </ThemeProvider>
+    </LazyMotion>
   );
 }

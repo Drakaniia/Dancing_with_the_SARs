@@ -1,11 +1,6 @@
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, m as motion, useReducedMotion } from "motion/react";
 import { type ReactNode, useEffect, useRef } from "react";
-import {
-  DUR_MED,
-  EASE_OUT,
-  REDUCED_MOTION,
-  SPRING_DRAWER,
-} from "@/styles/tokens";
+import { DUR_MED, EASE_OUT, REDUCED_MOTION, SPRING_DRAWER } from "@/styles/tokens";
 
 export type RailSide = "left" | "right";
 
@@ -34,13 +29,7 @@ const SIDE_CLASS: Record<RailSide, string> = {
  *
  * Reduced motion swaps the slide for an opacity cross-fade — no translate, no spring.
  */
-export function RailSheet({
-  side,
-  open,
-  onClose,
-  label,
-  children,
-}: RailSheetProps) {
+export function RailSheet({ side, open, onClose, label, children }: RailSheetProps) {
   const reducedMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -50,9 +39,7 @@ export function RailSheet({
     if (!open) return;
 
     returnFocusRef.current =
-      document.activeElement instanceof HTMLElement
-        ? document.activeElement
-        : null;
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
     sheetRef.current?.querySelector<HTMLElement>(FOCUSABLE)?.focus();
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -65,9 +52,7 @@ export function RailSheet({
 
       const container = containerRef.current;
       if (!container) return;
-      const focusable = Array.from(
-        container.querySelectorAll<HTMLElement>(FOCUSABLE),
-      );
+      const focusable = Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE));
       if (focusable.length === 0) return;
 
       const first = focusable[0];
@@ -93,21 +78,14 @@ export function RailSheet({
   return (
     <AnimatePresence>
       {open ? (
-        <div
-          ref={containerRef}
-          className="fixed inset-x-0 top-14 bottom-0 z-[var(--z-rails)]"
-        >
+        <div ref={containerRef} className="fixed inset-x-0 top-14 bottom-0 z-[var(--z-rails)]">
           <motion.div
             aria-hidden="true"
             onClick={onClose}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={
-              reducedMotion
-                ? REDUCED_MOTION
-                : { duration: DUR_MED, ease: EASE_OUT }
-            }
+            transition={reducedMotion ? REDUCED_MOTION : { duration: DUR_MED, ease: EASE_OUT }}
             className="absolute inset-0 bg-[var(--color-scrim)]"
           />
           <motion.div

@@ -1,13 +1,10 @@
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, m as motion, useReducedMotion } from "motion/react";
 import { LOCATION_INFO } from "@/fixtures/sample-dashboard";
 import type { SelectionPayload } from "@/shared/types/selection";
 import { useSelectionStore } from "@/stores/selectionStore";
 import { REDUCED_MOTION } from "@/styles/tokens";
 
-export function formatCoords({
-  lat,
-  lng,
-}: Pick<SelectionPayload, "lat" | "lng">): string {
+export function formatCoords({ lat, lng }: Pick<SelectionPayload, "lat" | "lng">): string {
   const latitude = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? "N" : "S"}`;
   const longitude = `${Math.abs(lng).toFixed(4)}° ${lng >= 0 ? "E" : "W"}`;
   return `${latitude}, ${longitude}`;
@@ -28,12 +25,8 @@ const TONE_CLASS: Record<NonNullable<MetricRowProps["tone"]>, string> = {
 function MetricRow({ label, value, tone = "default" }: MetricRowProps) {
   return (
     <div className="flex items-baseline justify-between gap-3">
-      <dt className="truncate text-label text-[var(--color-text-secondary)]">
-        {label}
-      </dt>
-      <dd
-        className={`shrink-0 font-display text-label tabular-nums ${TONE_CLASS[tone]}`}
-      >
+      <dt className="truncate text-label text-[var(--color-text-secondary)]">{label}</dt>
+      <dd className={`shrink-0 font-display text-label tabular-nums ${TONE_CLASS[tone]}`}>
         {value}
       </dd>
     </div>
@@ -79,11 +72,7 @@ export function LocationInfoPanel() {
                 tone="danger"
               />
             ) : null}
-            <MetricRow
-              label="Confidence"
-              value={selected.confidence ?? "Low"}
-              tone="success"
-            />
+            <MetricRow label="Confidence" value={selected.confidence ?? "Low"} tone="success" />
             <MetricRow label="Data Source" value={LOCATION_INFO.dataSource} />
           </dl>
 
@@ -118,9 +107,7 @@ export function LocationInfoPanel() {
                     <div className="flex items-center justify-between text-[11px] text-[var(--color-text-muted)]">
                       <span>Period: {sample.period}</span>
                       {sample.caveats[0] ? (
-                        <span className="max-w-[11rem] truncate">
-                          {sample.caveats[0]}
-                        </span>
+                        <span className="max-w-[11rem] truncate">{sample.caveats[0]}</span>
                       ) : null}
                     </div>
                   </li>

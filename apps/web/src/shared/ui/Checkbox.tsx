@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { m as motion, useReducedMotion } from "motion/react";
 import { type ReactNode, useId } from "react";
 import { DUR_FAST, REDUCED_MOTION, SPRING_UI } from "@/styles/tokens";
 
@@ -53,9 +53,7 @@ export function Checkbox({
         <motion.span
           initial={false}
           animate={{ opacity: checked ? 1 : 0, scale: checked ? 1 : 0.6 }}
-          transition={
-            reducedMotion ? REDUCED_MOTION : { duration: DUR_FAST * 1.25 }
-          }
+          transition={reducedMotion ? REDUCED_MOTION : { duration: DUR_FAST * 1.25 }}
           className="flex items-center justify-center text-[var(--color-on-accent)]"
         >
           <Check size={12} strokeWidth={1.5} />

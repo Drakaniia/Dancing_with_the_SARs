@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, m as motion, useReducedMotion } from "motion/react";
 import { CHANGE_TYPES, LEGEND } from "@/fixtures/sample-dashboard";
 import { gradientFor, gradientFromRamp } from "@/shared/utils/colorScales";
 import { useActiveLayer } from "@/stores/layerStore";
@@ -52,9 +52,7 @@ export function LegendPanel() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={
-          reducedMotion ? REDUCED_MOTION : { duration: DUR_MED, ease: EASE_OUT }
-        }
+        transition={reducedMotion ? REDUCED_MOTION : { duration: DUR_MED, ease: EASE_OUT }}
         className="flex flex-col gap-2"
       >
         <p className="text-label text-[var(--color-text)]">{title}</p>

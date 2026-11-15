@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { m as motion, useReducedMotion } from "motion/react";
 import { REDUCED_MOTION, SPRING_UI } from "@/styles/tokens";
 
 export interface ToolButtonProps {
@@ -13,12 +13,7 @@ export interface ToolButtonProps {
  * One tool: 20px icon over a caption. Active state is an accent tint with a 2px accent ring; press
  * feedback starts on pointer-down.
  */
-export function ToolButton({
-  icon: Icon,
-  label,
-  active = false,
-  onClick,
-}: ToolButtonProps) {
+export function ToolButton({ icon: Icon, label, active = false, onClick }: ToolButtonProps) {
   const reducedMotion = useReducedMotion();
 
   return (

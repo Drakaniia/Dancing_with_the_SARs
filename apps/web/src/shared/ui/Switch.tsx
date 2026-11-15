@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from "motion/react";
+import { m as motion, useReducedMotion } from "motion/react";
 import { useId, useState } from "react";
 import { REDUCED_MOTION, SPRING_UI, SWITCH_TRAVEL_PX } from "@/styles/tokens";
 
@@ -17,14 +17,7 @@ export interface SwitchProps {
  * Press feedback starts on pointer-down; the knob slides on the UI spring and can be reversed
  * mid-flight because Motion animates from the live value.
  */
-export function Switch({
-  checked,
-  onChange,
-  label,
-  disabled,
-  id,
-  className,
-}: SwitchProps) {
+export function Switch({ checked, onChange, label, disabled, id, className }: SwitchProps) {
   const reducedMotion = useReducedMotion();
   const generatedId = useId();
   const switchId = id ?? generatedId;
@@ -57,9 +50,7 @@ export function Switch({
           x: checked ? SWITCH_TRAVEL_PX : 0,
           scale: pressed ? 0.96 : 1,
         }}
-        transition={
-          reducedMotion ? { ...REDUCED_MOTION, duration: 0 } : SPRING_UI
-        }
+        transition={reducedMotion ? { ...REDUCED_MOTION, duration: 0 } : SPRING_UI}
         className="pointer-events-none absolute top-[var(--switch-inset)] left-[var(--switch-inset)] h-[var(--switch-knob)] w-[var(--switch-knob)] rounded-full bg-[var(--color-on-accent)] shadow-[var(--shadow-1)]"
       />
     </button>

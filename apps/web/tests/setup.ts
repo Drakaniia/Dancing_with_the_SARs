@@ -1,6 +1,13 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
-import { afterEach } from "vitest";
+import { afterEach, vi } from "vitest";
+
+// The app renders `m` components under <LazyMotion> (App.tsx). Tests mount components on their
+// own, without that provider, so hand them the fully featured `motion` component instead.
+vi.mock("motion/react", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("motion/react")>();
+  return { ...actual, m: actual.motion };
+});
 
 // Vitest runs without globals, so Testing Library's auto-cleanup never registers.
 afterEach(() => {
@@ -19,8 +26,7 @@ if (typeof globalThis.ResizeObserver !== "function") {
     unobserve(): void {}
     disconnect(): void {}
   }
-  globalThis.ResizeObserver =
-    ResizeObserverStub as unknown as typeof ResizeObserver;
+  globalThis.ResizeObserver = ResizeObserverStub as unknown as typeof ResizeObserver;
 }
 
 if (typeof globalThis.PointerEvent !== "function") {
@@ -42,19 +48,13 @@ if (typeof globalThis.PointerEvent !== "function") {
 
 if (typeof Element.prototype.setPointerCapture !== "function") {
   const captured = new WeakSet<Element>();
-  Element.prototype.setPointerCapture = function setPointerCapture(
-    this: Element,
-  ) {
+  Element.prototype.setPointerCapture = function setPointerCapture(this: Element) {
     captured.add(this);
   };
-  Element.prototype.releasePointerCapture = function releasePointerCapture(
-    this: Element,
-  ) {
+  Element.prototype.releasePointerCapture = function releasePointerCapture(this: Element) {
     captured.delete(this);
   };
-  Element.prototype.hasPointerCapture = function hasPointerCapture(
-    this: Element,
-  ) {
+  Element.prototype.hasPointerCapture = function hasPointerCapture(this: Element) {
     return captured.has(this);
   };
 }

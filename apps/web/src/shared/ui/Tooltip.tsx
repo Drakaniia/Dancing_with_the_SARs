@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, m as motion, useReducedMotion } from "motion/react";
 import {
   cloneElement,
   type FocusEventHandler,
@@ -118,11 +118,7 @@ export function Tooltip({
             initial={{ opacity: 0, ...nudge, scale: 0.98 }}
             animate={{ opacity: 1, ...(vertical ? { y: 0 } : { x: 0 }), scale: 1 }}
             exit={{ opacity: 0, ...nudge, scale: 0.98 }}
-            transition={
-              reducedMotion
-                ? REDUCED_MOTION
-                : { duration: DUR_FAST, ease: EASE_OUT }
-            }
+            transition={reducedMotion ? REDUCED_MOTION : { duration: DUR_FAST, ease: EASE_OUT }}
             style={{
               ...(vertical ? { x: "-50%" } : { y: "-50%" }),
               transformOrigin: ORIGIN[side],

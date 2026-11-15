@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, m as motion, useReducedMotion } from "motion/react";
 import { CHANGE_TYPES } from "@/fixtures/sample-dashboard";
 import { gradientFor, gradientFromRamp } from "@/shared/utils/colorScales";
 import { formatPeriod, resolvePeriod } from "@/shared/utils/dates";
@@ -12,9 +12,7 @@ const FALLBACK_THUMBNAIL =
 function MetaRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-baseline justify-between gap-3">
-      <dt className="text-caption text-[var(--color-text-secondary)]">
-        {label}
-      </dt>
+      <dt className="text-caption text-[var(--color-text-secondary)]">{label}</dt>
       <dd className="truncate font-display text-label text-[var(--color-text)] tabular-nums">
         {value}
       </dd>
@@ -44,9 +42,7 @@ export function CurrentViewCard() {
 
   const snap = resolvePeriod(active?.periods, currentDate);
   const coveragePct =
-    active?.coverage !== undefined
-      ? `${Math.round(active.coverage * 100)}% AOI`
-      : null;
+    active?.coverage !== undefined ? `${Math.round(active.coverage * 100)}% AOI` : null;
 
   return (
     <div className="flex flex-col gap-2">
@@ -59,11 +55,7 @@ export function CurrentViewCard() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={
-                reducedMotion
-                  ? REDUCED_MOTION
-                  : { duration: DUR_MED, ease: EASE_OUT }
-              }
+              transition={reducedMotion ? REDUCED_MOTION : { duration: DUR_MED, ease: EASE_OUT }}
               className="absolute inset-0"
               style={{ background: thumbnail }}
             />

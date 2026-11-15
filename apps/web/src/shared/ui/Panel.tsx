@@ -1,13 +1,8 @@
 import { ChevronDown } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { m as motion, useReducedMotion } from "motion/react";
 import { type ReactNode, useEffect, useId, useRef } from "react";
 import { type PanelId, useUiStore } from "@/stores/uiStore";
-import {
-  DUR_FAST,
-  EASE_OUT,
-  REDUCED_MOTION,
-  SPRING_DRAWER,
-} from "@/styles/tokens";
+import { DUR_FAST, EASE_OUT, REDUCED_MOTION, SPRING_DRAWER } from "@/styles/tokens";
 
 export type PanelVariant = "panel" | "glass";
 
@@ -68,10 +63,7 @@ export function Panel({
         className="flex h-[var(--panel-header-h)] w-full items-center gap-2 bg-[var(--color-panel-header)] px-3 text-panel-header text-[var(--color-text-secondary)] uppercase transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] hover:bg-[var(--color-fill-2)] hover:text-[var(--color-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)]"
       >
         {icon ? (
-          <span
-            aria-hidden="true"
-            className="flex text-[var(--color-accent-cyan)]"
-          >
+          <span aria-hidden="true" className="flex text-[var(--color-accent-cyan)]">
             {icon}
           </span>
         ) : null}
@@ -82,9 +74,7 @@ export function Panel({
           aria-hidden="true"
           initial={false}
           animate={{ rotate: open ? 180 : 0 }}
-          transition={
-            reducedMotion ? { ...REDUCED_MOTION, duration: 0 } : SPRING_DRAWER
-          }
+          transition={reducedMotion ? { ...REDUCED_MOTION, duration: 0 } : SPRING_DRAWER}
           className="flex text-[var(--color-text-muted)]"
         >
           <ChevronDown size={16} strokeWidth={1.5} />
@@ -103,9 +93,7 @@ export function Panel({
         transition={{
           height: reducedMotion ? REDUCED_MOTION : SPRING_DRAWER,
           // Content fades out ahead of the height so the mask reads, never a jump.
-          opacity: reducedMotion
-            ? REDUCED_MOTION
-            : { duration: DUR_FAST, ease: EASE_OUT },
+          opacity: reducedMotion ? REDUCED_MOTION : { duration: DUR_FAST, ease: EASE_OUT },
         }}
         className="overflow-hidden"
       >

@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, m as motion, useReducedMotion } from "motion/react";
 import {
   cloneElement,
   type ReactElement,
@@ -66,11 +66,7 @@ export function Popover({
     if (!open) return;
     const onPointerDown = (event: globalThis.PointerEvent) => {
       const target = event.target as Node;
-      if (
-        panelRef.current?.contains(target) ||
-        wrapperRef.current?.contains(target)
-      )
-        return;
+      if (panelRef.current?.contains(target) || wrapperRef.current?.contains(target)) return;
       onOpenChange(false);
     };
     const onKeyDown = (event: KeyboardEvent) => {
@@ -99,8 +95,7 @@ export function Popover({
   }, [open]);
 
   const offset = reducedMotion ? 0 : side === "bottom" ? -4 : 4;
-  const alignClass =
-    align === "start" ? "left-0" : align === "end" ? "right-0" : "left-1/2";
+  const alignClass = align === "start" ? "left-0" : align === "end" ? "right-0" : "left-1/2";
 
   return (
     <span ref={wrapperRef} className="relative inline-flex">
@@ -123,11 +118,7 @@ export function Popover({
             initial={{ opacity: 0, y: offset, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: offset, scale: 0.98 }}
-            transition={
-              reducedMotion
-                ? REDUCED_MOTION
-                : { duration: DUR_MED, ease: EASE_OUT }
-            }
+            transition={reducedMotion ? REDUCED_MOTION : { duration: DUR_MED, ease: EASE_OUT }}
             style={{
               x: align === "center" ? "-50%" : 0,
               transformOrigin: `${side === "bottom" ? "top" : "bottom"} ${ORIGIN_X[align]}`,

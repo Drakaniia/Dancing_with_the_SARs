@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from "motion/react";
+import { m as motion, useReducedMotion } from "motion/react";
 import {
   type KeyboardEvent as ReactKeyboardEvent,
   useCallback,
@@ -66,10 +66,7 @@ export function SegmentedControl<Value extends string = string>({
   const select = (next: Value) => {
     if (next === value) return;
     onChange(next);
-    segmentRefs.current
-      .get(next)
-      ?.querySelector<HTMLInputElement>("input")
-      ?.focus();
+    segmentRefs.current.get(next)?.querySelector<HTMLInputElement>("input")?.focus();
   };
 
   // Native radios arrow between siblings in the browser; mirror it here so behaviour is identical
@@ -85,15 +82,13 @@ export function SegmentedControl<Value extends string = string>({
           : 0;
     if (step !== 0) {
       event.preventDefault();
-      const next =
-        options[Math.min(Math.max(index + step, 0), options.length - 1)];
+      const next = options[Math.min(Math.max(index + step, 0), options.length - 1)];
       if (next) select(next.value);
       return;
     }
     if (event.key === "Home" || event.key === "End") {
       event.preventDefault();
-      const next =
-        event.key === "Home" ? options[0] : options[options.length - 1];
+      const next = event.key === "Home" ? options[0] : options[options.length - 1];
       if (next) select(next.value);
     }
   };
