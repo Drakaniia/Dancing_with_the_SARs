@@ -19,6 +19,7 @@ import { useBookmarkStore } from "@/stores/bookmarkStore";
 import { useDatasetStore } from "@/stores/datasetStore";
 import { useActiveLayer } from "@/stores/layerStore";
 import { useSelectionStore } from "@/stores/selectionStore";
+import { useToastStore } from "@/stores/toastStore";
 import { useUiStore } from "@/stores/uiStore";
 
 export interface TopBarActionsProps {
@@ -36,6 +37,7 @@ export function TopBarActions({ className }: TopBarActionsProps) {
   const bookmarks = useBookmarkStore((state) => state.bookmarks);
   const addBookmark = useBookmarkStore((state) => state.addBookmark);
   const removeBookmark = useBookmarkStore((state) => state.removeBookmark);
+  const showToast = useToastStore((state) => state.showToast);
   const requestFlyTo = useUiStore((state) => state.requestFlyTo);
   const setProvenanceOpen = useUiStore((state) => state.setProvenanceOpen);
   const setAboutOpen = useUiStore((state) => state.setAboutOpen);
@@ -123,6 +125,7 @@ export function TopBarActions({ className }: TopBarActionsProps) {
                   center: [lng, lat],
                   zoom: 11,
                 });
+                showToast(`Bookmark saved: ${name}`);
               }}
               className="rounded-[var(--radius-sm)] bg-[var(--color-fill-3)] px-2 py-0.5 text-caption text-[var(--color-text)] hover:bg-[var(--color-fill-4)]"
             >

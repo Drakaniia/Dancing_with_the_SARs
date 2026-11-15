@@ -1,9 +1,11 @@
 import { Bookmark, Download, type LucideIcon, Pencil, Ruler } from "lucide-react";
+import { BookmarkList } from "@/features/bookmarks/BookmarkList";
 import { LOCATION_INFO, TOOLS, type ToolId } from "@/fixtures/sample-dashboard";
 import { useBookmarkStore } from "@/stores/bookmarkStore";
 import { useDatasetStore } from "@/stores/datasetStore";
 import { useActiveLayer } from "@/stores/layerStore";
 import { useSelectionStore } from "@/stores/selectionStore";
+import { useToastStore } from "@/stores/toastStore";
 import { useUiStore } from "@/stores/uiStore";
 import { ToolButton } from "./ToolButton";
 
@@ -18,6 +20,7 @@ export function ToolsPanel() {
   const activeTool = useUiStore((state) => state.activeTool);
   const setActiveTool = useUiStore((state) => state.setActiveTool);
   const revealInspector = useUiStore((state) => state.revealInspector);
+  const showToast = useToastStore((state) => state.showToast);
   const addBookmark = useBookmarkStore((state) => state.addBookmark);
   const selected = useSelectionStore((state) => state.selected);
   const activeLayer = useActiveLayer();
@@ -54,6 +57,7 @@ export function ToolsPanel() {
         center: [lng, lat],
         zoom: 11,
       });
+      showToast(`Bookmark saved: ${name}`);
       return;
     }
 
@@ -64,16 +68,19 @@ export function ToolsPanel() {
   };
 
   return (
-    <div className="grid grid-cols-4 gap-1.5">
-      {TOOLS.map((tool) => (
-        <ToolButton
-          key={tool.id}
-          icon={ICONS[tool.id]}
-          label={tool.label}
-          active={activeTool === tool.id}
-          onClick={() => run(tool.id)}
-        />
-      ))}
+    <div className="flex flex-col gap-3">
+      <div className="grid grid-cols-4 gap-1.5">
+        {TOOLS.map((tool) => (
+          <ToolButton
+            key={tool.id}
+            icon={ICONS[tool.id]}
+            label={tool.label}
+            active={activeTool === tool.id}
+            onClick={() => run(tool.id)}
+          />
+        ))}
+      </div>
+      <BookmarkList />
     </div>
   );
 }

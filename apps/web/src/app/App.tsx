@@ -8,6 +8,7 @@ import { RailSheet } from "@/features/shell/RailSheet";
 import { RightRail } from "@/features/shell/RightRail";
 import { useRailMode } from "@/features/shell/useRailMode";
 import { TopBar } from "@/features/topbar/TopBar";
+import { Toaster } from "@/shared/ui/Toaster";
 import { useDatasetStore } from "@/stores/datasetStore";
 import { type RailMode, type RailSide, useUiStore } from "@/stores/uiStore";
 import { ThemeProvider } from "./providers/ThemeProvider";
@@ -80,6 +81,7 @@ export function AppShell() {
 
       <ProvenanceModal />
       <AboutModal />
+      <Toaster />
     </div>
   );
 }
