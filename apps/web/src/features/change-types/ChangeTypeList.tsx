@@ -72,6 +72,10 @@ export function ChangeTypeList() {
     terrain: false,
   });
 
+  const [showExtras, setShowExtras] = useState<
+    Partial<Record<LayerFamily, boolean>>
+  >({});
+
   const manifestLayers = layers.filter((l) => l.kind === "manifest-layer");
   const legacyChangeLayers = layers.filter((l) => l.kind === "change-type");
 
@@ -98,10 +102,6 @@ export function ChangeTypeList() {
       </ul>
     );
   }
-
-  const [showExtras, setShowExtras] = useState<
-    Partial<Record<LayerFamily, boolean>>
-  >({});
 
   const toggleFamily = (family: LayerFamily) => {
     setExpandedFamilies((prev) => ({ ...prev, [family]: !prev[family] }));
