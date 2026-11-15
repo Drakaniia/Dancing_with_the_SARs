@@ -7,7 +7,8 @@ description: Click the map to read real pixel values, and use the Quick Stats ta
 
 ## Click to inspect
 
-Click anywhere on the map. The **Location Info** panel in the right rail then shows:
+Click anywhere on the map. The right rail opens (or slides in as a sheet on narrower windows)
+with the **Location Info** panel unfolded. It shows:
 
 - **Coordinates** to four decimals, for example `5.7760° N, 125.5013° E` (Malalan, Jose Abad Santos).
 - The **nearest place name** from the built-in gazetteer (`apps/web/src/features/search/locations.ts`).

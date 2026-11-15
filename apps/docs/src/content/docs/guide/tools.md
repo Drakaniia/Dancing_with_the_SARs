@@ -26,9 +26,9 @@ The **Tools** panel in the left rail has four buttons:
 
 | Tool         | Behaviour                                                                                                                                                                    |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Measure**  | Toggle on, then click two points. A badge over the map shows the great-circle (haversine) distance in km and m. A third click starts a new measurement, and **×** clears it. |
-| **Inspect**  | Toggle the inspect mode. Clicking the map inspects in every mode; see [Inspecting locations](/Dancing_with_the_SARs/guide/inspecting/).                                      |
-| **Bookmark** | Saves the last inspected point as a viewpoint at zoom 11.                                                                                                                    |
+| **Measure**  | Toggle on, then click two points. Each point gets a dot on the map, joined by a dashed line, and a badge shows the great-circle (haversine) distance in km and m. A third click starts a new measurement, and **×** clears it. While measuring, clicks do not inspect. |
+| **Inspect**  | Opens the inspector rail and shows a hint over the map. Clicking the map inspects whenever Measure is off; see [Inspecting locations](/Dancing_with_the_SARs/guide/inspecting/). |
+| **Bookmark** | Saves the last inspected point as a viewpoint at zoom 11, confirms with a **Bookmark saved** message, and adds it to the list under the tool buttons.                          |
 | **Export**   | Downloads `nisar-export-<period>.json` with the active layer, current period and selected point.                                                                             |
 
 ![The Tools panel with Measure active](../../../../../../docs/screenshots/tools-panel.png)
@@ -37,7 +37,10 @@ The **Tools** panel in the left rail has four buttons:
 
 ## Bookmarks
 
-Open the **Bookmarks** menu in the top bar:
+Saved bookmarks are listed under the buttons in the **Tools** panel. Click one to fly to it, or
+use the trash icon to remove it.
+
+The **Bookmarks** menu in the top bar shows the same list:
 
 - **+ Save Current** saves the selected point. With no selection, it saves a default view over
   Sarangani.
@@ -46,8 +49,8 @@ Open the **Bookmarks** menu in the top bar:
 
 ![The Bookmarks menu with a saved viewpoint and the + Save Current button](../../../../../../docs/screenshots/bookmarks-menu.png)
 
-In the desktop app, bookmarks persist through the Tauri store plugin. In the browser they stay in
-memory for the session.
+In the desktop app, bookmarks persist through the Tauri store plugin. In the browser they are kept
+in `localStorage`, so they survive a reload on the same device.
 
 ## Export snapshot
 

@@ -48,8 +48,9 @@ pixel sampling.
 
 ## Open work
 
-- **Comparison rendering:** draw the baseline period's tiles on the "before" side of the split
-  curtain. Today only the UI state and curtain exist. See [Comparison view](/Dancing_with_the_SARs/guide/comparison/).
+- **Comparison for picture maps:** the swipe draws the baseline period for tile layers; the
+  Explore panel's picture maps are still drawn on the main map only. See [Comparison view](/Dancing_with_the_SARs/guide/comparison/).
+
 - **Tile-error reporting:** hook MapLibre source `error` events into
   `datasetStore.recordTileError()` so the data status warning works.
 - **Faster sampling:** cache decoded bands across clicks, or decode only the block that contains
