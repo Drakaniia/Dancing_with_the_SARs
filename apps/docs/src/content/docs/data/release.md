@@ -100,5 +100,7 @@ CSV:
 - **Outlook scenario:** 12 months of rainfall normal/expected/p10/p90, EVI/NDVI/LST anomalies,
   and the share of land below normal greenness.
 - **MODIS monthly series:** 321 rows, 2000–2026.
-- **Epicentre:** 125.056 °E, 5.599 °N (USGS us7000srb1), offshore about 32 km south of Maasim,
-  8 Jun 2026 07:37 PHT (UTC+8). Depth 57 km (USGS) / 33 km (PHIVOLCS).
+- **Epicentre:** PHIVOLCS solution: Mw 7.8, 8 Jun 2026 07:37 PST (UTC+8), 5.57 °N 124.98 °E,
+  33 km deep, 32 km S 4° W of Maasim, Sarangani. The USGS solution (us7000srb1: 125.056 °E,
+  5.599 °N, 57 km deep) lies about 9 km to the east-northeast. The source data measured
+  distances from the USGS point; the pipeline rebases them onto the PHIVOLCS epicentre.

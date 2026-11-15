@@ -772,6 +772,31 @@ def find_existing_tiles(item: dict) -> list[str]:
 
 # ----------------------------------------------------------------- vectors & tables
 
+# M7.8 epicentre (lng, lat). The app uses the PHIVOLCS solution: Mw 7.8, 08 Jun 2026 07:37 PST,
+# 5.57 N 124.98 E, 33 km deep, 32 km S 4° W of Maasim (Sarangani).
+EPICENTRE = (124.98, 5.57)
+EPICENTRE_LABEL = (
+    "Mw 7.8 Epicentre (PHIVOLCS) · 8 Jun 2026, 07:37 PST · 33 km depth · 32 km S 4° W of Maasim"
+)
+# The source data's distance columns (dist_epi_km, km_from_epicentre) were measured from the
+# USGS us7000srb1 epicentre, about 9 km away. They are rebased onto EPICENTRE below.
+EPICENTRE_USGS = (125.056, 5.599)
+_TO_UTM51 = Transformer.from_crs(4326, 32651, always_xy=True)
+
+
+def rebase_epicentre_km(km: float, x: float, y: float) -> float:
+    """Shift a USGS-based distance to the PHIVOLCS epicentre (EPSG:32651 point `x`, `y`).
+
+    Adds the planar EPSG:32651 difference (the source data's method) to the source value, so
+    the source precision is kept.
+    """
+    def dist(epi):
+        ex, ey = _TO_UTM51.transform(*epi)
+        return math.hypot(x - ex, y - ey) / 1000.0
+
+    return round(km + dist(EPICENTRE) - dist(EPICENTRE_USGS), 1)
+
+
 def round_coords(coords, precision: int = 5):
     if isinstance(coords, (list, tuple)):
         if coords and isinstance(coords[0], (int, float)):
@@ -832,7 +857,9 @@ def export_vectors_and_tables(data_dir: str) -> None:
                 "id": fid,
                 "properties": {
                     "areaHa": round(float(area_ha or 0), 2),
-                    "kmFromEpicentre": round(float(dist_km or 0), 1),
+                    "kmFromEpicentre": rebase_epicentre_km(
+                        float(dist_km or 0), geom_utm.centroid.x, geom_utm.centroid.y
+                    ),
                     "slopeDeg": round(float(slope or 0), 1),
                     "elevM": round(float(elev or 0), 0),
                     "eviBefore": round(float(evi_pre or 0), 3),
@@ -863,7 +890,9 @@ def export_vectors_and_tables(data_dir: str) -> None:
                     "elevM": float(r["elev_m"]),
                     "eviBefore": float(r["EVI_before"]),
                     "eviAfter": float(r["EVI_after"]),
-                    "kmFromEpicentre": float(r["km_from_epicentre"]),
+                    "kmFromEpicentre": rebase_epicentre_km(
+                        float(r["km_from_epicentre"]), *_TO_UTM51.transform(float(r["lon"]), float(r["lat"]))
+                    ),
                 })
 
     # 4. AOI Monthly Means 2025-2026 CSV -> JSON
@@ -922,9 +951,9 @@ def export_vectors_and_tables(data_dir: str) -> None:
 
     tables_payload = {
         "epicentre": {
-            "lng": 125.056,
-            "lat": 5.599,
-            "label": "M7.8 Epicentre · 8 Jun 2026, 07:37 PHT · 57 km depth (USGS) / 33 km (PHIVOLCS)",
+            "lng": EPICENTRE[0],
+            "lat": EPICENTRE[1],
+            "label": EPICENTRE_LABEL,
         },
         "landslidesRanked": ranked_rows,
         "aoiMonthlyMeans": aoi_rows,

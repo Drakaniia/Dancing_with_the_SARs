@@ -535,7 +535,8 @@ export const EXTRA_IMAGE_CORNERS: [
   [124.330014, 5.33865],
 ];
 
-export const EPICENTRE: [number, number] = [125.056, 5.599];
+/** PHIVOLCS epicentre: Mw 7.8, 8 Jun 2026 07:37 PST, 5.57 N 124.98 E, 33 km deep, 32 km S 4° W of Maasim. */
+export const EPICENTRE: [number, number] = [124.98, 5.57];
 
 export function findTopic(id: TopicId): Topic {
   return TOPICS.find((t) => t.id === id) ?? TOPICS[0];

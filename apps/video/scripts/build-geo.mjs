@@ -14,7 +14,7 @@ const landslides = JSON.parse(readFileSync(resolve(dataDir, 'landslides.geojson'
 
 // Study-area bounds (matches manifest.json "bounds"), padded slightly.
 const [W, S, E, N] = [124.30, 5.31, 125.77, 6.69];
-const EPICENTRE = [125.056, 5.599]; // M7.8, 8 Jun 2026, off Maasim (locations.ts)
+const EPICENTRE = [124.98, 5.57]; // Mw 7.8, 8 Jun 2026, PHIVOLCS, 32 km S 4° W of Maasim (locations.ts)
 const HEIGHT = 1000;
 const kx = Math.cos(((S + N) / 2) * (Math.PI / 180));
 const scale = HEIGHT / (N - S);
