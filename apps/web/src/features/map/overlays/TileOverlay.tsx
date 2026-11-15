@@ -19,7 +19,7 @@ import {
   isFramePending,
   setFramePending,
 } from "@/features/timeline/frameLoading";
-import { usePlaybackStore } from "@/features/timeline/usePlayback";
+
 import type { LayerConfig } from "@/shared/types/layer";
 import type { Manifest, ManifestLayer } from "@/shared/types/manifest";
 import { resolveManifestEntry, useDatasetStore } from "@/stores/datasetStore";
@@ -200,7 +200,8 @@ function syncFramesOnce(map: MapLibreMap, pool: SlotPool): void {
   const now = Date.now();
 
   for (const layer of visible.values()) {
-    const slots = (pool[layer.id] ??= []);
+    if (!pool[layer.id]) pool[layer.id] = [];
+    const slots = pool[layer.id];
     const ensure = (date: string | null): Slot => {
       const { tilePath, entry } = tilePathFor(layer, manifest, date);
       let slot = slots.find((s) => s.path === tilePath);
@@ -322,7 +323,7 @@ export function TileOverlay({ map, ready }: TileOverlayProps) {
   const currentDate = useDatasetStore((state) => state.currentDate);
   const manifest = useDatasetStore((state) => state.manifest);
 
-  const playing = usePlaybackStore((state) => state.playing);
+
   const slotsRef = useRef<SlotPool>({});
   const syncRef = useRef<() => void>(() => undefined);
 
@@ -428,11 +429,12 @@ export function TileOverlay({ map, ready }: TileOverlayProps) {
     };
   }, [map, ready]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: syncFrames reads the stores itself; these deps are the triggers that re-run it.
   useEffect(() => {
     if (!map || !ready) return;
     syncRef.current = () => syncFrames(map, slotsRef.current);
     syncRef.current();
-  }, [map, ready, layers, currentDate, manifest, playing]);
+  }, [map, ready, layers, currentDate, manifest]);
 
   useEffect(
     () => () => {

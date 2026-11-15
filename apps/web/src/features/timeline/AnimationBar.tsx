@@ -1,7 +1,11 @@
 import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Slider } from "@/shared/ui/Slider";
-import { formatPeriod, isForecastPeriod } from "@/shared/utils/dates";
+import {
+  formatPeriod,
+  isDatedPeriod,
+  isForecastPeriod,
+} from "@/shared/utils/dates";
 import { useDatasetStore } from "@/stores/datasetStore";
 import { DUR_MED, EASE_OUT, REDUCED_MOTION } from "@/styles/tokens";
 import { PlaybackButton } from "./PlaybackButton";
@@ -64,7 +68,7 @@ export function AnimationBar() {
 
   const stepTo = (next: number) => {
     const date = dates[Math.min(Math.max(next, 0), lastIndex)];
-    if (date) setCurrentDate(date);
+    if (date && isDatedPeriod(date)) setCurrentDate(date);
   };
 
   return (
@@ -117,7 +121,9 @@ export function AnimationBar() {
                 <button
                   key={date}
                   type="button"
-                  onClick={() => setCurrentDate(date)}
+                  onClick={() => {
+                    if (isDatedPeriod(date)) setCurrentDate(date);
+                  }}
                   className={`truncate px-0.5 transition-colors duration-[var(--dur-fast)] ease-[var(--ease-out)] ${
                     active
                       ? "font-semibold text-[var(--color-accent)]"

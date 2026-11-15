@@ -5,6 +5,7 @@ import { IconButton } from "@/shared/ui/IconButton";
 import { Slider } from "@/shared/ui/Slider";
 import {
   formatPeriod,
+  isDatedPeriod,
   isForecastPeriod,
   resolvePeriod,
 } from "@/shared/utils/dates";
@@ -29,7 +30,7 @@ export function TimeSeriesPanel() {
 
   const stepTo = (nextIndex: number) => {
     const date = steps[Math.min(Math.max(nextIndex, 0), lastIndex)];
-    if (date) setCurrentDate(date);
+    if (date && isDatedPeriod(date)) setCurrentDate(date);
   };
 
   const snap = resolvePeriod(active?.periods, currentDate);

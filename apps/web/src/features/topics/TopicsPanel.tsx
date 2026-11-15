@@ -229,7 +229,7 @@ export function TopicsPanel() {
   const selectTopic = useTopicStore((s) => s.selectTopic);
   const selectView = useTopicStore((s) => s.selectView);
   const selectOption = useTopicStore((s) => s.selectOption);
-  const selectFrame = useTopicStore((s) => s.selectFrame);
+
   const layers = useLayerStore((s) => s.layers);
   const manifest = useDatasetStore((s) => s.manifest);
   const currentDate = useDatasetStore((s) => s.currentDate);
@@ -337,14 +337,13 @@ export function TopicsPanel() {
 
           {periods.length > 1 ? (
             <div className="mt-2 flex flex-wrap gap-1" aria-label="Dates">
-              {periods.map((period, index) => (
+              {periods.map((period) => (
                 <button
                   key={period}
                   type="button"
                   aria-pressed={period === activePeriod}
                   onClick={() => {
-                    if (opt.kind === "images") selectFrame(index);
-                    // keep the app's date in step (its "nearest period" note and the timeline)
+                    // the app's date drives the map, the picture frame and the timeline
                     if (/^\d{4}-\d{2}/.test(period)) setCurrentDate(period);
                   }}
                   className={`rounded-[var(--radius-sm)] border px-1.5 py-0.5 font-display text-[11px] tabular-nums ${

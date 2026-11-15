@@ -19,8 +19,13 @@ export function interpolateDates(dates: string[], progress: number): string {
 
 /** Whether a period string represents the 12-month El Nino scenario projection (Nov 2026 - Oct 2027). */
 export function isForecastPeriod(period: string): boolean {
-  const primary = period.split(" (vs ")[0];
+  const primary = periodPrimary(period);
   return primary >= "2026-11" && primary <= "2027-12";
+}
+
+/** Whether a timeline step is a real date (month, day or quarter), not a picture label like "3 → 10 Jun". */
+export function isDatedPeriod(period: string): boolean {
+  return /^\d{4}-(\d{2}|Q[1-4])/i.test(period);
 }
 
 const QUARTER_START: Record<string, string> = {
@@ -141,15 +146,23 @@ export function resolvePeriod(
   }
 
   const reqPrimary = periodPrimary(req);
+  // Compare by value, not list position: quarters compare as their first month, so a list that
+  // mixes months and quarters is not in comparison order.
   let bestBefore: string | null = null;
+  let bestBeforeKey = "";
   let bestAfter: string | null = null;
+  let bestAfterKey = "";
 
   for (const p of periods) {
     const pPrimary = periodPrimary(p);
     if (pPrimary <= reqPrimary) {
-      bestBefore = p;
-    } else if (bestAfter === null) {
+      if (bestBefore === null || pPrimary >= bestBeforeKey) {
+        bestBefore = p;
+        bestBeforeKey = pPrimary;
+      }
+    } else if (bestAfter === null || pPrimary < bestAfterKey) {
       bestAfter = p;
+      bestAfterKey = pPrimary;
     }
   }
 

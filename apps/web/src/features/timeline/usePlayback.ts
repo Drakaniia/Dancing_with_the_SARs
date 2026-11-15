@@ -35,7 +35,11 @@ function tick(now: number): void {
   const { playing, speed } = usePlaybackStore.getState();
   if (!playing || now - lastStep < BASE_STEP_MS / speed) return;
   // Hold the date until its map has finished drawing (or it is clearly stuck).
-  if (isFramePending() && framePendingFor() < MAX_FRAME_WAIT_MS) return;
+  // Restart the step clock while waiting, so a slow date still stays a full step once loaded.
+  if (isFramePending() && framePendingFor() < MAX_FRAME_WAIT_MS) {
+    lastStep = now;
+    return;
+  }
   lastStep = now;
 
   const { currentDate, setCurrentDate } = useDatasetStore.getState();

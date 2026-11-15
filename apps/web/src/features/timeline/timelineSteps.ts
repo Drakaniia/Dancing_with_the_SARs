@@ -37,13 +37,39 @@ export function topicImageSteps(
   return opt.frames.map((f) => f.label);
 }
 
-function anyTileLayerVisible(
-  layers: ReturnType<typeof useLayerStore.getState>["layers"],
-): boolean {
+type Layers = ReturnType<typeof useLayerStore.getState>["layers"];
+
+function isVisibleTileLayer(l: Layers[number]): boolean {
+  return (l.kind === "manifest-layer" || l.kind === "change-type") && l.visible;
+}
+
+function anyTileLayerVisible(layers: Layers): boolean {
+  return layers.some(isVisibleTileLayer);
+}
+
+/** Whether a visible tile layer other than the active one has more than one date to play. */
+function otherLayerHasDates(layers: Layers, activeId: string | null): boolean {
   return layers.some(
     (l) =>
-      (l.kind === "manifest-layer" || l.kind === "change-type") && l.visible,
+      l.id !== activeId &&
+      isVisibleTileLayer(l) &&
+      new Set((l.periods ?? []).filter((p) => p !== "static")).size > 1,
   );
+}
+
+/**
+ * Steps for the active layer. A one-date active layer gives a one-step timeline, unless another
+ * visible layer still has dates to move through; then the global dates are used.
+ */
+function activeLayerSteps(
+  periods: readonly string[] | undefined,
+  othersHaveDates: boolean,
+  fallback: string[],
+): string[] {
+  const steps = layerTimelineSteps(periods, fallback);
+  return steps.length === 1 && othersHaveDates && fallback.length > 1
+    ? fallback
+    : steps;
 }
 
 /** Index of `current` within `steps`, snapping to the nearest period when it is not a step. */
@@ -67,7 +93,11 @@ export function getTimelineSteps(): string[] {
   );
   if (images) return images;
   const active = layers.find((layer) => layer.id === activeLayerId);
-  return layerTimelineSteps(active?.periods, globalDates());
+  return activeLayerSteps(
+    active?.periods,
+    otherLayerHasDates(layers, activeLayerId),
+    globalDates(),
+  );
 }
 
 /** Reactive steps for the active layer, used by the timeline UI. */
@@ -77,6 +107,9 @@ export function useTimelineSteps(): string[] {
       state.layers.find((layer) => layer.id === state.activeLayerId)?.periods,
   );
   const tilesOn = useLayerStore((state) => anyTileLayerVisible(state.layers));
+  const othersHaveDates = useLayerStore((state) =>
+    otherLayerHasDates(state.layers, state.activeLayerId),
+  );
   const topicId = useTopicStore((s) => s.topicId);
   const viewId = useTopicStore((s) => s.viewId);
   const option = useTopicStore((s) => s.option);
@@ -86,7 +119,7 @@ export function useTimelineSteps(): string[] {
   return useMemo(
     () =>
       topicImageSteps({ topicId, viewId, option }, tilesOn) ??
-      layerTimelineSteps(periods, fallback),
-    [periods, fallback, tilesOn, topicId, viewId, option],
+      activeLayerSteps(periods, othersHaveDates, fallback),
+    [periods, othersHaveDates, fallback, tilesOn, topicId, viewId, option],
   );
 }

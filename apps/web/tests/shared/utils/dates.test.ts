@@ -4,6 +4,8 @@ import {
   formatDate,
   formatPeriod,
   interpolateDates,
+  isDatedPeriod,
+  isForecastPeriod,
   periodPrimary,
   resolvePeriod,
 } from "@/shared/utils/dates";
@@ -63,6 +65,29 @@ describe("quarters among months", () => {
     expect(resolvePeriod(quarters, "2026-10").resolved).toBe("2026-Q3");
     expect(resolvePeriod(quarters, "2026-05").resolved).toBe("2026-Q2");
     expect(resolvePeriod(quarters, "2025-01").resolved).toBe("2025-Q1");
+  });
+
+  it("snaps by value in a list that has months then quarters", () => {
+    const mixed = ["2025-05", "2025-06", "2025-07", "2025-Q1", "2025-Q2", "2025-Q3"];
+    expect(resolvePeriod(mixed, "2025-06-15").resolved).toBe("2025-06");
+    expect(resolvePeriod(mixed, "2025-02").resolved).toBe("2025-Q1");
+    expect(resolvePeriod(mixed, "2024-12").resolved).toBe("2025-Q1");
+  });
+
+  it("does not call observed 2026 quarters a forecast", () => {
+    expect(isForecastPeriod("2026-Q1")).toBe(false);
+    expect(isForecastPeriod("2026-Q3")).toBe(false);
+    expect(isForecastPeriod("2026-11")).toBe(true);
+  });
+});
+
+describe("isDatedPeriod", () => {
+  it("accepts months, days and quarters but not picture labels", () => {
+    expect(isDatedPeriod("2026-07")).toBe(true);
+    expect(isDatedPeriod("2026-06-28")).toBe(true);
+    expect(isDatedPeriod("2026-Q3")).toBe(true);
+    expect(isDatedPeriod("3 → 10 Jun")).toBe(false);
+    expect(isDatedPeriod("static")).toBe(false);
   });
 });
 
