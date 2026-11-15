@@ -1,10 +1,4 @@
-import {
-  animate,
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useTransform,
-} from "motion/react";
+import { animate, m as motion, useMotionValue, useReducedMotion } from "motion/react";
 import {
   type KeyboardEvent as ReactKeyboardEvent,
   type PointerEvent as ReactPointerEvent,
@@ -45,8 +39,7 @@ export interface SliderProps {
   "aria-label": string;
 }
 
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(Math.max(value, min), max);
+const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
 /**
  * The marquee gesture component: opacity and time scrub.
@@ -114,8 +107,7 @@ export function Slider({
 
   const snapValue = useCallback(
     (next: number) => {
-      const snapped =
-        step > 0 ? min + Math.round((next - min) / step) * step : next;
+      const snapped = step > 0 ? min + Math.round((next - min) / step) * step : next;
       return clamp(snapped, min, max);
     },
     [min, max, step],
@@ -165,8 +157,7 @@ export function Slider({
   const trackVelocity = useCallback((x: number, t: number) => {
     const samples = samplesRef.current;
     samples.push({ x, t });
-    while (samples.length > 1 && t - samples[0].t > VELOCITY_WINDOW_MS)
-      samples.shift();
+    while (samples.length > 1 && t - samples[0].t > VELOCITY_WINDOW_MS) samples.shift();
     const [first] = samples;
     const dt = t - first.t;
     velocityRef.current = dt > 0 ? (x - first.x) / dt : 0;
@@ -178,16 +169,8 @@ export function Slider({
       const usable = Math.max(width - SLIDER_THUMB_PX, 0);
       const raw = pointerX - grabOffsetRef.current;
       const left =
-        raw < 0
-          ? raw * RUBBER_BAND
-          : raw > usable
-            ? usable + (raw - usable) * RUBBER_BAND
-            : raw;
-      const bounded = clamp(
-        left,
-        -SLIDER_OVERSHOOT_PX,
-        usable + SLIDER_OVERSHOOT_PX,
-      );
+        raw < 0 ? raw * RUBBER_BAND : raw > usable ? usable + (raw - usable) * RUBBER_BAND : raw;
+      const bounded = clamp(left, -SLIDER_OVERSHOOT_PX, usable + SLIDER_OVERSHOOT_PX);
       thumbX.jump(bounded);
       emitFromX(left);
     },
@@ -195,19 +178,15 @@ export function Slider({
   );
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (disabled || (event.pointerType === "mouse" && event.button !== 0))
-      return;
+    if (disabled || (event.pointerType === "mouse" && event.button !== 0)) return;
     const rail = railRef.current;
     if (!rail) return;
     const rect = rail.getBoundingClientRect();
     const pointerX = event.clientX - rect.left;
     const thumbLeft = thumbX.get();
     // Grabbing the thumb keeps that point under the finger; tapping elsewhere centres it.
-    const grabbedThumb =
-      Math.abs(pointerX - (thumbLeft + SLIDER_THUMB_PX / 2)) <= SLIDER_THUMB_PX;
-    grabOffsetRef.current = grabbedThumb
-      ? pointerX - thumbLeft
-      : SLIDER_THUMB_PX / 2;
+    const grabbedThumb = Math.abs(pointerX - (thumbLeft + SLIDER_THUMB_PX / 2)) <= SLIDER_THUMB_PX;
+    grabOffsetRef.current = grabbedThumb ? pointerX - thumbLeft : SLIDER_THUMB_PX / 2;
 
     thumbX.stop();
     samplesRef.current = [{ x: pointerX, t: event.timeStamp }];
@@ -239,10 +218,7 @@ export function Slider({
     onScrubEndRef.current?.();
   }, []);
 
-  const releaseDrag = (
-    event: ReactPointerEvent<HTMLDivElement>,
-    flick: boolean,
-  ) => {
+  const releaseDrag = (event: ReactPointerEvent<HTMLDivElement>, flick: boolean) => {
     if (!dragging) return;
     draggingRef.current = false;
     setDragging(false);
@@ -253,9 +229,7 @@ export function Slider({
     const start = thumbX.get();
     const pxPerSecond = (flick ? velocityRef.current : 0) * 1000;
     // Projection (§10): v/1000 · d/(1-d) — the resting offset of a decaying flick.
-    const projected =
-      start +
-      (pxPerSecond / 1000) * (DECELERATION_RATE / (1 - DECELERATION_RATE));
+    const projected = start + (pxPerSecond / 1000) * (DECELERATION_RATE / (1 - DECELERATION_RATE));
     const target = xForValue(snapValue(xToValue(projected)));
 
     if (reducedMotion || Math.abs(target - start) < 0.5) {
@@ -273,8 +247,7 @@ export function Slider({
 
   const handlePointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (!dragging) return;
-    const flick =
-      momentum && Math.abs(velocityRef.current) > FLICK_VELOCITY_PX_PER_MS;
+    const flick = momentum && Math.abs(velocityRef.current) > FLICK_VELOCITY_PX_PER_MS;
     releaseDrag(event, flick);
   };
 
@@ -310,7 +283,6 @@ export function Slider({
     if (next !== null) onChangeRef.current(snapValue(next));
   };
 
-  const fillWidth = useTransform(thumbX, (x) => x + SLIDER_THUMB_PX / 2);
   const thumbScale = active ? 1.125 : hovered ? 1.06 : 1;
 
   return (
@@ -338,12 +310,15 @@ export function Slider({
       className={`relative flex w-full touch-none items-center select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg)] ${disabled ? "pointer-events-none opacity-40" : "cursor-grab active:cursor-grabbing"} h-[var(--slider-hit-h)] ${className ?? ""}`}
     >
       <div ref={railRef} data-slider-rail="" className="relative w-full">
-        <div className="h-[var(--slider-track-h)] w-full rounded-[var(--radius-pill)] bg-[var(--color-fill-track)]" />
-        <motion.div
-          aria-hidden="true"
-          style={{ width: fillWidth }}
-          className="pointer-events-none absolute top-1/2 left-0 h-[var(--slider-track-h)] -translate-y-1/2 rounded-[var(--radius-pill)] bg-[var(--color-accent)]"
-        />
+        {/* The fill is a full-width bar that slides with the thumb: a transform, so moving it
+            never triggers layout (animating `width` re-laid out the page every frame). */}
+        <div className="relative h-[var(--slider-track-h)] w-full overflow-hidden rounded-[var(--radius-pill)] bg-[var(--color-fill-track)]">
+          <motion.div
+            aria-hidden="true"
+            style={{ x: thumbX, left: `calc(${SLIDER_THUMB_PX / 2}px - 100%)` }}
+            className="pointer-events-none absolute inset-y-0 w-full rounded-[var(--radius-pill)] bg-[var(--color-accent)]"
+          />
+        </div>
         <motion.div
           data-slider-thumb=""
           aria-hidden="true"
