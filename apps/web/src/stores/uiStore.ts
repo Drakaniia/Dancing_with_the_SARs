@@ -92,6 +92,11 @@ export interface UiState {
   clearMeasurePoints: () => void;
   setTerrain3d: (enabled: boolean) => void;
   toggleTerrain3d: () => void;
+  /**
+   * Bring the inspection results into view: expand the right rail (or open its sheet on
+   * narrower screens) with Location Info unfolded.
+   */
+  revealInspector: () => void;
 }
 
 const PANELS_KEY = "ui.panels";
@@ -210,6 +215,22 @@ export const useUiStore = create<UiState>((set) => ({
   setTerrain3d: (terrain3d) => set({ terrain3d }),
 
   toggleTerrain3d: () => set((state) => ({ terrain3d: !state.terrain3d })),
+
+  revealInspector: () =>
+    set((state) => {
+      const panels = state.panels["location-info"]
+        ? state.panels
+        : { ...state.panels, "location-info": true };
+      if (panels !== state.panels) void persistFlags(PANELS_KEY, panels);
+      // Only the wide layout shows the right rail inline; narrower ones use a sheet.
+      if (state.railMode !== "wide") {
+        return { panels, openRails: { ...state.openRails, right: true } };
+      }
+      if (state.expandedRails.right) return { panels };
+      const expandedRails = { ...state.expandedRails, right: true };
+      void persistFlags(RAILS_KEY, expandedRails);
+      return { panels, expandedRails };
+    }),
 }));
 
 export function resolveRailMode(width: number): RailMode {

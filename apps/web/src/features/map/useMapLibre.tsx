@@ -191,6 +191,8 @@ export function useMapLibre(containerRef: RefObject<HTMLElement | null>): UseMap
         return;
       }
       void useSelectionStore.getState().inspectCoordinate(lng, lat);
+      // The results land in the right rail, which starts collapsed: open it so the click shows.
+      useUiStore.getState().revealInspector();
 
     };
 

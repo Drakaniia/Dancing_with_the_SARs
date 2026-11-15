@@ -17,6 +17,7 @@ const ICONS: Record<ToolId, LucideIcon> = {
 export function ToolsPanel() {
   const activeTool = useUiStore((state) => state.activeTool);
   const setActiveTool = useUiStore((state) => state.setActiveTool);
+  const revealInspector = useUiStore((state) => state.revealInspector);
   const addBookmark = useBookmarkStore((state) => state.addBookmark);
   const selected = useSelectionStore((state) => state.selected);
   const activeLayer = useActiveLayer();
@@ -56,7 +57,10 @@ export function ToolsPanel() {
       return;
     }
 
-    setActiveTool(activeTool === id ? null : id);
+    const next = activeTool === id ? null : id;
+    setActiveTool(next);
+    // Inspect: show where the readings will appear before the first click.
+    if (next === "draw") revealInspector();
   };
 
   return (

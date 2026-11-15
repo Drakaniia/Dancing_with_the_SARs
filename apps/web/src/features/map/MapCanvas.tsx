@@ -1,4 +1,4 @@
-import { GripVertical, Ruler, X } from "lucide-react";
+import { Crosshair, GripVertical, Ruler, X } from "lucide-react";
 import { useRef } from "react";
 import { formatCoords } from "@/features/inspector/LocationInfoPanel";
 import { AnimationBar } from "@/features/timeline/AnimationBar";
@@ -198,6 +198,13 @@ export function MapCanvas() {
                   <X size={13} />
                 </button>
               ) : null}
+            </div>
+          ) : null}
+
+          {activeTool === "draw" ? (
+            <div className="flex items-center gap-2.5 rounded-[var(--radius-md)] border border-[var(--color-chrome-border)] bg-[var(--color-panel)] px-3 py-1.5 text-caption text-[var(--color-text)] shadow-[var(--shadow-1)]">
+              <Crosshair size={14} className="text-[var(--color-accent)]" />
+              <span>Click the map to inspect a point · readings show in Location Info</span>
             </div>
           ) : null}
 
