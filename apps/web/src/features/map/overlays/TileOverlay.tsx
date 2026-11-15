@@ -32,7 +32,7 @@ function layerIdFor(id: string): string {
 }
 
 /** Origin plus the Vite base path (e.g. `/Dancing_with_the_SARs/app` on GitHub Pages). */
-function resolveOriginPrefix(): string {
+export function resolveOriginPrefix(): string {
   if (
     typeof window !== "undefined" &&
     window.location?.origin &&
@@ -128,7 +128,7 @@ function removeSlot(map: MapLibreMap, slot: Slot): void {
 }
 
 /** Tile URL template for a layer at a date (remote host, bundled copy, or offline cache). */
-function tilePathFor(
+export function tilePathFor(
   layer: LayerConfig,
   manifest: Manifest | null,
   date: string | null,
@@ -340,6 +340,78 @@ function syncFramesOnce(map: MapLibreMap, pool: SlotPool): void {
   setFramePending(pending);
 }
 
+/**
+ * The study-area outline and the 305 landslide polygons, below the labels. Safe to call again:
+ * anything already on the map is left alone. Shared by the main map and the comparison map.
+ */
+export function addReferenceLayers(map: MapLibreMap): void {
+  const beforeLabels = map.getLayer("cities-labels") ? "cities-labels" : undefined;
+
+  if (!map.getSource("aoi-boundary-source")) {
+    addDataGeojson(map, "aoi-boundary-source", "boundary.geojson");
+  }
+  if (!map.getLayer("aoi-boundary-casing")) {
+    map.addLayer(
+      {
+        id: "aoi-boundary-casing",
+        type: "line",
+        source: "aoi-boundary-source",
+        layout: {
+          visibility: "visible",
+          "line-join": "round",
+          "line-cap": "round",
+        },
+        paint: {
+          "line-color": "#fffaf0",
+          "line-width": 3.6,
+          "line-opacity": 0.95,
+        },
+      },
+      beforeLabels,
+    );
+  }
+  if (!map.getLayer("aoi-boundary")) {
+    map.addLayer(
+      {
+        id: "aoi-boundary",
+        type: "line",
+        source: "aoi-boundary-source",
+        layout: {
+          visibility: "visible",
+          "line-join": "round",
+          "line-cap": "round",
+        },
+        paint: {
+          "line-color": "#3b2a17",
+          "line-width": 1.8,
+          "line-opacity": 0.92,
+        },
+      },
+      beforeLabels,
+    );
+  }
+
+  if (!map.getSource("landslide-polygons-source")) {
+    addDataGeojson(map, "landslide-polygons-source", "landslides.geojson");
+  }
+  if (!map.getLayer("landslide-polygons")) {
+    map.addLayer(
+      {
+        id: "landslide-polygons",
+        type: "fill",
+        source: "landslide-polygons-source",
+        layout: { visibility: "visible" },
+        paint: {
+          "fill-color": "#e31a1c",
+          "fill-outline-color": "#fffdf8",
+          "fill-opacity": 0.78,
+        },
+      },
+      beforeLabels,
+    );
+  }
+}
+
 export function TileOverlay({ map, ready }: TileOverlayProps) {
   const layers = useLayerStore((state) => state.layers);
   const currentDate = useDatasetStore((state) => state.currentDate);
@@ -350,74 +422,8 @@ export function TileOverlay({ map, ready }: TileOverlayProps) {
 
   useEffect(() => {
     if (!map || !ready) return;
-    const origin = resolveOriginPrefix();
-    if (!origin) return;
-
-    const beforeLabels = map.getLayer("cities-labels") ? "cities-labels" : undefined;
-
-    if (!map.getSource("aoi-boundary-source")) {
-      addDataGeojson(map, "aoi-boundary-source", "boundary.geojson");
-    }
-    if (!map.getLayer("aoi-boundary-casing")) {
-      map.addLayer(
-        {
-          id: "aoi-boundary-casing",
-          type: "line",
-          source: "aoi-boundary-source",
-          layout: {
-            visibility: "visible",
-            "line-join": "round",
-            "line-cap": "round",
-          },
-          paint: {
-            "line-color": "#fffaf0",
-            "line-width": 3.6,
-            "line-opacity": 0.95,
-          },
-        },
-        beforeLabels,
-      );
-    }
-    if (!map.getLayer("aoi-boundary")) {
-      map.addLayer(
-        {
-          id: "aoi-boundary",
-          type: "line",
-          source: "aoi-boundary-source",
-          layout: {
-            visibility: "visible",
-            "line-join": "round",
-            "line-cap": "round",
-          },
-          paint: {
-            "line-color": "#3b2a17",
-            "line-width": 1.8,
-            "line-opacity": 0.92,
-          },
-        },
-        beforeLabels,
-      );
-    }
-
-    if (!map.getSource("landslide-polygons-source")) {
-      addDataGeojson(map, "landslide-polygons-source", "landslides.geojson");
-    }
-    if (!map.getLayer("landslide-polygons")) {
-      map.addLayer(
-        {
-          id: "landslide-polygons",
-          type: "fill",
-          source: "landslide-polygons-source",
-          layout: { visibility: "visible" },
-          paint: {
-            "fill-color": "#e31a1c",
-            "fill-outline-color": "#fffdf8",
-            "fill-opacity": 0.78,
-          },
-        },
-        beforeLabels,
-      );
-    }
+    if (!resolveOriginPrefix()) return;
+    addReferenceLayers(map);
   }, [map, ready]);
 
   // Re-run the frame sync whenever the map finishes loading a source, so a date that was still

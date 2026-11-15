@@ -1,5 +1,6 @@
 import { Crosshair, GripVertical, Ruler, X } from "lucide-react";
 import { useRef } from "react";
+import { ComparisonMap } from "@/features/comparison/ComparisonMap";
 import { formatCoords } from "@/features/inspector/LocationInfoPanel";
 import { AnimationBar } from "@/features/timeline/AnimationBar";
 import { TopicOverlays } from "@/features/topics/TopicOverlays";
@@ -78,6 +79,7 @@ export function MapCanvas() {
   const comparisonDate = useDatasetStore((state) => state.comparisonDate);
   const splitPosition = useDatasetStore((state) => state.splitPosition);
   const setSplitPosition = useDatasetStore((state) => state.setSplitPosition);
+  const baselineFallback = useDatasetStore((state) => state.manifest?.dates[0] ?? "2026-09");
 
   const selected = useSelectionStore((state) => state.selected);
   const activeTool = useUiStore((state) => state.activeTool);
@@ -106,7 +108,8 @@ export function MapCanvas() {
       <TopicOverlays map={map} ready={status === "ready"} />
       <MeasureOverlay map={map} ready={status === "ready"} />
 
-      {/* Interactive Split Curtain when Before / After Comparison is active */}
+      {/* Baseline map (left of the curtain) + the curtain itself while comparing */}
+      {comparisonEnabled && status === "ready" ? <ComparisonMap main={map} /> : null}
       {comparisonEnabled ? (
         <div className="pointer-events-none absolute inset-0 z-[15]">
           <div
@@ -144,12 +147,13 @@ export function MapCanvas() {
             </span>
           </div>
 
-          <div className="absolute top-3 left-3 flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-chrome-border)] bg-[var(--color-panel)] px-3 py-1.5 text-caption text-[var(--color-text)] shadow-[var(--shadow-1)]">
+          {/* Top centre, clear of the period badge and tool readouts on the left */}
+          <div className="absolute top-3 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-chrome-border)] bg-[var(--color-panel)] px-3 py-1.5 text-caption text-[var(--color-text)] shadow-[var(--shadow-1)]">
             <span className="font-medium text-[var(--color-accent)]">
-              {comparisonMode === "split" ? "Before" : "Baseline"}:
+              {comparisonMode === "split" ? "Before" : "Difference vs"}:
             </span>
             <span className="font-display tabular-nums">
-              {formatPeriod(comparisonDate ?? "2026-09")}
+              {formatPeriod(comparisonDate ?? baselineFallback)}
             </span>
             <span className="text-[var(--color-text-muted)]">vs</span>
             <span className="font-medium text-[var(--color-accent-cyan)]">Current:</span>

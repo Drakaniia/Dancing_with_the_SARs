@@ -69,6 +69,12 @@ export function ComparisonPanel() {
             </select>
           </div>
 
+          <p className="text-caption text-[var(--color-text-muted)]">
+            {mode === "split"
+              ? "Left of the curtain: the baseline period. Right: the timeline date."
+              : "Left of the curtain: the colour difference between the two periods (black = no change)."}
+          </p>
+
           <div className="flex items-center justify-between text-caption text-[var(--color-text-secondary)]">
             <span>Split Curtain Position</span>
             <span className="font-display tabular-nums">
